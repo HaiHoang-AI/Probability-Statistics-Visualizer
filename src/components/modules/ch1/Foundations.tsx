@@ -35,29 +35,33 @@ export const Foundations: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-slate-500/10 to-slate-700/10 border-2 border-slate-200 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">
-            MAT1101 Bài 1 — Cơ sở Xác suất & Lý thuyết Tập hợp
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 1 — Cơ sở Xác suất
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
-            Không gian Mẫu <MathView math="\Omega" />, Tiên đề Kolmogorov & Sơ đồ Venn
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
+            Không gian Mẫu <MathView math="\Omega" /> & Sơ đồ Venn
           </h2>
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSub('venn')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              activeSub === 'venn' ? 'bg-slate-800 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              activeSub === 'venn'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             Sơ đồ Venn
           </button>
           <button
             onClick={() => setActiveSub('dice')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              activeSub === 'dice' ? 'bg-slate-800 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              activeSub === 'dice'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             Ma trận 36 Ô Xúc xắc
@@ -134,7 +138,7 @@ export const Foundations: React.FC = () => {
               <button
                 onClick={() => setDiceFilter('all')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold ${
-                  diceFilter === 'all' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-800'
+                  diceFilter === 'all' ? 'bg-sky-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                 }`}
               >
                 Tất cả (36)
@@ -142,7 +146,7 @@ export const Foundations: React.FC = () => {
               <button
                 onClick={() => setDiceFilter('sum8')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold ${
-                  diceFilter === 'sum8' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-800'
+                  diceFilter === 'sum8' ? 'bg-sky-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                 }`}
               >
                 Tổng ≥ 8
@@ -150,7 +154,7 @@ export const Foundations: React.FC = () => {
               <button
                 onClick={() => setDiceFilter('doubles')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold ${
-                  diceFilter === 'doubles' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-800'
+                  diceFilter === 'doubles' ? 'bg-sky-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                 }`}
               >
                 Mặt đôi
@@ -158,7 +162,7 @@ export const Foundations: React.FC = () => {
               <button
                 onClick={() => setDiceFilter('has6')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold ${
-                  diceFilter === 'has6' ? 'bg-orange-500 text-white' : 'bg-slate-100 dark:bg-slate-800'
+                  diceFilter === 'has6' ? 'bg-sky-600 text-white' : 'bg-slate-100 dark:bg-slate-800'
                 }`}
               >
                 Có ít nhất mặt 6
@@ -172,7 +176,7 @@ export const Foundations: React.FC = () => {
                 key={idx}
                 className={`p-3 rounded-xl border flex flex-col items-center justify-center font-mono transition-all ${
                   cell.isMatch
-                    ? 'bg-orange-500 text-white border-orange-400 font-bold scale-105 shadow-md'
+                    ? 'bg-sky-600 text-white border-sky-500 font-bold scale-105 shadow-md'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 opacity-40'
                 }`}
               >
@@ -182,7 +186,7 @@ export const Foundations: React.FC = () => {
             ))}
           </div>
 
-          <div className="text-center mt-4 text-xs font-bold text-orange-600 dark:text-orange-400 font-mono">
+          <div className="text-center mt-4 text-xs font-bold text-sky-600 dark:text-sky-400 font-mono">
             Biến cố A: {countMatch} / 36 ô thỏa mãn (Xác suất P(A) = {fmt(countMatch / 36, 3)})
           </div>
         </ClayCard>

@@ -52,29 +52,33 @@ export const ContinuousRV: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-teal-500/10 to-blue-500/10 border-2 border-teal-200 dark:border-teal-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-teal-600 dark:text-teal-400">
-            MAT1101 Bài 5 & 6 — Biến ngẫu nhiên Liên tục & Chuẩn tắc
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 5 & 6 — Biến ngẫu nhiên Liên tục
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
-            Phân bố Chuẩn Gauss <MathView math="\mathcal{N}(\mu, \sigma^2)" /> & Cây kim Buffon
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
+            Phân bố Chuẩn Gauss <MathView math="\mathcal{N}(\mu, \sigma^2)" /> & Kim Buffon
           </h2>
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSub('normal')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              activeSub === 'normal' ? 'bg-teal-600 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              activeSub === 'normal'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            Phân bố Chuẩn Gauss
+            Chuẩn Gauss
           </button>
           <button
             onClick={() => setActiveSub('buffon')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              activeSub === 'buffon' ? 'bg-teal-600 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              activeSub === 'buffon'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             Cây kim Buffon

@@ -62,29 +62,33 @@ export const BasicProbability: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-lime-500/10 to-green-500/10 border-2 border-lime-200 dark:border-lime-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-lime-600 dark:text-lime-400">
-            MAT1101 Bài 2 — Tính toán Xác suất Cơ bản & Nghịch lý
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 2 — Tính toán Xác suất Cơ bản
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
-            Xác suất có điều kiện, Monty Hall & Nghịch lý Test Y tế
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
+            Xác suất có điều kiện & Nghịch lý Monty Hall
           </h2>
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSub('monty')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              activeSub === 'monty' ? 'bg-green-600 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              activeSub === 'monty'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             Trò chơi Monty Hall
           </button>
           <button
             onClick={() => setActiveSub('medical')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              activeSub === 'medical' ? 'bg-green-600 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              activeSub === 'medical'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             Dương tính Giả Y tế
@@ -117,13 +121,13 @@ export const BasicProbability: React.FC = () => {
                   onClick={() => handlePickDoor(idx)}
                   className={`
                     h-40 rounded-2xl border-4 flex flex-col items-center justify-center cursor-pointer transition-all p-3 text-center
-                    ${isChosen ? 'border-orange-500 bg-orange-50 dark:bg-orange-950/40' : 'border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800'}
+                    ${isChosen ? 'border-sky-600 bg-sky-50 dark:bg-slate-800' : 'border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800'}
                     ${isRevealed ? 'opacity-60 bg-red-50 dark:bg-red-950/40 border-red-300' : ''}
                   `}
                 >
                   <span className="text-xs font-bold font-mono uppercase text-slate-400 mb-1">Cửa {idx + 1}</span>
                   <span className="text-base font-bold my-2">{doorContent}</span>
-                  {isChosen && <span className="text-[10px] font-bold text-orange-600">Đã chọn</span>}
+                  {isChosen && <span className="text-[10px] font-bold text-sky-600">Đã chọn</span>}
                 </div>
               );
             })}

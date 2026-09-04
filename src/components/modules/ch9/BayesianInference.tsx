@@ -76,36 +76,33 @@ export const BayesianInference: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-indigo-500/10 border-2 border-violet-200 dark:border-violet-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-violet-600 dark:text-violet-400">
-            MAT1101 Bài 9 — Suy luận thống kê theo trường phái Bayes (Bayesian Inference)
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 9 — Suy luận thống kê Bayes
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
             Cập nhật Niềm tin Hậu nghiệm & Ước lượng MAP vs LMS
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-            "Hôm nay bạn tin điều gì phụ thuộc vào niềm tin hôm qua (Prior) cộng với dữ liệu quan sát hôm nay (Likelihood)."
-          </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('beta-binomial')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'beta-binomial'
-                ? 'bg-purple-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             1. Mô hình Beta - Nhị thức
           </button>
           <button
             onClick={() => setActiveTab('sensor-fusion')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'sensor-fusion'
-                ? 'bg-purple-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             2. Hợp nhất Cảm biến Gauss

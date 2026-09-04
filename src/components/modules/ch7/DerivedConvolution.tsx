@@ -67,47 +67,44 @@ export const DerivedConvolution: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Chapter Subtitle & Context Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-yellow-500/10 border-2 border-orange-200 dark:border-orange-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400">
-            MAT1101 Bài 7.1 — Biến ngẫu nhiên dẫn xuất (Derived Distributions)
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 7.1 — Biến ngẫu nhiên dẫn xuất
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
             Tích chập (Convolution), Hiệp phương sai & Hệ số Tương quan
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-            Khám phá quy tắc tìm phân bố tổng <MathView math="Z = X + Y" />, trực quan hóa hiệp phương sai <MathView math="\text{cov}(X,Y)" /> và định lý phân rã phương sai Eve's Law.
-          </p>
         </div>
 
         {/* Tab Navigation Buttons */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('convolution')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'convolution'
-                ? 'bg-orange-500 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             1. Tích chập (Z = X + Y)
           </button>
           <button
             onClick={() => setActiveTab('correlation')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'correlation'
-                ? 'bg-orange-500 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             2. Tương quan & Trực giao
           </button>
           <button
             onClick={() => setActiveTab('totalvar')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'totalvar'
-                ? 'bg-orange-500 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             3. Phân rã Phương sai
@@ -169,7 +166,7 @@ export const DerivedConvolution: React.FC = () => {
                 <p className="text-amber-800 dark:text-amber-300">
                   Nếu <MathView math="X, Y \sim \mathcal{U}[0, 1]" />, tích chập biến 2 hình chữ nhật thành <strong>phân bố hình tam giác</strong> (Triangular Distribution) trên <MathView math="[0, 2]" /> với đỉnh cao nhất tại <MathView math="z = 1" />.
                 </p>
-                <div className="pt-1 text-center font-mono font-bold text-orange-600 dark:text-orange-400">
+                <div className="pt-1 text-center font-mono font-bold text-sky-600 dark:text-sky-400">
                   <MathView math="f_Z(z) = \begin{cases} z & 0 \le z \le 1 \\ 2 - z & 1 < z \le 2 \end{cases}" />
                 </div>
               </div>
@@ -178,10 +175,10 @@ export const DerivedConvolution: React.FC = () => {
 
           {/* Visualization Canvas */}
           <div className="lg:col-span-2">
-            <ClayCard glowColor="orange" className="p-6">
+            <ClayCard glowColor="blue" className="p-6">
               <h4 className="font-heading font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
                 <span>Trực quan hóa Hoạt ảnh Quét tích chập</span>
-                <span className="text-xs px-3 py-1 rounded-full bg-orange-100 dark:bg-orange-950 text-orange-700 dark:text-orange-300 font-mono font-bold">
+                <span className="text-xs px-3 py-1 rounded-full bg-sky-100 dark:bg-slate-800 text-sky-800 dark:text-sky-300 font-mono font-bold">
                   z = {fmt(zValue, 2)}
                 </span>
               </h4>
@@ -447,9 +444,9 @@ export const DerivedConvolution: React.FC = () => {
                 onChange={setWithinVar}
               />
 
-              <div className="mt-4 p-3 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 text-xs">
-                <span className="font-bold text-orange-950 dark:text-orange-200">Bản chất phân rã:</span>
-                <ul className="mt-1 list-disc list-inside space-y-1 text-orange-800 dark:text-orange-300">
+              <div className="mt-4 p-3 rounded-2xl bg-sky-50 dark:bg-slate-800/80 border-2 border-slate-900/20 dark:border-slate-700 text-xs">
+                <span className="font-bold text-slate-900 dark:text-slate-100">Bản chất phân rã:</span>
+                <ul className="mt-1 list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300">
                   <li><strong>Var(E[X|Y]):</strong> Phương sai do sự khác biệt giữa các nhóm (explained).</li>
                   <li><strong>E[Var(X|Y)]:</strong> Phương sai trung bình bên trong nội bộ từng nhóm (unexplained).</li>
                 </ul>
@@ -458,7 +455,7 @@ export const DerivedConvolution: React.FC = () => {
           </div>
 
           <div className="lg:col-span-2">
-            <ClayCard glowColor="orange" className="p-6 space-y-6">
+            <ClayCard glowColor="blue" className="p-6 space-y-6">
               <h4 className="font-heading font-bold text-slate-800 dark:text-slate-100">
                 Thanh phân rã Tỷ lệ Phương sai Toàn phần
               </h4>
@@ -468,23 +465,23 @@ export const DerivedConvolution: React.FC = () => {
                 <div className="w-full h-12 rounded-2xl overflow-hidden flex shadow-inner border border-slate-300 dark:border-slate-700 font-mono text-xs font-bold text-white">
                   <div
                     style={{ width: `${betweenPct}%` }}
-                    className="bg-gradient-to-r from-orange-500 to-amber-500 flex items-center justify-center transition-all duration-300"
+                    className="bg-sky-600 flex items-center justify-center transition-all duration-300"
                   >
                     {betweenPct > 12 && `Giữa các nhóm: ${betweenPct}%`}
                   </div>
                   <div
                     style={{ width: `${withinPct}%` }}
-                    className="bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-center transition-all duration-300"
+                    className="bg-slate-700 flex items-center justify-center transition-all duration-300"
                   >
                     {withinPct > 12 && `Nội bộ nhóm: ${withinPct}%`}
                   </div>
                 </div>
 
                 <div className="flex justify-between text-xs font-semibold text-slate-600 dark:text-slate-400">
-                  <span className="text-orange-600 dark:text-orange-400">
+                  <span className="text-sky-600 dark:text-sky-400 font-bold">
                     Var(E[X|Y]) = {fmt(betweenVar, 2)} ({betweenPct}%)
                   </span>
-                  <span className="text-blue-600 dark:text-blue-400">
+                  <span className="text-slate-600 dark:text-slate-400">
                     E[Var(X|Y)] = {fmt(withinVar, 2)} ({withinPct}%)
                   </span>
                 </div>
@@ -500,11 +497,11 @@ export const DerivedConvolution: React.FC = () => {
                     {fmt(totalVariance, 2)}
                   </p>
                 </div>
-                <div className="p-4 rounded-2xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800">
-                  <span className="text-xs text-orange-600 dark:text-orange-400 font-medium">
+                <div className="p-4 rounded-2xl bg-sky-50 dark:bg-slate-800/80 border-2 border-slate-900/20 dark:border-slate-700">
+                  <span className="text-xs text-sky-700 dark:text-sky-300 font-medium">
                     Tỷ lệ giải thích được
                   </span>
-                  <p className="text-2xl font-black font-mono text-orange-600 dark:text-orange-400 mt-1">
+                  <p className="text-2xl font-black font-mono text-sky-600 dark:text-sky-400 mt-1">
                     {betweenPct}%
                   </p>
                 </div>

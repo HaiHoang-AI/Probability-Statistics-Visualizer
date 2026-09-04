@@ -26,11 +26,13 @@ export const ThemeToggle: React.FC = () => {
       aria-label="Toggle Theme"
       className="
         px-3 py-1.5 rounded-xl text-xs font-heading font-bold
-        bg-amber-100 dark:bg-slate-800 
-        text-slate-800 dark:text-slate-200
-        border border-amber-300 dark:border-slate-700 
-        hover:bg-amber-200 dark:hover:bg-slate-700
-        cursor-pointer transition-colors duration-200
+        bg-white dark:bg-slate-800 
+        text-slate-900 dark:text-slate-100
+        border-2 border-slate-900 dark:border-slate-700 
+        shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
+        hover:bg-slate-100 dark:hover:bg-slate-700
+        active:translate-x-0.5 active:translate-y-0.5 active:shadow-none
+        cursor-pointer transition-all duration-100
       "
     >
       {isDark ? 'Chế độ: Tối' : 'Chế độ: Sáng'}

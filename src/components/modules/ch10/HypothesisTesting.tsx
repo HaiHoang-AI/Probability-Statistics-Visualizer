@@ -50,36 +50,33 @@ export const HypothesisTesting: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-red-500/10 via-rose-500/10 to-orange-500/10 border-2 border-red-200 dark:border-red-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
-            MAT1101 Bài 10.2 — Kiểm tra Giả thuyết Thống kê (Hypothesis Testing)
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 10.2 — Kiểm tra Giả thuyết Thống kê
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
-            Đánh đổi Sai lầm Loại I / II, Lực kiểm định & Trị số p (p-value)
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
+            Đánh đổi Sai lầm Loại I / II & Trị số p (p-value)
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-            "Bác bỏ <MathView math="H_0" /> khi <MathView math="H_0" /> đúng là Sai lầm loại I (<MathView math="\alpha" />). Bỏ sót <MathView math="H_1" /> khi <MathView math="H_1" /> đúng là Sai lầm loại II (<MathView math="\beta" />)."
-          </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('tradeoff')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'tradeoff'
-                ? 'bg-red-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             1. Đánh đổi Loại I / II & Power
           </button>
           <button
             onClick={() => setActiveTab('pvalue')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'pvalue'
-                ? 'bg-red-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             2. Trực quan hóa p-value

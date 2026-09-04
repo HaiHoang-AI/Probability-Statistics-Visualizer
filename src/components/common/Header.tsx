@@ -14,44 +14,42 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectChapter,
 }) => {
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur-md bg-white/85 dark:bg-slate-900/85 border-b border-amber-200/50 dark:border-slate-800 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+    <header className="sticky top-3 z-40 w-full px-4 sm:px-6 transition-colors">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] flex items-center justify-between">
         
         {/* Brand & Logo */}
         <div 
           onClick={() => onSelectChapter('overview')} 
-          className="flex items-center gap-3 cursor-pointer group select-none"
+          className="flex items-center gap-3 cursor-pointer select-none"
         >
-          <div className="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-white font-heading font-black text-base shadow-sm">
+          <div className="w-9 h-9 rounded-xl bg-sky-600 border-2 border-slate-900 flex items-center justify-center text-white font-heading font-black text-sm shadow-[2px_2px_0px_#0f172a]">
             PS
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-heading font-black text-lg tracking-tight text-slate-900 dark:text-white">
-                ProbStat <span className="text-orange-500">Visualizer</span>
+              <span className="font-heading font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
+                ProbStat <span className="text-sky-600 dark:text-sky-400">Visualizer</span>
               </span>
-              <span className="hidden sm:inline-flex text-[10px] font-bold px-2 py-0.5 rounded-md bg-orange-100 text-orange-700 dark:bg-orange-950/80 dark:text-orange-300 border border-orange-200 dark:border-orange-800">
+              <span className="hidden sm:inline-flex text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-slate-900/30 dark:border-sky-800">
                 MAT1101
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-              Nền tảng Học tập Tương tác Xác suất Thống kê
-            </p>
           </div>
         </div>
 
-        {/* Quick Priority Nav & Actions */}
-        <div className="flex items-center gap-3">
+        {/* Quick Nav & Actions */}
+        <div className="flex items-center gap-2 sm:gap-3">
           
           {/* Back to Home / Overview Button */}
           <button
             onClick={() => onSelectChapter('overview')}
             className={`
-              px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer
+              px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer border-2 border-slate-900 dark:border-slate-700
               ${currentChapterId === 'overview'
-                ? 'bg-orange-500 text-white shadow-sm'
-                : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-orange-50 dark:hover:bg-slate-700'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
               }
+              active:translate-x-0.5 active:translate-y-0.5 active:shadow-none
             `}
           >
             Trang chủ
@@ -63,11 +61,11 @@ export const Header: React.FC<HeaderProps> = ({
               value={currentChapterId}
               onChange={(e) => onSelectChapter(e.target.value as ChapterId)}
               className="
-                appearance-none bg-amber-50 dark:bg-slate-800 
-                border border-amber-200 dark:border-slate-700 
-                text-slate-800 dark:text-slate-200 
-                text-xs font-heading font-bold rounded-xl px-3 py-1.5 pr-6 
-                cursor-pointer focus:outline-none focus:ring-2 focus:ring-orange-500
+                appearance-none bg-white dark:bg-slate-800 
+                border-2 border-slate-900 dark:border-slate-700 
+                text-slate-900 dark:text-slate-100 
+                text-xs font-heading font-bold rounded-xl px-3 py-1.5 pr-7 
+                cursor-pointer focus:outline-none shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
               "
             >
               <option value="overview">Chọn bài học</option>

@@ -109,36 +109,33 @@ export const LinearRegression: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-blue-600/10 via-cyan-500/10 to-teal-500/10 border-2 border-blue-200 dark:border-blue-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
-            MAT1101 Bài 11 — Hồi quy Tuyến tính & Bình phương Tối thiểu (OLS)
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 11 — Hồi quy Tuyến tính & OLS
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
             Bình phương Phần dư (Residual Squares) & Phân rã <MathView math="R^2" />
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-            Phương pháp Bình phương Tối thiểu (Ordinary Least Squares - OLS) tìm đường thẳng làm <strong>cực tiểu hóa tổng diện tích các hình vuông phần dư</strong>!
-          </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('ols')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'ols'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             1. OLS Fitter & Hình vuông
           </button>
           <button
             onClick={() => setActiveTab('r2')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'r2'
-                ? 'bg-blue-600 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             2. Phân rã TSS = MSS + RSS
@@ -383,13 +380,13 @@ export const LinearRegression: React.FC = () => {
                 <div className="w-full h-12 rounded-2xl overflow-hidden flex shadow-inner border border-slate-300 dark:border-slate-700 font-mono text-xs font-bold text-white">
                   <div
                     style={{ width: `${Math.round(rSquared * 100)}%` }}
-                    className="bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center transition-all duration-300"
+                    className="bg-sky-600 flex items-center justify-center transition-all duration-300"
                   >
                     {rSquared > 0.15 && `MSS: ${fmt(rSquared * 100, 1)}%`}
                   </div>
                   <div
                     style={{ width: `${Math.round((1 - rSquared) * 100)}%` }}
-                    className="bg-gradient-to-r from-red-500 to-rose-600 flex items-center justify-center transition-all duration-300"
+                    className="bg-slate-700 flex items-center justify-center transition-all duration-300"
                   >
                     {(1 - rSquared) > 0.15 && `RSS: ${fmt((1 - rSquared) * 100, 1)}%`}
                   </div>

@@ -47,40 +47,46 @@ export const DiscreteRV: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-amber-500/10 to-yellow-500/10 border-2 border-amber-200 dark:border-amber-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-            MAT1101 Bài 3 & 4 — Biến ngẫu nhiên Rời rạc (Discrete RV)
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 3 & 4 — Biến ngẫu nhiên Rời rạc
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
-            Hàm khối xác suất (PMF), Kỳ vọng <MathView math="\mathbb{E}[X]" /> & Phương sai
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
+            Hàm khối xác suất (PMF) & Kỳ vọng <MathView math="\mathbb{E}[X]" />
           </h2>
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={() => setDist('binomial')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              dist === 'binomial' ? 'bg-amber-500 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              dist === 'binomial'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            Nhị thức Binomial
+            Nhị thức
           </button>
           <button
             onClick={() => setDist('poisson')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              dist === 'poisson' ? 'bg-amber-500 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              dist === 'poisson'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             Poisson
           </button>
           <button
             onClick={() => setDist('geometric')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
-              dist === 'geometric' ? 'bg-amber-500 text-white shadow-md' : 'bg-white/80 dark:bg-slate-800'
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+              dist === 'geometric'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            Hình học Geometric
+            Hình học
           </button>
         </div>
       </div>
@@ -162,7 +168,7 @@ export const DiscreteRV: React.FC = () => {
                 {bars.map((b) => (
                   <div key={b.k} className="flex-1 flex flex-col items-center gap-1">
                     <div
-                      className="w-full bg-gradient-to-t from-amber-500 to-yellow-400 rounded-t-sm"
+                      className="w-full bg-sky-600 dark:bg-sky-500 rounded-t-sm"
                       style={{ height: `${(b.p / maxP) * 160}px` }}
                       title={`P(X = ${b.k}) = ${fmt(b.p, 4)}`}
                     />

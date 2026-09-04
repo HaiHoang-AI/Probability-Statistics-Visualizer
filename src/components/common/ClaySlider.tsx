@@ -26,39 +26,39 @@ export const ClaySlider: React.FC<ClaySliderProps> = ({
   formatValue,
 }) => {
   const accentColors = {
-    orange: 'accent-orange-500 bg-orange-100 dark:bg-orange-950/40',
-    blue: 'accent-blue-500 bg-blue-100 dark:bg-blue-950/40',
-    emerald: 'accent-emerald-500 bg-emerald-100 dark:bg-emerald-950/40',
-    purple: 'accent-purple-500 bg-purple-100 dark:bg-purple-950/40',
-    rose: 'accent-rose-500 bg-rose-100 dark:bg-rose-950/40',
-    amber: 'accent-amber-500 bg-amber-100 dark:bg-amber-950/40',
+    orange: 'accent-sky-600 bg-sky-100 dark:bg-slate-700',
+    blue: 'accent-sky-600 bg-sky-100 dark:bg-slate-700',
+    emerald: 'accent-emerald-600 bg-emerald-100 dark:bg-slate-700',
+    purple: 'accent-indigo-600 bg-indigo-100 dark:bg-slate-700',
+    rose: 'accent-rose-600 bg-rose-100 dark:bg-slate-700',
+    amber: 'accent-sky-600 bg-sky-100 dark:bg-slate-700',
   };
 
   const badgeColors = {
-    orange: 'bg-orange-500 text-white shadow-orange-500/30',
-    blue: 'bg-blue-500 text-white shadow-blue-500/30',
-    emerald: 'bg-emerald-500 text-white shadow-emerald-500/30',
-    purple: 'bg-purple-500 text-white shadow-purple-500/30',
-    rose: 'bg-rose-500 text-white shadow-rose-500/30',
-    amber: 'bg-amber-500 text-white shadow-amber-500/30',
+    orange: 'bg-sky-600 text-white',
+    blue: 'bg-sky-600 text-white',
+    emerald: 'bg-emerald-600 text-white',
+    purple: 'bg-indigo-600 text-white',
+    rose: 'bg-rose-600 text-white',
+    amber: 'bg-sky-600 text-white',
   };
 
   const displayVal = formatValue ? formatValue(value) : `${value}${unit ? ` ${unit}` : ''}`;
 
   return (
-    <div className="flex flex-col gap-1.5 p-3 rounded-2xl bg-slate-50/80 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700/60">
+    <div className="flex flex-col gap-1.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900/30 dark:border-slate-700">
       <div className="flex items-center justify-between">
         <div>
-          <span className="font-heading font-semibold text-slate-800 dark:text-slate-200 text-sm">
+          <span className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs">
             {label}
           </span>
           {sublabel && (
-            <span className="ml-2 text-xs text-slate-500 dark:text-slate-400">
+            <span className="ml-1.5 text-[11px] text-slate-500 dark:text-slate-400">
               ({sublabel})
             </span>
           )}
         </div>
-        <span className={`px-2.5 py-0.5 rounded-full text-xs font-mono font-bold shadow-sm ${badgeColors[color]}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-bold border border-slate-900/20 dark:border-slate-600 ${badgeColors[color]}`}>
           {displayVal}
         </span>
       </div>

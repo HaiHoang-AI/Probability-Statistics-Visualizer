@@ -9,24 +9,14 @@ interface ClayCardProps {
 export const ClayCard: React.FC<ClayCardProps> = ({ 
   children, 
   className = '',
-  glowColor = 'orange' 
 }) => {
-  const glowBorders = {
-    orange: 'border-orange-200/60 dark:border-orange-500/20 hover:border-orange-300',
-    blue: 'border-blue-200/60 dark:border-blue-500/20 hover:border-blue-300',
-    emerald: 'border-emerald-200/60 dark:border-emerald-500/20 hover:border-emerald-300',
-    purple: 'border-purple-200/60 dark:border-purple-500/20 hover:border-purple-300',
-    rose: 'border-rose-200/60 dark:border-rose-500/20 hover:border-rose-300',
-    amber: 'border-amber-200/60 dark:border-amber-500/20 hover:border-amber-300',
-  };
-
   return (
     <div className={`
-      clay-card
-      bg-white/95 dark:bg-slate-900/95 
-      border-2 ${glowBorders[glowColor]}
+      bg-white dark:bg-slate-900 
+      border-2 border-slate-900 dark:border-slate-700
+      shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]
       rounded-3xl p-6
-      transition-all duration-300
+      transition-all duration-150
       ${className}
     `}>
       {children}

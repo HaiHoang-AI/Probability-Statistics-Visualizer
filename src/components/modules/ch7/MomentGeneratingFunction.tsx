@@ -63,47 +63,50 @@ export const MomentGeneratingFunction: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-rose-500/10 via-pink-500/10 to-purple-500/10 border-2 border-rose-200 dark:border-rose-900/40">
-        <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-          MAT1101 Bài 7.2 — Hàm sinh Moment (Moment Generating Function - MGF)
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+        <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+          MAT1101 Bài 7.2 — Hàm sinh Moment (MGF)
         </span>
-        <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
+        <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
           Hàm sinh Moment <MathView math="M_X(s) = \mathbb{E}[e^{sX}]" /> & Đạo hàm tại Gốc
         </h2>
-        <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-          Quan sát trực quan tại sao đạo hàm cấp 1 tại gốc <MathView math="s=0" /> cho kỳ vọng <MathView math="\mathbb{E}[X]" />, và đạo hàm cấp 2 cho Moment cấp hai <MathView math="\mathbb{E}[X^2]" />.
-        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Controls */}
         <div className="space-y-4">
-          <ClayCard glowColor="rose">
-            <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-3">
+          <ClayCard glowColor="blue">
+            <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-3">
               Chọn Phân bố Xác suất
             </h3>
 
             <div className="flex gap-2 mb-4">
               <button
                 onClick={() => setDist('poisson')}
-                className={`flex-1 py-2 rounded-xl text-xs font-heading font-bold transition-all ${
-                  dist === 'poisson' ? 'bg-rose-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800'
+                className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+                  dist === 'poisson'
+                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
                 Poisson(λ)
               </button>
               <button
                 onClick={() => setDist('exponential')}
-                className={`flex-1 py-2 rounded-xl text-xs font-heading font-bold transition-all ${
-                  dist === 'exponential' ? 'bg-rose-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800'
+                className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+                  dist === 'exponential'
+                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
                 Mũ Exp(λ)
               </button>
               <button
                 onClick={() => setDist('normal')}
-                className={`flex-1 py-2 rounded-xl text-xs font-heading font-bold transition-all ${
-                  dist === 'normal' ? 'bg-rose-500 text-white shadow-md' : 'bg-slate-100 dark:bg-slate-800'
+                className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+                  dist === 'normal'
+                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
                 Chuẩn N(μ, 1)

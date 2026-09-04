@@ -18,7 +18,7 @@ export const App: React.FC = () => {
   const [currentChapter, setCurrentChapter] = useState<ChapterId>('overview');
 
   return (
-    <div className="min-h-screen flex flex-col bg-clay-bg dark:bg-clay-darkBg text-slate-800 dark:text-slate-100 transition-colors duration-300">
+    <div className="min-h-screen flex flex-col bg-[#F4F6F9] dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* Top Header */}
       <Header
         currentChapterId={currentChapter}
@@ -26,15 +26,15 @@ export const App: React.FC = () => {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
         {/* Back Button when viewing a specific module */}
         {currentChapter !== 'overview' && (
           <div className="mb-4">
             <button
               onClick={() => setCurrentChapter('overview')}
-              className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-heading font-bold text-slate-700 dark:text-slate-300 hover:text-orange-500 transition-colors cursor-pointer"
+              className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] text-xs font-heading font-bold text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
             >
-              ← Quay lại Danh sách bài giảng
+              Quay lại danh sách bài học
             </button>
           </div>
         )}
@@ -55,9 +55,9 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-amber-200/50 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm py-8 text-center text-xs text-slate-500 dark:text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
+      <footer className="w-full border-t-2 border-slate-900/15 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2 font-medium">
             <span>Probability & Statistics Visualizer — MAT1101 (VNU-UET)</span>
           </div>
           <div className="flex items-center gap-4">
@@ -65,7 +65,7 @@ export const App: React.FC = () => {
               href="https://github.com/HaiHoang-AI/Probability-Statistics-Visualizer"
               target="_blank"
               rel="noreferrer"
-              className="hover:text-orange-500 transition-colors font-medium"
+              className="hover:text-sky-600 dark:hover:text-sky-400 transition-colors font-bold"
             >
               GitHub Repository
             </a>

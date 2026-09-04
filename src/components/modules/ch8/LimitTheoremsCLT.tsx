@@ -108,37 +108,34 @@ export const LimitTheoremsCLT: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-4 rounded-3xl bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-cyan-500/10 border-2 border-emerald-200 dark:border-emerald-900/40 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
-            MAT1101 Bài 8 — Các định lý giới hạn (Limit Theorems)
+          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+            MAT1101 Bài 8 — Các định lý giới hạn
           </span>
-          <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white mt-0.5">
+          <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
             Định lý Giới hạn Trung tâm (CLT) & Luật số lớn (LLN)
           </h2>
-          <p className="text-sm text-slate-600 dark:text-slate-300 mt-1">
-            Khám phá "Phép màu toán học": Dù phân bố gốc méo mó đến đâu, trung bình mẫu <MathView math="\bar{X}_n" /> luôn hội tụ về hình chuông Gauss hoàn hảo!
-          </p>
         </div>
 
         {/* Tab Switcher */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('clt')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'clt'
-                ? 'bg-emerald-500 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             1. Phòng thí nghiệm CLT
           </button>
           <button
             onClick={() => setActiveTab('lln')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
               activeTab === 'lln'
-                ? 'bg-emerald-500 text-white shadow-md'
-                : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
             2. Quỹ đạo Luật số lớn (LLN)
@@ -255,7 +252,7 @@ export const LimitTheoremsCLT: React.FC = () => {
                   {histogram.map((bin, i) => (
                     <div
                       key={i}
-                      className="flex-1 bg-gradient-to-t from-emerald-600 to-teal-400 rounded-t-sm transition-all duration-200 hover:brightness-125"
+                      className="flex-1 bg-sky-600 dark:bg-sky-500 rounded-t-sm transition-all duration-200 hover:brightness-125"
                       style={{ height: `${bin.heightPercent}%` }}
                       title={`Khoảng: [${fmt(bin.x0, 2)}, ${fmt(bin.x1, 2)}] - Số mẫu: ${bin.count}`}
                     />
