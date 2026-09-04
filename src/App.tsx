@@ -39,19 +39,21 @@ export const App: React.FC = () => {
           </div>
         )}
 
-        {/* Dynamic Chapter Content */}
-        {currentChapter === 'overview' && <LandingPage onSelectChapter={setCurrentChapter} />}
-        {currentChapter === 'ch7-1-derived' && <DerivedConvolution />}
-        {currentChapter === 'ch7-2-mgf' && <MomentGeneratingFunction />}
-        {currentChapter === 'ch8-limit-theorems' && <LimitTheoremsCLT />}
-        {currentChapter === 'ch9-bayesian' && <BayesianInference />}
-        {currentChapter === 'ch10-1-estimation' && <ClassicalEstimation />}
-        {currentChapter === 'ch10-2-hypothesis' && <HypothesisTesting />}
-        {currentChapter === 'ch11-regression' && <LinearRegression />}
-        {currentChapter === 'ch1-foundations' && <Foundations />}
-        {currentChapter === 'ch2-basic-prob' && <BasicProbability />}
-        {currentChapter === 'ch3-discrete-rv' && <DiscreteRV />}
-        {currentChapter === 'ch4-continuous-rv' && <ContinuousRV />}
+        {/* Dynamic Chapter Content with smooth page transition */}
+        <div key={currentChapter} className="page-transition">
+          {currentChapter === 'overview' && <LandingPage onSelectChapter={setCurrentChapter} />}
+          {currentChapter === 'ch7-1-derived' && <DerivedConvolution />}
+          {currentChapter === 'ch7-2-mgf' && <MomentGeneratingFunction />}
+          {currentChapter === 'ch8-limit-theorems' && <LimitTheoremsCLT />}
+          {currentChapter === 'ch9-bayesian' && <BayesianInference />}
+          {currentChapter === 'ch10-1-estimation' && <ClassicalEstimation />}
+          {currentChapter === 'ch10-2-hypothesis' && <HypothesisTesting />}
+          {currentChapter === 'ch11-regression' && <LinearRegression />}
+          {currentChapter === 'ch1-foundations' && <Foundations />}
+          {currentChapter === 'ch2-basic-prob' && <BasicProbability />}
+          {currentChapter === 'ch3-discrete-rv' && <DiscreteRV />}
+          {currentChapter === 'ch4-continuous-rv' && <ContinuousRV />}
+        </div>
       </main>
 
       {/* Footer */}
