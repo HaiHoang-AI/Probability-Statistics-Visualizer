@@ -4,8 +4,6 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, betaPdf, normalPdf } from '../../../utils/math';
-import { Coins, Sparkles, Cpu, RotateCcw } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 export const BayesianInference: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'beta-binomial' | 'sensor-fusion'>('beta-binomial');
@@ -56,10 +54,6 @@ export const BayesianInference: React.FC = () => {
     }
     setHeadsK((k) => k + newHeads);
     setTrialsN((n) => n + count);
-
-    if (count >= 10) {
-      confetti({ particleCount: 20, spread: 50 });
-    }
   };
 
   // Tab 2: Gaussian Sensor Fusion
@@ -98,23 +92,23 @@ export const BayesianInference: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('beta-binomial')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'beta-binomial'
                 ? 'bg-purple-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Coins size={14} /> 1. Mô hình Beta - Nhị thức
+            1. Mô hình Beta - Nhị thức
           </button>
           <button
             onClick={() => setActiveTab('sensor-fusion')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'sensor-fusion'
                 ? 'bg-purple-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Cpu size={14} /> 2. Hợp nhất Cảm biến Gauss
+            2. Hợp nhất Cảm biến Gauss
           </button>
         </div>
       </div>
@@ -126,7 +120,7 @@ export const BayesianInference: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="purple">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🪙 Niềm tin Ban đầu (Prior Beta)
+                Niềm tin Ban đầu (Prior Beta)
               </h3>
 
               <div className="grid grid-cols-2 gap-2 mb-3">
@@ -161,7 +155,6 @@ export const BayesianInference: React.FC = () => {
                     size="sm"
                     className="flex-1"
                     onClick={() => handleFlip(1)}
-                    icon={<Coins size={14} />}
                   >
                     Tung +1 lần
                   </ClayButton>
@@ -180,8 +173,9 @@ export const BayesianInference: React.FC = () => {
                       setHeadsK(0);
                       setTrialsN(0);
                     }}
-                    icon={<RotateCcw size={14} />}
-                  />
+                  >
+                    Reset
+                  </ClayButton>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-xs space-y-1 font-mono">
@@ -336,7 +330,7 @@ export const BayesianInference: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="purple">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                📡 Cấu hình Cảm biến
+                Cấu hình Cảm biến
               </h3>
 
               <div className="space-y-3">

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, randomNormal } from '../../../utils/math';
-import { Play, RotateCcw, Sparkles, Layers, Activity } from 'lucide-react';
 
 export const DerivedConvolution: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'convolution' | 'correlation' | 'totalvar'>('convolution');
@@ -85,33 +84,33 @@ export const DerivedConvolution: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('convolution')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'convolution'
                 ? 'bg-orange-500 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Layers size={14} /> 1. Tích chập (Z = X + Y)
+            1. Tích chập (Z = X + Y)
           </button>
           <button
             onClick={() => setActiveTab('correlation')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'correlation'
                 ? 'bg-orange-500 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Activity size={14} /> 2. Tương quan & Trực giao
+            2. Tương quan & Trực giao
           </button>
           <button
             onClick={() => setActiveTab('totalvar')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'totalvar'
                 ? 'bg-orange-500 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Sparkles size={14} /> 3. Phân rã Phương sai
+            3. Phân rã Phương sai
           </button>
         </div>
       </div>
@@ -123,7 +122,7 @@ export const DerivedConvolution: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="orange">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🎬 Điều khiển Tích chập
+                Điều khiển Tích chập
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                 Tích chập <MathView math="f_Z(z) = \int f_X(x) f_Y(z-x) dx" /> mô tả việc <strong>lật ngược</strong> hàm <MathView math="f_Y" /> và <strong>trượt</strong> từ trái sang phải theo tham số <MathView math="z" />.
@@ -148,7 +147,6 @@ export const DerivedConvolution: React.FC = () => {
                   variant="primary"
                   size="sm"
                   onClick={() => setIsPlaying(!isPlaying)}
-                  icon={<Play size={14} />}
                 >
                   {isPlaying ? 'Tạm dừng' : 'Chạy Animation'}
                 </ClayButton>
@@ -159,7 +157,6 @@ export const DerivedConvolution: React.FC = () => {
                     setIsPlaying(false);
                     setZValue(0);
                   }}
-                  icon={<RotateCcw size={14} />}
                 >
                   Reset
                 </ClayButton>
@@ -167,7 +164,7 @@ export const DerivedConvolution: React.FC = () => {
 
               <div className="mt-5 p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 text-xs space-y-2">
                 <span className="font-bold text-amber-900 dark:text-amber-200">
-                  💡 Nhận xét từ Slide 15:
+                  Nhận xét từ Slide 15:
                 </span>
                 <p className="text-amber-800 dark:text-amber-300">
                   Nếu <MathView math="X, Y \sim \mathcal{U}[0, 1]" />, tích chập biến 2 hình chữ nhật thành <strong>phân bố hình tam giác</strong> (Triangular Distribution) trên <MathView math="[0, 2]" /> với đỉnh cao nhất tại <MathView math="z = 1" />.
@@ -318,7 +315,7 @@ export const DerivedConvolution: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="amber">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                ⚡ Hệ số Tương quan <MathView math="\rho(X, Y)" />
+                Hệ số Tương quan <MathView math="\rho(X, Y)" />
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                 Hệ số <MathView math="\rho \in [-1, 1]" /> đo lường mức độ liên hệ tuyến tính.
@@ -347,7 +344,7 @@ export const DerivedConvolution: React.FC = () => {
                       : 'bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800'
                   }`}
                 >
-                  {showParabola ? 'Đang bật: Trường hợp Parabol Y = X^2' : '⭐ Thử nghiệm: Không tương quan != Độc lập'}
+                  {showParabola ? 'Đang bật: Trường hợp Parabol Y = X^2' : 'Thử nghiệm: Không tương quan khác Độc lập'}
                 </button>
               </div>
 
@@ -422,7 +419,7 @@ export const DerivedConvolution: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="orange">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🧱 Luật Phương sai Toàn phần (Eve's Law)
+                Luật Phương sai Toàn phần (Eve's Law)
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                 <MathView math="\text{Var}(X) = \text{Var}(E[X|Y]) + E[\text{Var}(X|Y)]" />

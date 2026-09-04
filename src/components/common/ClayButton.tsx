@@ -3,21 +3,19 @@ import React from 'react';
 interface ClayButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'success' | 'purple' | 'outline' | 'danger';
   size?: 'sm' | 'md' | 'lg';
-  icon?: React.ReactNode;
 }
 
 export const ClayButton: React.FC<ClayButtonProps> = ({
   children,
   variant = 'primary',
   size = 'md',
-  icon,
   className = '',
   ...props
 }) => {
   const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm rounded-xl gap-1.5',
-    md: 'px-5 py-2.5 text-base font-semibold rounded-2xl gap-2',
-    lg: 'px-7 py-3.5 text-lg font-bold rounded-2xl gap-2.5',
+    sm: 'px-3 py-1.5 text-xs font-semibold rounded-xl',
+    md: 'px-5 py-2.5 text-sm font-bold rounded-2xl',
+    lg: 'px-6 py-3.5 text-base font-black rounded-2xl',
   };
 
   const variantClasses = {
@@ -32,7 +30,7 @@ export const ClayButton: React.FC<ClayButtonProps> = ({
   return (
     <button
       className={`
-        clay-button inline-flex items-center justify-center
+        clay-button inline-flex items-center justify-center text-center
         transition-all duration-150 cursor-pointer select-none
         ${sizeClasses[size]}
         ${variantClasses[variant]}
@@ -40,7 +38,6 @@ export const ClayButton: React.FC<ClayButtonProps> = ({
       `}
       {...props}
     >
-      {icon && <span className="inline-flex shrink-0">{icon}</span>}
       <span>{children}</span>
     </button>
   );

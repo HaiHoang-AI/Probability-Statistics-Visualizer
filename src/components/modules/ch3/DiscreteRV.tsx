@@ -3,7 +3,6 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { MathView } from '../../common/MathView';
 import { fmt, binomialPmf, poissonPmf } from '../../../utils/math';
-import { BarChart2 } from 'lucide-react';
 
 export const DiscreteRV: React.FC = () => {
   const [dist, setDist] = useState<'binomial' | 'poisson' | 'geometric'>('binomial');

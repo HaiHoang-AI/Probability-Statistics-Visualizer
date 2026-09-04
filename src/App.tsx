@@ -13,7 +13,6 @@ import { BasicProbability } from './components/modules/ch2/BasicProbability';
 import { DiscreteRV } from './components/modules/ch3/DiscreteRV';
 import { ContinuousRV } from './components/modules/ch4/ContinuousRV';
 import { ChapterId } from './types';
-import { Heart, BookOpen, ArrowLeft, Code } from 'lucide-react';
 
 export const App: React.FC = () => {
   const [currentChapter, setCurrentChapter] = useState<ChapterId>('overview');
@@ -33,9 +32,9 @@ export const App: React.FC = () => {
           <div className="mb-4">
             <button
               onClick={() => setCurrentChapter('overview')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-heading font-bold text-slate-700 dark:text-slate-300 hover:text-orange-500 transition-colors cursor-pointer"
+              className="inline-flex items-center px-3 py-1.5 rounded-xl bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-heading font-bold text-slate-700 dark:text-slate-300 hover:text-orange-500 transition-colors cursor-pointer"
             >
-              <ArrowLeft size={14} /> Quay lại Danh sách bài giảng
+              ← Quay lại Danh sách bài giảng
             </button>
           </div>
         )}
@@ -59,19 +58,19 @@ export const App: React.FC = () => {
       <footer className="w-full border-t border-amber-200/50 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm py-8 text-center text-xs text-slate-500 dark:text-slate-400">
         <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <span>🎲 <strong>Probability & Statistics Visualizer</strong> — MAT1101 (VNU-UET)</span>
+            <span>Probability & Statistics Visualizer — MAT1101 (VNU-UET)</span>
           </div>
           <div className="flex items-center gap-4">
             <a
               href="https://github.com/HaiHoang-AI/Probability-Statistics-Visualizer"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 hover:text-orange-500 transition-colors font-medium"
+              className="hover:text-orange-500 transition-colors font-medium"
             >
-              <Code size={14} /> GitHub Repository
+              GitHub Repository
             </a>
             <span>•</span>
-            <span>Made with React & TypeScript</span>
+            <span>React & TypeScript</span>
           </div>
         </div>
       </footer>

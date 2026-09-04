@@ -4,8 +4,6 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt } from '../../../utils/math';
-import { LineChart, Sparkles, RotateCcw, AlertCircle, Plus, Trash2 } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 interface Point {
   id: number;
@@ -82,7 +80,6 @@ export const LinearRegression: React.FC = () => {
   const handleAutoFit = () => {
     setManualSlope(optSlope);
     setManualIntercept(optIntercept);
-    confetti({ particleCount: 30, spread: 60 });
   };
 
   // Add Outlier
@@ -134,7 +131,7 @@ export const LinearRegression: React.FC = () => {
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <LineChart size={14} /> 1. OLS Fitter & Hình vuông
+            1. OLS Fitter & Hình vuông
           </button>
           <button
             onClick={() => setActiveTab('r2')}
@@ -144,7 +141,7 @@ export const LinearRegression: React.FC = () => {
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Sparkles size={14} /> 2. Phân rã TSS = MSS + RSS
+            2. Phân rã TSS = MSS + RSS
           </button>
         </div>
       </div>
@@ -156,7 +153,7 @@ export const LinearRegression: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="blue">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🎛️ Xoay Thử Đường Thẳng
+                Xoay Thử Đường Thẳng
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
                 Kéo 2 thanh trượt bên dưới để tự điều chỉnh đường thẳng sao cho tổng diện tích các ô vuông nhỏ nhất:
@@ -192,7 +189,6 @@ export const LinearRegression: React.FC = () => {
                   size="sm"
                   className="w-full"
                   onClick={handleAutoFit}
-                  icon={<Sparkles size={14} />}
                 >
                   Khớp Nghiệm Tối Ưu OLS
                 </ClayButton>
@@ -203,7 +199,6 @@ export const LinearRegression: React.FC = () => {
                     size="sm"
                     className="flex-1 text-xs"
                     onClick={handleAddOutlier}
-                    icon={<AlertCircle size={14} className="text-amber-500" />}
                   >
                     + Điểm Ngoại Lai (Outlier)
                   </ClayButton>
@@ -211,8 +206,9 @@ export const LinearRegression: React.FC = () => {
                     variant="outline"
                     size="sm"
                     onClick={handleReset}
-                    icon={<RotateCcw size={14} />}
-                  />
+                  >
+                    Đặt lại
+                  </ClayButton>
                 </div>
               </div>
 
@@ -353,7 +349,7 @@ export const LinearRegression: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="blue">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🧩 Phân rã Biến thiên: TSS = MSS + RSS
+                Phân rã Biến thiên: TSS = MSS + RSS
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                 - <strong>TSS (Total Sum of Squares):</strong> Tổng biến thiên toàn phần so với đường cơ sở trung bình <MathView math="\bar{y}" />.

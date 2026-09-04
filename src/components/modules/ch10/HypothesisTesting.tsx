@@ -3,7 +3,6 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { MathView } from '../../common/MathView';
 import { fmt, normalPdf, normalCdf, standardNormalInv } from '../../../utils/math';
-import { Scale, CheckCircle, AlertTriangle, ArrowRight } from 'lucide-react';
 
 export const HypothesisTesting: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tradeoff' | 'pvalue'>('tradeoff');
@@ -67,23 +66,23 @@ export const HypothesisTesting: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('tradeoff')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'tradeoff'
                 ? 'bg-red-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Scale size={14} /> 1. Đánh đổi Loại I / II & Power
+            1. Đánh đổi Loại I / II & Power
           </button>
           <button
             onClick={() => setActiveTab('pvalue')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'pvalue'
                 ? 'bg-red-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <CheckCircle size={14} /> 2. Trực quan hóa p-value
+            2. Trực quan hóa p-value
           </button>
         </div>
       </div>
@@ -95,7 +94,7 @@ export const HypothesisTesting: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="rose">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-3">
-                ⚖️ Điều khiển Ngưỡng & Cỡ mẫu
+                Điều khiển Ngưỡng & Cỡ mẫu
               </h3>
 
               <div className="space-y-3">
@@ -235,7 +234,7 @@ export const HypothesisTesting: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="rose">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-3">
-                🎯 Thử nghiệm p-value
+                Thử nghiệm p-value
               </h3>
 
               {/* Tail Selector */}
@@ -290,17 +289,12 @@ export const HypothesisTesting: React.FC = () => {
 
               {/* Decision Box */}
               <div
-                className={`mt-4 p-4 rounded-2xl border flex items-center gap-3 ${
+                className={`mt-4 p-4 rounded-2xl border ${
                   rejectH0
                     ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200'
                     : 'bg-slate-50 dark:bg-slate-800/80 border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200'
                 }`}
               >
-                {rejectH0 ? (
-                  <AlertTriangle className="text-rose-500 shrink-0" size={24} />
-                ) : (
-                  <CheckCircle className="text-emerald-500 shrink-0" size={24} />
-                )}
                 <div>
                   <div className="font-heading font-black text-sm">
                     {rejectH0 ? 'BÁC BỎ H₀ (Reject H₀)' : 'CHƯA ĐỦ CƠ SỞ BÁC BỎ H₀'}

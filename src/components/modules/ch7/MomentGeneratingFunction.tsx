@@ -3,7 +3,6 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { MathView } from '../../common/MathView';
 import { fmt } from '../../../utils/math';
-import { Sparkles, Info, TrendingUp } from 'lucide-react';
 
 export const MomentGeneratingFunction: React.FC = () => {
   const [dist, setDist] = useState<'poisson' | 'exponential' | 'normal'>('poisson');
@@ -81,7 +80,7 @@ export const MomentGeneratingFunction: React.FC = () => {
         <div className="space-y-4">
           <ClayCard glowColor="rose">
             <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-3">
-              🎯 Chọn Phân bố Xác suất
+              Chọn Phân bố Xác suất
             </h3>
 
             <div className="flex gap-2 mb-4">

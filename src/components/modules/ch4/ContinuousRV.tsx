@@ -4,8 +4,6 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, normalPdf, normalCdf } from '../../../utils/math';
-import { Activity, RefreshCw } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 export const ContinuousRV: React.FC = () => {
   const [activeSub, setActiveSub] = useState<'normal' | 'buffon'>('normal');
@@ -209,8 +207,9 @@ export const ContinuousRV: React.FC = () => {
                   setCrossNeedles(0);
                   setNeedles([]);
                 }}
-                icon={<RefreshCw size={14} />}
-              />
+              >
+                Đặt lại
+              </ClayButton>
             </div>
           </div>
 

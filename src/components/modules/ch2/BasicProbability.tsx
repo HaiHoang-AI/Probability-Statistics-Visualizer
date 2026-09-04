@@ -4,8 +4,6 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt } from '../../../utils/math';
-import { HelpCircle, RefreshCw } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 export const BasicProbability: React.FC = () => {
   const [activeSub, setActiveSub] = useState<'monty' | 'medical'>('monty');
@@ -40,8 +38,6 @@ export const BasicProbability: React.FC = () => {
     setTotalGames((g) => g + 1);
     setChosenDoor(finalDoor);
     setGameStep('result');
-
-    if (isWin) confetti({ particleCount: 30, spread: 60 });
   };
 
   const resetGame = () => {
@@ -99,9 +95,9 @@ export const BasicProbability: React.FC = () => {
       {activeSub === 'monty' ? (
         <ClayCard glowColor="emerald" className="p-6">
           <div className="text-center max-w-xl mx-auto mb-6">
-            <h3 className="font-heading font-black text-xl mb-1">🚪 Nghịch lý 3 Cánh Cửa Monty Hall</h3>
+            <h3 className="font-heading font-black text-xl mb-1">Nghịch lý 3 Cánh Cửa Monty Hall</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              Có 1 chiếc xe hơi 🚗 và 2 chú dê 🐐 sau 3 cánh cửa. Liệu bạn có nên <strong>đổi cửa</strong> khi người dẫn chương trình mở ra 1 con dê?
+              Có 1 chiếc xe hơi và 2 chú dê sau 3 cánh cửa. Liệu bạn có nên <strong>đổi cửa</strong> khi người dẫn chương trình mở ra 1 con dê?
             </p>
           </div>
 
@@ -111,9 +107,9 @@ export const BasicProbability: React.FC = () => {
               const isRevealed = revealedDoor === idx;
               const isCar = carDoor === idx;
 
-              let doorContent = '❓';
-              if (isRevealed) doorContent = '🐐 Dê';
-              if (gameStep === 'result') doorContent = isCar ? '🚗 XE HƠI!' : '🐐 Dê';
+              let doorContent = 'Chưa mở';
+              if (isRevealed) doorContent = 'Dê';
+              if (gameStep === 'result') doorContent = isCar ? 'XE HƠI' : 'Dê';
 
               return (
                 <div
@@ -126,7 +122,7 @@ export const BasicProbability: React.FC = () => {
                   `}
                 >
                   <span className="text-xs font-bold font-mono uppercase text-slate-400 mb-1">Cửa {idx + 1}</span>
-                  <span className="text-3xl my-2">{doorContent}</span>
+                  <span className="text-base font-bold my-2">{doorContent}</span>
                   {isChosen && <span className="text-[10px] font-bold text-orange-600">Đã chọn</span>}
                 </div>
               );
@@ -152,9 +148,9 @@ export const BasicProbability: React.FC = () => {
           {gameStep === 'result' && (
             <div className="text-center space-y-2">
               <p className="font-heading font-bold text-sm text-slate-800 dark:text-slate-100">
-                {chosenDoor === carDoor ? '🎉 CHÚC MỪNG BẠN ĐÃ THẮNG XE HƠI!' : '😢 Rất tiếc, bạn nhận được chú Dê!'}
+                {chosenDoor === carDoor ? 'Chúc mừng bạn đã thắng Xe hơi!' : 'Rất tiếc, bạn nhận được chú Dê!'}
               </p>
-              <ClayButton variant="secondary" size="sm" onClick={resetGame} icon={<RefreshCw size={14} />}>
+              <ClayButton variant="secondary" size="sm" onClick={resetGame}>
                 Chơi ván tiếp theo
               </ClayButton>
             </div>
@@ -223,7 +219,7 @@ export const BasicProbability: React.FC = () => {
               </div>
 
               <div className="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 text-xs text-slate-600 dark:text-slate-300">
-                💡 <strong>Nghịch lý:</strong> Dù que thử chính xác tới 99%, nhưng vì bệnh hiếm (0.1%), trong 10,000 người sẽ có tới ~100 người khỏe mạnh bị test nhầm thành dương tính giả, trong khi chỉ có 1 người bệnh thật. Do đó kết quả dương tính chỉ có khả năng đúng vỏn vẹn <strong>{fmt(ppv * 100, 1)}%</strong>!
+                <strong>Nghịch lý:</strong> Dù que thử chính xác tới 99%, nhưng vì bệnh hiếm (0.1%), trong 10,000 người sẽ có tới ~100 người khỏe mạnh bị test nhầm thành dương tính giả, trong khi chỉ có 1 người bệnh thật. Do đó kết quả dương tính chỉ có khả năng đúng vỏn vẹn <strong>{fmt(ppv * 100, 1)}%</strong>!
               </div>
             </ClayCard>
           </div>

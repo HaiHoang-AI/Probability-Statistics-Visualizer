@@ -3,7 +3,6 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { MathView } from '../../common/MathView';
 import { fmt } from '../../../utils/math';
-import { Layers, Grid } from 'lucide-react';
 
 export const Foundations: React.FC = () => {
   const [activeSub, setActiveSub] = useState<'venn' | 'dice'>('venn');

@@ -4,8 +4,6 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, normalPdf } from '../../../utils/math';
-import { Play, RotateCcw, TrendingUp, Sparkles, Activity } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 export const LimitTheoremsCLT: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'clt' | 'lln' | 'bounds'>('clt');
@@ -52,10 +50,6 @@ export const LimitTheoremsCLT: React.FC = () => {
       avgs.push(sum / sampleSizeN);
     }
     setSimulatedAverages(avgs);
-
-    if (sampleSizeN >= 30) {
-      confetti({ particleCount: 30, spread: 60, origin: { y: 0.7 } });
-    }
   };
 
   useEffect(() => {
@@ -131,23 +125,23 @@ export const LimitTheoremsCLT: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('clt')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'clt'
                 ? 'bg-emerald-500 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Sparkles size={14} /> 1. Phòng thí nghiệm CLT
+            1. Phòng thí nghiệm CLT
           </button>
           <button
             onClick={() => setActiveTab('lln')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'lln'
                 ? 'bg-emerald-500 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <TrendingUp size={14} /> 2. Quỹ đạo Luật số lớn (LLN)
+            2. Quỹ đạo Luật số lớn (LLN)
           </button>
         </div>
       </div>
@@ -159,7 +153,7 @@ export const LimitTheoremsCLT: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="emerald">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🧪 Chọn Phân bố Gốc
+                Chọn Phân bố Gốc
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-3">
                 Thử chọn phân bố cực kỳ lệch hoặc hai đỉnh để kiểm chứng tính phổ quát của CLT:
@@ -226,7 +220,6 @@ export const LimitTheoremsCLT: React.FC = () => {
                   size="sm"
                   className="w-full"
                   onClick={runSimulation}
-                  icon={<RotateCcw size={14} />}
                 >
                   Lấy mẫu lại (5,000 lần)
                 </ClayButton>
@@ -317,7 +310,7 @@ export const LimitTheoremsCLT: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="emerald">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🛤️ Ống Sai số Epsilon
+                Ống Sai số Epsilon
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                 Luật số lớn yếu (WLLN) khẳng định với mọi <MathView math="\epsilon > 0" />, xác suất để <MathView math="|\bar{X}_n - \mu| \ge \epsilon" /> tiến dần về 0 khi <MathView math="n \to \infty" />.
@@ -340,7 +333,6 @@ export const LimitTheoremsCLT: React.FC = () => {
                   size="sm"
                   className="w-full"
                   onClick={generateLlnPaths}
-                  icon={<RotateCcw size={14} />}
                 >
                   Sinh 15 Quỹ đạo Mới
                 </ClayButton>

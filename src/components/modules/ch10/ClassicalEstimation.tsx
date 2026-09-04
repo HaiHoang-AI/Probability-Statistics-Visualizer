@@ -4,8 +4,6 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, randomNormal, standardNormalInv, studentTPdf, normalPdf } from '../../../utils/math';
-import { Target, RotateCcw, Activity, Layers } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 interface IntervalData {
   id: number;
@@ -43,11 +41,6 @@ export const ClassicalEstimation: React.FC = () => {
       newIntervals.push({ id: i, sampleMean: xBar, lower, upper, covers });
     }
     setIntervals(newIntervals);
-
-    const hitCount = newIntervals.filter((it) => it.covers).length;
-    if (hitCount >= 93) {
-      confetti({ particleCount: 25, spread: 50 });
-    }
   };
 
   useEffect(() => {
@@ -83,33 +76,33 @@ export const ClassicalEstimation: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('ci')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'ci'
                 ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Target size={14} /> 1. 100 Khoảng tin cậy
+            1. 100 Khoảng tin cậy
           </button>
           <button
             onClick={() => setActiveTab('student')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'student'
                 ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Layers size={14} /> 2. Phân bố Student t
+            2. Phân bố Student t
           </button>
           <button
             onClick={() => setActiveTab('mle')}
-            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3 py-2 rounded-2xl text-xs font-heading font-bold transition-all ${
               activeTab === 'mle'
                 ? 'bg-blue-600 text-white shadow-md'
                 : 'bg-white/80 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
             }`}
           >
-            <Activity size={14} /> 3. Đường cong MLE
+            3. Đường cong MLE
           </button>
         </div>
       </div>
@@ -121,7 +114,7 @@ export const ClassicalEstimation: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="blue">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-3">
-                🎯 Thiết lập Tham số Mẫu
+                Thiết lập Tham số Mẫu
               </h3>
 
               <div className="space-y-3">
@@ -164,7 +157,6 @@ export const ClassicalEstimation: React.FC = () => {
                   size="sm"
                   className="w-full"
                   onClick={generateIntervals}
-                  icon={<RotateCcw size={14} />}
                 >
                   Lấy mẫu lại 100 Bộ mới
                 </ClayButton>
@@ -172,7 +164,7 @@ export const ClassicalEstimation: React.FC = () => {
 
               <div className="mt-4 p-3 rounded-2xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 text-xs space-y-2">
                 <span className="font-bold text-blue-950 dark:text-blue-200">
-                  💡 Định nghĩa Tần suất (Frequentist):
+                  Định nghĩa Tần suất (Frequentist):
                 </span>
                 <p className="text-blue-900 dark:text-blue-300">
                   "Khoảng tin cậy 95%" <strong>không</strong> có nghĩa là tham số <MathView math="\mu" /> có 95% xác suất nằm trong khoảng, mà có nghĩa: nếu ta lặp lại thí nghiệm 100 lần, thì trung bình có 95 khoảng bao trọn được <MathView math="\mu" /> cố định!
@@ -246,7 +238,7 @@ export const ClassicalEstimation: React.FC = () => {
           <div className="space-y-4">
             <ClayCard glowColor="blue">
               <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                🏛️ Phân bố Student t
+                Phân bố Student t
               </h3>
               <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
                 Khi chưa biết phương sai <MathView math="\sigma^2" /> và cỡ mẫu nhỏ, ta thay bằng phương sai mẫu hiệu chỉnh <MathView math="s_n" />. Thống kê tuân theo phân bố Student với <MathView math="\nu = n - 1" /> bậc tự do.
