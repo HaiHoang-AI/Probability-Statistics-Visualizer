@@ -135,22 +135,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
       <section className="pt-6 pb-2 text-center space-y-5 max-w-4xl mx-auto">
         {/* Tagline Badge */}
         <div className="inline-block">
-          <span className="px-4 py-1.5 rounded-full text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]">
+          <span className="px-4 py-1.5 rounded-full text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all duration-150 inline-block cursor-default select-none">
             MAT1101 — Xác suất Thống kê Tương tác (VNU-UET)
           </span>
         </div>
 
-        {/* Main 2D Cartoon Title (Single Line) */}
-        <div className="overflow-x-auto overflow-y-hidden py-1">
-          <h1 className="font-heading font-black text-2xl sm:text-4xl md:text-5xl lg:text-[54px] text-slate-900 dark:text-white tracking-tight whitespace-nowrap">
+        {/* Main 2D Cartoon Title (Single Line, No Scrollbar) */}
+        <div className="py-2">
+          <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl lg:text-[46px] text-slate-900 dark:text-white tracking-tight leading-tight">
             Trực Quan Hóa <span className="text-sky-600 dark:text-sky-400">Xác Suất Thống Kê</span>
           </h1>
         </div>
-
-        {/* Concise Subtitle */}
-        <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto font-medium leading-relaxed">
-          Tương tác trực tiếp với các đồ thị mô phỏng 2D: kéo slider tích chập, kiểm chứng định lý giới hạn trung tâm và xoay đường hồi quy OLS thời gian thực.
-        </p>
 
         {/* Dual CTA Buttons */}
         <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
@@ -190,7 +185,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
 
       {/* 4 FEATURE CARDS WITH PASTEL ICON BOXES (Matching media_1788535946795.png) */}
       <section className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] rounded-2xl p-4 text-center flex flex-col items-center gap-2.5">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none rounded-2xl p-4 text-center flex flex-col items-center gap-2.5 transition-all duration-150 cursor-pointer select-none">
           <div className="w-12 h-12 rounded-2xl bg-rose-200 dark:bg-rose-950/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] flex items-center justify-center">
             <svg className="w-6 h-6 stroke-slate-900 dark:stroke-rose-200" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="9" />
@@ -202,7 +197,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           </span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] rounded-2xl p-4 text-center flex flex-col items-center gap-2.5">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none rounded-2xl p-4 text-center flex flex-col items-center gap-2.5 transition-all duration-150 cursor-pointer select-none">
           <div className="w-12 h-12 rounded-2xl bg-sky-200 dark:bg-sky-950/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] flex items-center justify-center">
             <svg className="w-6 h-6 stroke-slate-900 dark:stroke-sky-200" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="4" width="18" height="12" rx="2" />
@@ -215,7 +210,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           </span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] rounded-2xl p-4 text-center flex flex-col items-center gap-2.5">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none rounded-2xl p-4 text-center flex flex-col items-center gap-2.5 transition-all duration-150 cursor-pointer select-none">
           <div className="w-12 h-12 rounded-2xl bg-purple-200 dark:bg-purple-950/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] flex items-center justify-center">
             <svg className="w-6 h-6 stroke-slate-900 dark:stroke-purple-200" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="8" r="6" />
@@ -228,7 +223,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           </span>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] rounded-2xl p-4 text-center flex flex-col items-center gap-2.5">
+        <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none rounded-2xl p-4 text-center flex flex-col items-center gap-2.5 transition-all duration-150 cursor-pointer select-none">
           <div className="w-12 h-12 rounded-2xl bg-emerald-200 dark:bg-emerald-950/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] flex items-center justify-center">
             <svg className="w-6 h-6 stroke-slate-900 dark:stroke-emerald-200" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -269,8 +264,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
                 bg-white dark:bg-slate-900 
                 border-2 border-slate-900 dark:border-slate-700 
                 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] 
-                hover:translate-x-[-1px] hover:translate-y-[-1px] 
-                hover:shadow-[6px_6px_0px_#0f172a] dark:hover:shadow-[6px_6px_0px_#0284c7]
+                hover:translate-x-[2.5px] hover:translate-y-[2.5px] 
+                hover:shadow-[1.5px_1.5px_0px_#0f172a] dark:hover:shadow-[1.5px_1.5px_0px_#0284c7]
+                active:translate-x-[4px] active:translate-y-[4px] active:shadow-none
                 rounded-3xl p-5 flex flex-col justify-between cursor-pointer transition-all duration-150
               "
             >
@@ -350,8 +346,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
                 bg-white dark:bg-slate-900 
                 border-2 border-slate-900 dark:border-slate-700 
                 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] 
-                hover:translate-x-[-1px] hover:translate-y-[-1px] 
-                hover:shadow-[6px_6px_0px_#0f172a] dark:hover:shadow-[6px_6px_0px_#0284c7]
+                hover:translate-x-[2.5px] hover:translate-y-[2.5px] 
+                hover:shadow-[1.5px_1.5px_0px_#0f172a] dark:hover:shadow-[1.5px_1.5px_0px_#0284c7]
+                active:translate-x-[4px] active:translate-y-[4px] active:shadow-none
                 rounded-3xl p-4 flex flex-col justify-between cursor-pointer transition-all duration-150
               "
             >
@@ -389,7 +386,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
       </section>
 
       {/* ENROLLMENT / LEARNING CTA BANNER (Page 5 Flat Style) */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-sky-600 border-[2.5px] border-slate-900 text-white shadow-[6px_6px_0px_#0f172a] dark:shadow-[6px_6px_0px_#0284c7] text-center space-y-3 max-w-3xl mx-auto">
+      <section className="p-6 sm:p-8 rounded-3xl bg-sky-600 border-[2.5px] border-slate-900 text-white shadow-[6px_6px_0px_#0f172a] dark:shadow-[6px_6px_0px_#0284c7] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0px_#0f172a] dark:hover:shadow-[3px_3px_0px_#0284c7] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 text-center space-y-3 max-w-3xl mx-auto">
         <h3 className="font-heading font-black text-2xl sm:text-3xl">
           Sẵn sàng khám phá phòng thí nghiệm?
         </h3>

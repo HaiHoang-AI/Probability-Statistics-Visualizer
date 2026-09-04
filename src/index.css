@@ -21,35 +21,67 @@
   border: 2.5px solid var(--cartoon-border);
   box-shadow: var(--cartoon-shadow);
   border-radius: 1.5rem;
-  transition: all 0.15s ease-in-out;
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cartoon-card:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0px var(--cartoon-border);
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0px var(--cartoon-border);
 }
 
 .dark .cartoon-card:hover {
-  box-shadow: 5px 5px 0px #0284C7;
+  box-shadow: 2px 2px 0px #0284C7;
+}
+
+.cartoon-card:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0px 0px 0px var(--cartoon-border) !important;
 }
 
 .cartoon-btn {
   border: 2px solid var(--cartoon-border);
   box-shadow: var(--cartoon-btn-shadow);
-  transition: all 0.1s ease-in-out;
+  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .cartoon-btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px var(--cartoon-border);
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px var(--cartoon-border);
 }
 
 .dark .cartoon-btn:hover {
-  box-shadow: 4px 4px 0px #0284C7;
+  box-shadow: 1px 1px 0px #0284C7;
 }
 
 .cartoon-btn:active {
-  transform: translate(2px, 2px);
+  transform: translate(3px, 3px);
+  box-shadow: 0px 0px 0px var(--cartoon-border) !important;
+}
+
+/* Universal hover sink down for all buttons with bold borders */
+button[class*="border-2 border-slate-900"],
+button[class*="border-[2.5px] border-slate-900"],
+select[class*="border-2 border-slate-900"] {
+  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.1s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+button[class*="border-2 border-slate-900"]:hover,
+button[class*="border-[2.5px] border-slate-900"]:hover,
+select[class*="border-2 border-slate-900"]:hover {
+  transform: translate(1.5px, 1.5px);
+  box-shadow: 1px 1px 0px var(--cartoon-border) !important;
+}
+
+.dark button[class*="border-2 border-slate-900"]:hover,
+.dark button[class*="border-[2.5px] border-slate-900"]:hover,
+.dark select[class*="border-2 border-slate-900"]:hover {
+  box-shadow: 1px 1px 0px #0284c7 !important;
+}
+
+button[class*="border-2 border-slate-900"]:active,
+button[class*="border-[2.5px] border-slate-900"]:active,
+select[class*="border-2 border-slate-900"]:active {
+  transform: translate(2.5px, 2.5px) !important;
   box-shadow: 0px 0px 0px var(--cartoon-border) !important;
 }
 

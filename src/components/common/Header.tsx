@@ -15,14 +15,14 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="sticky top-3 z-40 w-full px-4 sm:px-6 transition-colors">
-      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] flex items-center justify-between">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0f172a] dark:hover:shadow-[3px_3px_0px_#0284c7] flex items-center justify-between transition-all duration-150">
         
         {/* Brand & Logo */}
         <div 
           onClick={() => onSelectChapter('overview')} 
-          className="flex items-center gap-3 cursor-pointer select-none"
+          className="flex items-center gap-3 cursor-pointer select-none group"
         >
-          <div className="w-9 h-9 rounded-xl bg-sky-600 border-2 border-slate-900 flex items-center justify-center text-white font-heading font-black text-sm shadow-[2px_2px_0px_#0f172a]">
+          <div className="w-9 h-9 rounded-xl bg-sky-600 border-2 border-slate-900 flex items-center justify-center text-white font-heading font-black text-sm shadow-[2px_2px_0px_#0f172a] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-none transition-all duration-100">
             PS
           </div>
           <div>
@@ -44,12 +44,14 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => onSelectChapter('overview')}
             className={`
-              px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all cursor-pointer border-2 border-slate-900 dark:border-slate-700
+              px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all duration-100 cursor-pointer border-2 border-slate-900 dark:border-slate-700
+              shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
+              hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none
+              active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
               ${currentChapterId === 'overview'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
-                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
               }
-              active:translate-x-0.5 active:translate-y-0.5 active:shadow-none
             `}
           >
             Trang chủ
@@ -65,7 +67,11 @@ export const Header: React.FC<HeaderProps> = ({
                 border-2 border-slate-900 dark:border-slate-700 
                 text-slate-900 dark:text-slate-100 
                 text-xs font-heading font-bold rounded-xl px-3 py-1.5 pr-7 
-                cursor-pointer focus:outline-none shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
+                cursor-pointer focus:outline-none 
+                shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
+                hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none
+                active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+                transition-all duration-100
               "
             >
               <option value="overview">Chọn bài học</option>

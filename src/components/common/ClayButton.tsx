@@ -33,8 +33,8 @@ export const ClayButton: React.FC<ClayButtonProps> = ({
         inline-flex items-center justify-center text-center font-heading select-none cursor-pointer
         border-2 border-slate-900 dark:border-slate-700
         shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7]
-        hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[4px_4px_0px_#0f172a] dark:hover:shadow-[4px_4px_0px_#0284c7]
-        active:translate-x-0.5 active:translate-y-0.5 active:shadow-none
+        hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7]
+        active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
         transition-all duration-100
         ${sizeClasses[size]}
         ${variantClasses[variant]}
