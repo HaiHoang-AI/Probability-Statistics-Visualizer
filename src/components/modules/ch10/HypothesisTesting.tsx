@@ -623,8 +623,8 @@ export const HypothesisTesting: React.FC = () => {
                       p-value = {fmt(pValue, 4)} {rejectH0 ? '≤' : '>'} α = {fmt(sigAlpha, 2)}
                     </div>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    p-value là xác suất thu được kết quả cực đoan như hoặc hơn quan sát thực tế nếu H₀ đúng. p-value càng nhỏ chứng cứ chống lại H₀ càng mạnh.
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <MathView math="p\text{-value}" /> là xác suất thu được kết quả cực đoan như hoặc hơn quan sát thực tế nếu <MathView math="H_0" /> đúng. <MathView math="p\text{-value}" /> càng nhỏ chứng cứ chống lại <MathView math="H_0" /> càng mạnh.
                   </p>
                 </ClayCard>
               </div>
@@ -936,8 +936,8 @@ export const HypothesisTesting: React.FC = () => {
                       Power = {fmt(curPower * 100, 1)}% | Cần n ≥ {nRequired80}
                     </div>
                   </div>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                    Nếu thử nghiệm thực tế với n &lt; {nRequired80}, bạn có nguy cơ cao bỏ lọt hiệu ứng thực sự do sai lầm loại II!
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Nếu thử nghiệm thực tế với $n &lt; {nRequired80}$, bạn có nguy cơ cao bỏ lọt hiệu ứng thực sự do sai lầm loại II!
                   </p>
                 </ClayCard>
               </div>

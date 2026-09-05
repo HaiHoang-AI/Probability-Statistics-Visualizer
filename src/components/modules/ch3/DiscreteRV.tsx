@@ -321,38 +321,38 @@ export const DiscreteRV: React.FC = () => {
 
         {/* Card 2: Công thức Toán học */}
         <ClayCard glowColor="blue" className="p-5">
-          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+          <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
             Công thức Khối Xác suất
           </h4>
-          <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">
+          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
             Hàm PMF gán khối lượng xác suất cụ thể cho từng giá trị <MathView math="k" />:
           </p>
-          <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-xs">
+          <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
             <MathView math={pmfFormula} />
           </div>
         </ClayCard>
 
         {/* Card 3: Thống kê Moment */}
         <ClayCard glowColor="emerald" className="p-5">
-          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+          <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
             Đặc trưng Số của Phân bố
           </h4>
-          <div className="space-y-2 text-xs">
-            <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-              <span className="text-slate-500">Kỳ vọng E[X]:</span>
-              <span className="font-mono font-extrabold text-red-600 dark:text-red-400 text-sm">
+          <div className="space-y-2.5 text-sm sm:text-[15px]">
+            <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-600 dark:text-slate-400 font-medium">Kỳ vọng E[X]:</span>
+              <span className="font-mono font-black text-red-600 dark:text-red-400 text-base sm:text-lg">
                 {fmt(mean, 2)}
               </span>
             </div>
-            <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-              <span className="text-slate-500">Phương sai Var(X):</span>
-              <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+            <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-600 dark:text-slate-400 font-medium">Phương sai Var(X):</span>
+              <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">
                 {fmt(variance, 2)}
               </span>
             </div>
-            <div className="flex justify-between items-center py-1">
-              <span className="text-slate-500">Độ lệch chuẩn sigma:</span>
-              <span className="font-mono font-extrabold text-amber-600 dark:text-amber-400 text-sm">
+            <div className="flex justify-between items-center py-1.5">
+              <span className="text-slate-600 dark:text-slate-400 font-medium">Độ lệch chuẩn sigma:</span>
+              <span className="font-mono font-black text-amber-600 dark:text-amber-400 text-base sm:text-lg">
                 {fmt(sigma, 2)}
               </span>
             </div>

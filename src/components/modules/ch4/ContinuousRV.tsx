@@ -277,25 +277,25 @@ export const ContinuousRV: React.FC = () => {
 
             {/* Card 3: Thống kê & Công thức */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Xác suất Tích phân
               </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Diện tích tích phân:</span>
-                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Diện tích tích phân:</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">
                     {fmt(pArea * 100, 2)}%
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Điểm uốn (Inflection):</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Điểm uốn (Inflection):</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
                     {fmt(mu - sigma, 1)} và {fmt(mu + sigma, 1)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Đỉnh mật độ cực đại:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Đỉnh mật độ cực đại:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
                     {fmt(1 / (sigma * Math.sqrt(2 * Math.PI)), 3)}
                   </span>
                 </div>
@@ -383,17 +383,17 @@ export const ContinuousRV: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Card 1: Thao tác */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                 Thao tác Mô phỏng
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mb-4">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-4 leading-relaxed font-normal">
                 Thả ngẫu nhiên các cây kim dài <MathView math="\ell = 35" /> lên mặt phẳng có các đường kẻ song song cách nhau <MathView math="d = 50" />.
               </p>
               <div className="flex gap-2">
-                <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(100)} className="w-full text-xs">
+                <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(100)} className="w-full text-xs sm:text-sm">
                   + 100 Kim
                 </ClayButton>
-                <ClayButton variant="secondary" size="sm" onClick={() => dropNeedles(1000)} className="w-full text-xs">
+                <ClayButton variant="secondary" size="sm" onClick={() => dropNeedles(1000)} className="w-full text-xs sm:text-sm">
                   + 1,000 Kim
                 </ClayButton>
               </div>
@@ -401,36 +401,36 @@ export const ContinuousRV: React.FC = () => {
 
             {/* Card 2: Công thức Hình học Buffon */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Công thức Tích phân Buffon (1777)
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
                 Xác suất cây kim cắt đường kẻ:
               </p>
-              <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-xs">
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
                 <MathView math="P = \frac{2\ell}{\pi d} \implies \pi = \frac{2\ell}{d \cdot P}" />
               </div>
             </ClayCard>
 
             {/* Card 3: Kết quả Ước lượng Pi */}
             <ClayCard glowColor="rose" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Ước lượng Số Pi
               </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Giá trị Monte Carlo:</span>
-                  <span className="font-mono font-extrabold text-teal-600 dark:text-teal-400 text-base">
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Giá trị Monte Carlo:</span>
+                  <span className="font-mono font-black text-teal-600 dark:text-teal-400 text-base sm:text-lg">
                     {fmt(estimatedPi, 4)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Số Pi thực tế:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">3.14159...</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Số Pi thực tế:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">3.14159...</span>
                 </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Sai số tuyệt đối:</span>
-                  <span className="font-mono font-bold text-rose-500">
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Sai số tuyệt đối:</span>
+                  <span className="font-mono font-bold text-rose-500 text-sm sm:text-base">
                     {fmt(piError, 4)}
                   </span>
                 </div>

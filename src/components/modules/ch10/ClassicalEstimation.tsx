@@ -286,10 +286,10 @@ export const ClassicalEstimation: React.FC = () => {
             </ClayCard>
 
             <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Bản chất Tần Suất
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 Tham số <MathView math="\mu" /> là cố định và duy nhất. Khoảng tin cậy là ngẫu nhiên, thay đổi theo từng mẫu. Phát biểu đúng: Có 95% số khoảng sinh ra sẽ bao trùm giá trị thực <MathView math="\mu" />.
               </p>
             </ClayCard>

@@ -218,10 +218,10 @@ export const BasicProbability: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* Card 1: Hướng dẫn Thao tác */}
             <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Quy tắc Trò chơi
               </h4>
-              <ol className="text-xs space-y-1.5 list-decimal list-inside text-slate-600 dark:text-slate-300 leading-relaxed">
+              <ol className="text-sm sm:text-[15px] space-y-2 list-decimal list-inside text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 <li>Bạn chọn 1 cánh cửa bất kỳ trong số 3 cánh cửa.</li>
                 <li>MC biết rõ xe ở đâu, luôn mở 1 trong 2 cánh cửa còn lại có <strong>con Dê</strong>.</li>
                 <li>Bạn được quyền chọn: <strong>Đổi cửa</strong> hay <strong>Giữ nguyên</strong>.</li>
@@ -230,31 +230,31 @@ export const BasicProbability: React.FC = () => {
 
             {/* Card 2: Giải thích Bayes */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Bản chất Toán học Bayes
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 Lúc đầu, xác suất bạn chọn trúng Xe chỉ là <MathView math="P(\text{Trúng}) = 1/3" />, xác suất Xe nằm ở 2 cửa kia là <MathView math="2/3" />. Khi MC loại bỏ 1 con Dê, toàn bộ <MathView math="2/3" /> xác suất dồn hết vào cánh cửa còn lại!
               </p>
             </ClayCard>
 
             {/* Card 3: Thống kê & So sánh */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 So sánh Chiến lược
               </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Lý thuyết Đổi cửa:</span>
-                  <span className="font-mono font-bold text-emerald-600">66.67% (2/3)</span>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lý thuyết Đổi cửa:</span>
+                  <span className="font-mono font-bold text-emerald-600 text-sm sm:text-base">66.67% (2/3)</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Lý thuyết Giữ cửa:</span>
-                  <span className="font-mono font-bold text-slate-500">33.33% (1/3)</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lý thuyết Giữ cửa:</span>
+                  <span className="font-mono font-bold text-slate-500 text-sm sm:text-base">33.33% (1/3)</span>
                 </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Lợi thế khi Đổi cửa:</span>
-                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">Gấp 2 lần</span>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lợi thế khi Đổi cửa:</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">Gấp 2 lần</span>
                 </div>
               </div>
             </ClayCard>
@@ -379,14 +379,14 @@ export const BasicProbability: React.FC = () => {
 
             {/* Card 2: Công thức Bayes */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Công thức Bayes Thay số
               </h4>
-              <div className="space-y-2 text-xs font-mono text-slate-600 dark:text-slate-300">
+              <div className="space-y-2.5 text-sm sm:text-base font-mono text-slate-700 dark:text-slate-200 font-semibold">
                 <div>P(D) = {fmt(prevalence, 4)}</div>
                 <div>P(+|D) = {fmt(sensitivity, 3)}</div>
                 <div>P(+|Dᶜ) = 1 - {fmt(specificity, 3)} = {fmt(1 - specificity, 3)}</div>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 font-bold">
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 font-bold text-base sm:text-lg">
                   P(+) = {fmt(pTotalPositive, 5)}
                 </div>
               </div>
@@ -394,10 +394,10 @@ export const BasicProbability: React.FC = () => {
 
             {/* Card 3: Nghịch lý Trực quan */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Bản chất Nghịch lý
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 Khi một căn bệnh rất hiếm, số người khỏe mạnh chiếm đại đa số (9,990 người). Dù que thử sai sót rất ít (1%), 1% của nhóm khỏe mạnh ({falsePos} người) vẫn <strong>lớn gấp nhiều lần</strong> tổng số người thực sự mắc bệnh ({popSick} người). Do đó, cần test khẳng định lần 2!
               </p>
             </ClayCard>

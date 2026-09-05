@@ -201,9 +201,9 @@ export const Foundations: React.FC = () => {
 
           {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Sliders */}
+            {/* Card 1: Điều khiển P(A), P(B), P(AB) */}
             <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                 Xác suất Từng Biến cố
               </h4>
               <ClaySlider
@@ -215,7 +215,7 @@ export const Foundations: React.FC = () => {
                 color="orange"
                 onChange={setProbA}
               />
-              <div className="mt-2">
+              <div className="mt-3">
                 <ClaySlider
                   label="P(B)"
                   value={probB}
@@ -226,7 +226,7 @@ export const Foundations: React.FC = () => {
                   onChange={setProbB}
                 />
               </div>
-              <div className="mt-2">
+              <div className="mt-3">
                 <ClaySlider
                   label="P(A giao B)"
                   value={actualIntersect}
@@ -241,41 +241,41 @@ export const Foundations: React.FC = () => {
 
             {/* Card 2: Tiên đề & Công thức */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Tiên đề Kolmogorov & Công thức Cộng
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
                 Quy tắc bao hàm - loại trừ (Inclusion-Exclusion Principle):
               </p>
-              <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-xs">
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
                 <MathView math="P(A \cup B) = P(A) + P(B) - P(A \cap B)" />
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
                 Nếu <MathView math="A \cap B = \emptyset" /> (2 biến cố xung khắc rời nhau), thì <MathView math="P(A \cup B) = P(A) + P(B)" />.
               </p>
             </ClayCard>
 
             {/* Card 3: Phân rã 4 miền rời rạc */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 4 Phân vùng Độc lập trong Ω
               </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-amber-600 font-semibold">Chỉ riêng A:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{fmt(onlyA, 2)}</span>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-amber-600 dark:text-amber-400 font-semibold">Chỉ riêng A:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(onlyA, 2)}</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-emerald-600 font-semibold">Giao A ∩ B:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{fmt(actualIntersect, 2)}</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Giao A ∩ B:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(actualIntersect, 2)}</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-sky-600 font-semibold">Chỉ riêng B:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{fmt(onlyB, 2)}</span>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-sky-600 dark:text-sky-400 font-semibold">Chỉ riêng B:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(onlyB, 2)}</span>
                 </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500 font-semibold">Bên ngoài (A ∪ B)ᶜ:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{fmt(outside, 2)}</span>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold">Bên ngoài (A ∪ B)ᶜ:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(outside, 2)}</span>
                 </div>
               </div>
             </ClayCard>
@@ -354,12 +354,12 @@ export const Foundations: React.FC = () => {
 
           {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Chọn Biến cố */}
+            {/* Card 1: Bộ lọc Biến cố */}
             <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Biến cố Đang lọc
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
                 {diceFilter === 'all' && 'Không gian mẫu đầy đủ gồm 36 cặp kết quả đồng khả năng (Equally likely outcomes).'}
                 {diceFilter === 'sum8' && 'Tổng điểm 2 xúc xắc ≥ 8: Gồm các cặp tổng bằng 8, 9, 10, 11, 12.'}
                 {diceFilter === 'doubles' && 'Mặt đôi: Hai con xúc xắc xuất hiện số chấm bằng nhau: (1,1), (2,2), ..., (6,6).'}
@@ -369,36 +369,36 @@ export const Foundations: React.FC = () => {
 
             {/* Card 2: Định nghĩa Cổ điển */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Định nghĩa Cổ điển Laplace
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-2">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-2 font-medium">
                 Khi mọi biến cố sơ cấp có khả năng xuất hiện như nhau:
               </p>
-              <div className="p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-xs">
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
                 <MathView math="P(E) = \frac{\text{Số kết quả thuận lợi}}{\text{Tổng số kết quả sơ cấp}} = \frac{|E|}{|\Omega|}" />
               </div>
             </ClayCard>
 
             {/* Card 3: Thống kê Trực thời */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Kết quả Tính toán
               </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Số phần tử thuận lợi |E|:</span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-white">{countMatch} / 36</span>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Số phần tử thuận lợi |E|:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">{countMatch} / 36</span>
                 </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Xác suất P(E):</span>
-                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Xác suất P(E):</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">
                     {fmt(countMatch / 36, 4)}
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Tỷ lệ phần trăm:</span>
-                  <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Tỷ lệ phần trăm:</span>
+                  <span className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-base sm:text-lg">
                     {fmt((countMatch / 36) * 100, 1)}%
                   </span>
                 </div>

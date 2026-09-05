@@ -389,13 +389,13 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* Card 2: Bản chất Toán học (Slide 15) */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Công thức Giải tích (Slide 15)
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
                 Khi <MathView math="X, Y \sim \mathcal{U}[0, 1]" />, tích chập biến 2 khối hình chữ nhật thành <strong>phân bố hình tam giác</strong>:
               </p>
-              <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 text-xs text-center font-mono font-bold text-sky-700 dark:text-sky-300">
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 text-sm sm:text-base text-center font-mono font-bold text-sky-700 dark:text-sky-300">
                 <MathView math="f_Z(z) = \begin{cases} z & 0 \le z \le 1 \\ 2 - z & 1 < z \le 2 \end{cases}" />
               </div>
             </ClayCard>
@@ -616,10 +616,10 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* Card 2: Bản chất Không tương quan vs Độc lập */}
             <ClayCard glowColor="purple" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Không tương quan ≠ Độc lập
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 {showParabola ? (
                   <span>
                     Khi <MathView math="Y = X^2" />, do tính đối xứng quanh 0, <MathView math="\text{Cov}(X, Y) = 0 \implies \rho = 0" />. Hai biến <strong>không tương quan tuyến tính</strong>, nhưng phụ thuộc hoàn toàn!
@@ -629,7 +629,7 @@ export const DerivedConvolution: React.FC = () => {
                 ) : Math.abs(rho) < 0.25 ? (
                   'Tương quan gần 0: Đám mây phân tán đều tròn, biết X không giúp ích dự đoán Y bằng phương pháp tuyến tính.'
                 ) : (
-                  'Tương quan vừa phải: Đám mây có hình dạng elip nghiêng rõ nét.'
+                  'Tương quan tuyến tính mức độ vừa phải.'
                 )}
               </p>
             </ClayCard>
@@ -1100,10 +1100,10 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* Card 2: Bản chất Jacobian */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Ý nghĩa Hệ số Co giãn
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 Độ dốc <MathView math="|g'(x)|" /> chính là hệ số kéo giãn độ dài vi phân: <MathView math="dy = |g'(x)| dx" />.
                 Chỗ nào đồ thị uốn cong dốc đứng, không gian y bị kéo rộng ra khiến mật độ xác suất <MathView math="f_Y(y)" /> bị loãng và hạ thấp!
               </p>
@@ -1297,11 +1297,12 @@ export const DerivedConvolution: React.FC = () => {
             </ClayCard>
 
             {/* Card 2: Quy luật Độ tin cậy */}
+            {/* Card 2: Bản chất Toán học */}
             <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Quy luật Phân phối Cực trị
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
                 {extremeType === 'max' ? (
                   <span>
                     Trong hệ song song dự phòng, hệ thống chỉ tắt khi linh kiện cuối cùng hỏng. Khi <MathView math="n \to \infty" />, tuổi thọ trung bình tiệm cận cực đại 10: <MathView math="\mathbb{E}[W] = \frac{n}{n+1} \times 10" />.

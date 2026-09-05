@@ -351,18 +351,18 @@ export const MomentGeneratingFunction: React.FC = () => {
 
             {/* Card 2: Khai triển Taylor & Đạo hàm */}
             <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                 Ý nghĩa Hình học tại s = 0
               </h4>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
                 Hàm sinh moment mã hóa toàn bộ thông tin của các moment vào độ dốc và độ cong tại gốc:
               </p>
-              <div className="space-y-1.5 text-xs">
-                <div className="p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700">
+              <div className="space-y-2 text-sm sm:text-base">
+                <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700">
                   <span className="font-bold text-sky-700 dark:text-sky-300">Độ dốc tiếp tuyến:</span>{' '}
                   <MathView math="M'_X(0) = \mathbb{E}[X]" />
                 </div>
-                <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+                <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
                   <span className="font-bold text-amber-700 dark:text-amber-300">Độ cong bậc 2:</span>{' '}
                   <MathView math="M''_X(0) = \mathbb{E}[X^2]" />
                 </div>

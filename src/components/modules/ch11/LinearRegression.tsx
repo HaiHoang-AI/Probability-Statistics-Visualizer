@@ -1018,8 +1018,8 @@ export const LinearRegression: React.FC = () => {
                       D = {fmt(leveragePoints.cookD, 2)}
                     </div>
                   </div>
-                  <p className="text-[11px] text-slate-500">
-                    Khi D &gt; 0.5 (hoặc &gt; 4/n), điểm ngoại lai có tính hủy diệt, làm sai lệch toàn bộ ước lượng tham số!
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                    Khi $D &gt; 0.5$ (hoặc $&gt; 4/n$), điểm ngoại lai có tính hủy diệt, làm sai lệch toàn bộ ước lượng tham số!
                   </p>
                 </ClayCard>
               </div>
