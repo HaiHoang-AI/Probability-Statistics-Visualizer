@@ -24,12 +24,34 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         isPriority: true
       },
       {
+        id: 'derived-transform',
+        titleEn: 'Density Transformation Y = g(X)',
+        titleVi: 'Đổi biến Hàm Mật độ Liên tục',
+        chapterId: 'ch7-1-derived',
+        lectureRef: 'Slide 6 - 13',
+        descriptionVi: 'Trực quan hóa công thức f_Y(y) = f_X(x) / |g\'(x)|. Giải thích vì sao đoạn nào hàm g phẳng thì mật độ f_Y vọt lên cực đại.',
+        tag: 'Jacobian',
+        badgeColor: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
+        isPriority: true
+      },
+      {
+        id: 'derived-extremes',
+        titleEn: 'Order Statistics: Min & Max Distributions',
+        titleVi: 'Phân phối Cực trị Hệ Song song & Nối tiếp',
+        chapterId: 'ch7-1-derived',
+        lectureRef: 'Slide 18 - 22',
+        descriptionVi: 'Mô phỏng tuổi thọ hệ thống: W = max(X_1..X_n) dạt sang phải, V = min(X_1..X_n) co cụm về 0.',
+        tag: 'Max/Min RVs',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        isPriority: true
+      },
+      {
         id: 'derived-correlation',
         titleEn: 'Covariance & Correlation Scatter (rho)',
         titleVi: 'Khám phá Tương quan & Trực giao',
         chapterId: 'ch7-1-derived',
-        lectureRef: 'Slide 19 - 26',
-        descriptionVi: 'Kéo slider rho từ -1 đến +1 xem đám mây điểm biến đổi. Khám phá trường hợp rho = 0 nhưng không độc lập (Y = X^2).',
+        lectureRef: 'Slide 23 - 26',
+        descriptionVi: 'Kéo slider rho từ -1 đến +1 xem đám mây điểm biến đổi. Bẫy kinh điển: rho = 0 nhưng Y = X^2 phụ thuộc hoàn toàn!',
         tag: 'Correlation',
         badgeColor: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
         isPriority: true
@@ -79,6 +101,17 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         tag: 'Algebraic MGF',
         badgeColor: 'bg-pink-100 text-pink-700 dark:bg-pink-950 dark:text-pink-300',
         isPriority: true
+      },
+      {
+        id: 'wald-random-sum',
+        titleEn: "Wald's Identity: Random Sum of RVs",
+        titleVi: 'Tổng số Ngẫu nhiên các Biến & Định lý Wald',
+        chapterId: 'ch7-2-mgf',
+        lectureRef: 'Slide 23 - 28',
+        descriptionVi: 'Mô phỏng Monte Carlo kiểm chứng công thức Wald: E[S] = E[N]E[X] và Var(S) khi cả số lượng phần tử N cũng là biến ngẫu nhiên.',
+        tag: 'Wald Identity',
+        badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
+        isPriority: true
       }
     ]
   },
@@ -99,7 +132,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Phòng thí nghiệm Định lý Giới hạn Trung tâm',
         chapterId: 'ch8-limit-theorems',
         lectureRef: 'Slide 35 - 55',
-        descriptionVi: 'Chọn phân bố gốc bất kỳ (Uniform, Lệch Exponential, Bimodal, Xúc xắc), kéo n từ 1 đến 100 và mô phỏng 10,000 mẫu trung bình X_bar để thấy chuông Gauss xuất hiện kỳ diệu.',
+        descriptionVi: 'Chọn phân bố gốc bất kỳ (Uniform, Lệch Exponential, Bimodal, Xúc xắc), kéo n từ 1 đến 35 để thấy chuông Gauss xuất hiện kỳ diệu.',
         tag: 'CLT Miracle',
         badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
         isPriority: true
@@ -110,7 +143,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Mô phỏng Quỹ đạo Luật số lớn',
         chapterId: 'ch8-limit-theorems',
         lectureRef: 'Slide 16 - 34',
-        descriptionVi: 'Tung 20 chuỗi mẫu X_bar_n theo n, quan sát chúng dao động mạnh ở n nhỏ rồi chui hết vào ống epsilon quanh mu khi n tiến ra vô cùng.',
+        descriptionVi: 'Tung 15 chuỗi mẫu X_bar_n theo n, quan sát chúng chui hết vào ống epsilon quanh mu khi n tiến ra vô cùng.',
         tag: 'LLN Convergence',
         badgeColor: 'bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300',
         isPriority: true
@@ -121,9 +154,20 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'So tài 3 Cận Xác suất Đuôi',
         chapterId: 'ch8-limit-theorems',
         lectureRef: 'Slide 6 - 15',
-        descriptionVi: 'Đồ thị bán logarit semilog so sánh tốc độ siết cận của Markov (chậm), Chebyshev (1/n) và Chernoff (hàm mũ e^{-cn}).',
+        descriptionVi: 'Đồ thị so sánh tốc độ siết cận của Markov, Chebyshev (1/k^2) và Chernoff (hàm mũ e^{-ck^2}).',
         tag: 'Tail Bounds',
         badgeColor: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+        isPriority: true
+      },
+      {
+        id: 'cauchy-clt-failure',
+        titleEn: 'When CLT Breaks Down: Cauchy Counterexample',
+        titleVi: 'Khi CLT Thất bại: Phân phối Cauchy & Đuôi dày',
+        chapterId: 'ch8-limit-theorems',
+        lectureRef: 'Slide 56 - 60',
+        descriptionVi: 'Mô phỏng phân phối Cauchy có phương sai vô hạn. Tăng n nhưng trung bình mẫu vẫn giật tung tóe, không bao giờ hóa thành chuông Gauss!',
+        tag: 'Fat Tails',
+        badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
         isPriority: true
       }
     ]
@@ -145,7 +189,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Cập nhật Niềm tin Beta-Binomial Real-time',
         chapterId: 'ch9-bayesian',
         lectureRef: 'Slide 10 - 26',
-        descriptionVi: 'Nhập số lần ngửa k / tung n hoặc bấm tung đồng xu. Quan sát Prior, Likelihood và Posterior vẽ đồng thời, cùng điểm Mode (MAP) và Mean (LMS).',
+        descriptionVi: 'Nhập số lần ngửa k / tung n. Quan sát Prior, Likelihood và Posterior vẽ đồng thời, cùng điểm Mode (MAP) và Mean (LMS).',
         tag: 'Bayesian Coin',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
         isPriority: true
@@ -159,6 +203,28 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         descriptionVi: 'Thêm các cảm biến đo với độ lệch chuẩn sigma khác nhau. Chuông hậu nghiệm tự động co hẹp và nghiêng về phía cảm biến chính xác nhất.',
         tag: 'Sensor Fusion',
         badgeColor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
+        isPriority: true
+      },
+      {
+        id: 'bayesian-credible-interval',
+        titleEn: 'Bayesian Credible Interval (HPD)',
+        titleVi: 'Khoảng Tin Cậy Bayes (Highest Posterior Density)',
+        chapterId: 'ch9-bayesian',
+        lectureRef: 'Slide 36 - 42',
+        descriptionVi: 'Tô vùng diện tích 95% dưới đường cong Posterior. Hiểu sự khác biệt triết học giữa quan điểm Bayes và quan điểm tần suất.',
+        tag: 'Credible Interval',
+        badgeColor: 'bg-violet-100 text-violet-700 dark:bg-violet-950 dark:text-violet-300',
+        isPriority: true
+      },
+      {
+        id: 'base-rate-fallacy',
+        titleEn: 'Base Rate Fallacy: Medical Testing Paradox',
+        titleVi: 'Ảo giác Tỷ lệ Nền & Test Dương tính Giả',
+        chapterId: 'ch9-bayesian',
+        lectureRef: 'Slide 43 - 48',
+        descriptionVi: 'Khám phá nghịch lý: Test chính xác 98% nhưng người nhận kết quả (+) có tới 91% khả năng hoàn toàn khỏe mạnh vì bệnh quá hiếm!',
+        tag: 'Base Rate',
+        badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
         isPriority: true
       }
     ]
@@ -180,20 +246,9 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Mô phỏng Độ phủ 100 Khoảng tin cậy',
         chapterId: 'ch10-1-estimation',
         lectureRef: 'Slide 18 - 30',
-        descriptionVi: 'Sinh 100 mẫu lặp lại. Khoảng nào cắt qua mu thật tô xanh lá, khoảng nào trượt tô đỏ. Hiểu sâu sắc bản chất tần suất: Tham số đứng yên, khoảng là ngẫu nhiên!',
+        descriptionVi: 'Sinh 100 mẫu lặp lại. Khoảng nào cắt qua mu thật tô xanh lá, khoảng nào trượt tô đỏ. Hiểu sâu sắc bản chất tần suất!',
         tag: '95% Coverage',
         badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
-        isPriority: true
-      },
-      {
-        id: 'mle-explorer',
-        titleEn: 'Maximum Likelihood Estimation (MLE) Curve',
-        titleVi: 'Đường cong Hàm Hợp lý Cực đại',
-        chapterId: 'ch10-1-estimation',
-        lectureRef: 'Slide 6 - 17',
-        descriptionVi: 'Kéo thả các điểm dữ liệu trên trục số, quan sát đường cong Likelihood L(theta) và Log-likelihood dâng lên và đạt cực đại tại theta_hat.',
-        tag: 'MLE Optimization',
-        badgeColor: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
         isPriority: true
       },
       {
@@ -202,9 +257,31 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Phân bố Student t tiệm cận Phân bố Chuẩn',
         chapterId: 'ch10-1-estimation',
         lectureRef: 'Slide 27 - 34',
-        descriptionVi: 'Kéo slider bậc tự do nu từ 1 đến 50. Quan sát đuôi dày của Student xẹp dần và trùng khít hoàn hảo với đường chuẩn Gauss khi nu >= 30.',
-        tag: 'Degrees of Freedom',
+        descriptionVi: 'Kéo slider bậc tự do nu từ 1 đến 35. Quan sát đuôi dày của Student xẹp dần và trùng khít hoàn hảo với đường chuẩn Gauss khi nu >= 30.',
+        tag: 'Student t',
         badgeColor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
+        isPriority: true
+      },
+      {
+        id: 'bessel-correction',
+        titleEn: "Bessel's Correction: Dividing by n-1 vs n",
+        titleVi: 'Bí ẩn Hiệu chỉnh Bessel: Chia n-1 hay n?',
+        chapterId: 'ch10-1-estimation',
+        lectureRef: 'Slide 14 - 17',
+        descriptionVi: 'Mô phỏng 2,500 mẫu nhỏ. Xem công thức chia n luôn ước lượng non, còn chia n-1 triệt tiêu hoàn toàn độ chệch!',
+        tag: 'Unbiasedness',
+        badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
+        isPriority: true
+      },
+      {
+        id: 'mle-explorer',
+        titleEn: 'Maximum Likelihood Estimation (MLE) Curve',
+        titleVi: 'Đường cong Hàm Hợp lý Cực đại',
+        chapterId: 'ch10-1-estimation',
+        lectureRef: 'Slide 6 - 13',
+        descriptionVi: 'Thêm bớt điểm dữ liệu trên trục số, quan sát đường cong Likelihood L(theta) đạt đỉnh cực đại tại trung bình mẫu.',
+        tag: 'MLE',
+        badgeColor: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
         isPriority: true
       }
     ]
@@ -226,7 +303,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Đánh đổi Sai lầm Loại I, Loại II & Lực kiểm định',
         chapterId: 'ch10-2-hypothesis',
         lectureRef: 'Slide 8 - 16',
-        descriptionVi: 'Hai quả chuông H0 và H1 cùng ngưỡng cắt di động. Kéo ngưỡng để thấy alpha và beta đánh đổi, tăng cỡ mẫu n để cả 2 lỗi cùng giảm mạnh!',
+        descriptionVi: 'Hai quả chuông H0 và H1 cùng ngưỡng cắt di động. Kéo ngưỡng để thấy alpha và beta đánh đổi, tăng n để cả 2 lỗi cùng giảm mạnh!',
         tag: 'Error Tradeoff',
         badgeColor: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
         isPriority: true
@@ -240,6 +317,17 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         descriptionVi: 'Chọn kiểm định 1 phía trái, 1 phía phải hoặc 2 phía. Nhập giá trị mẫu, xem diện tích p-value quét đuôi và so sánh với mức ý nghĩa alpha.',
         tag: 'P-Value Engine',
         badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
+        isPriority: true
+      },
+      {
+        id: 'power-analysis-planning',
+        titleEn: 'Power Analysis & Sample Size Planning',
+        titleVi: 'Hoạch định Cỡ mẫu & Phân tích Lực Kiểm Định',
+        chapterId: 'ch10-2-hypothesis',
+        lectureRef: 'Slide 26 - 32',
+        descriptionVi: 'Kéo Effect Size d và cỡ mẫu n để xác định xem cần bao nhiêu quan sát thì đạt chuẩn vàng 80% Power trong A/B Testing.',
+        tag: 'Power Curve',
+        badgeColor: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
         isPriority: true
       }
     ]
@@ -261,7 +349,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Khớp đường Hồi quy & Các Hình vuông Phần dư',
         chapterId: 'ch11-regression',
         lectureRef: 'Slide 24 - 32',
-        descriptionVi: 'Click thêm điểm, kéo điểm, xoay thử đường thẳng thủ công và thấy các hình vuông diện tích phần dư co giãn. Bấm Fit để nhảy về nghiệm OLS tối ưu.',
+        descriptionVi: 'Xoay thử đường thẳng thủ công và thấy các hình vuông diện tích phần dư co giãn. Bấm Fit để nhảy về nghiệm OLS tối ưu.',
         tag: 'OLS Squares',
         badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
         isPriority: true
@@ -272,9 +360,31 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Phân rã Phương sai & Bản chất của R²',
         chapterId: 'ch11-regression',
         lectureRef: 'Slide 33 - 38',
-        descriptionVi: 'Trực quan hóa các đoạn sai số màu đỏ (chưa giải thích được) và đoạn màu xanh (đã giải thích được), thấy rõ vì sao R^2 đo lường tỷ lệ biến thiên.',
+        descriptionVi: 'Trực quan hóa đoạn sai số đỏ (chưa giải thích) và xanh (đã giải thích), thấy rõ vì sao R^2 đo lường tỷ lệ biến thiên.',
         tag: 'R-Squared',
         badgeColor: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+        isPriority: true
+      },
+      {
+        id: 'leverage-cooks-distance',
+        titleEn: 'High Leverage & Influential Outliers (Cook’s D)',
+        titleVi: 'Điểm Ngoại Lai, Đòn Bẩy & Khoảng Cách Cook',
+        chapterId: 'ch11-regression',
+        lectureRef: 'Slide 39 - 44',
+        descriptionVi: 'Kéo điểm ngoại lai ra mép xa tọa độ để xem đường OLS bị bẻ gãy ngoắt ngoéo và chỉ số Cook’s D cảnh báo nguy hiểm.',
+        tag: "Cook's D",
+        badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
+        isPriority: true
+      },
+      {
+        id: 'residual-diagnostics',
+        titleEn: 'Residual Plot Diagnostics (Gauss-Markov Check)',
+        titleVi: 'Bắt Bệnh Mô Hình Qua Đồ Thị Phần Dư',
+        chapterId: 'ch11-regression',
+        lectureRef: 'Slide 45 - 50',
+        descriptionVi: 'Xem đồ thị phần dư e_i theo y_hat để phát hiện các căn bệnh vi phạm giả thiết: Quan hệ phi tuyến (chữ U) hay Loa kèn (Heteroscedasticity).',
+        tag: 'Diagnostics',
+        badgeColor: 'bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300',
         isPriority: true
       }
     ]

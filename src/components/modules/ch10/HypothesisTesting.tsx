@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
+import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, normalPdf, normalCdf, standardNormalInv } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
+import { LabBriefing } from '../../common/LabBriefing';
 
 export const HypothesisTesting: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'tradeoff' | 'pvalue'>('tradeoff');
+  const [activeTab, setActiveTab] = useState<'tradeoff' | 'pvalue' | 'power'>('tradeoff');
 
   // Tab 1: Type I & II Error Tradeoff State
   const [mu0, setMu0] = useState<number>(0);
@@ -14,12 +16,9 @@ export const HypothesisTesting: React.FC = () => {
   const [sampleN, setSampleN] = useState<number>(16);
   const [threshold, setThreshold] = useState<number>(1.2);
 
-  // Standard deviation of sample mean
   const sigma = 2.0;
   const stdMean = sigma / Math.sqrt(sampleN);
 
-  // Error probabilities:
-  // Reject H0 if X_bar > threshold
   const alpha = 1 - normalCdf(threshold, mu0, stdMean);
   const beta = normalCdf(threshold, mu1, stdMean);
   const power = 1 - beta;
@@ -29,7 +28,6 @@ export const HypothesisTesting: React.FC = () => {
   const [sigAlpha, setSigAlpha] = useState<number>(0.05);
   const [sampleZ, setSampleZ] = useState<number>(1.96);
 
-  // Calculate p-value based on tail type
   let pValue = 0;
   let zCrit = 0;
   if (tailType === 'right') {
@@ -45,6 +43,15 @@ export const HypothesisTesting: React.FC = () => {
 
   const rejectH0 = pValue <= sigAlpha;
 
+  // Tab 3: Power Analysis & Sample Size Planning
+  const [effectSizeD, setEffectSizeD] = useState<number>(0.5); // Cohen's d: (mu1 - mu0) / sigma
+  const [powerAlpha, setPowerAlpha] = useState<number>(0.05);
+  const [planN, setPlanN] = useState<number>(30);
+
+  // Compute power for given n and d
+  const zAlphaVal = standardNormalInv(1 - powerAlpha / 2);
+  const curPower = 1 - normalCdf(zAlphaVal - effectSizeD * Math.sqrt(planN), 0, 1);
+
   return (
     <div className="space-y-6">
       {/* Banner */}
@@ -54,14 +61,14 @@ export const HypothesisTesting: React.FC = () => {
             MAT1101 Bài 10.2 — Kiểm tra Giả thuyết Thống kê
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Đánh đổi Sai lầm Loại I / II & Trị số p (p-value)
+            Đánh đổi Sai lầm Loại I / II, Trị số p & Phân tích Lực kiểm định
           </h2>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('tradeoff')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeTab === 'tradeoff'
                 ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -71,7 +78,7 @@ export const HypothesisTesting: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('pvalue')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeTab === 'pvalue'
                 ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -79,13 +86,37 @@ export const HypothesisTesting: React.FC = () => {
           >
             2. Trực quan hóa p-value
           </button>
+          <button
+            onClick={() => setActiveTab('power')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+              activeTab === 'power'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }`}
+          >
+            3. Phân tích Lực Kiểm Định
+          </button>
         </div>
       </div>
 
-      {/* TAB 1: ERROR TRADEOFF */}
+      {/* =========================================================================
+          TAB 1: TRADEOFF & POWER
+         ========================================================================= */}
       {activeTab === 'tradeoff' && (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA */}
+          <LabBriefing
+            question="Trong kiểm định giả thuyết, tại sao ta không thể giảm cả Sai lầm loại I (kết tội oan người vô tội) và Sai lầm loại II (bỏ lọt kẻ có tội) về 0 cùng một lúc? Làm sao để tăng Lực kiểm định (Power)?"
+            formula="\alpha = P(\text{Bác bỏ } H_0 \mid H_0 \text{ đúng}), \quad \beta = P(\text{Chấp nhận } H_0 \mid H_1 \text{ đúng}), \quad \text{Power} = 1 - \beta"
+            mathExplanation="Ngưỡng quyết định x_c là một ranh giới cắt đôi không gian: Dịch x_c sang phải sẽ giảm α (bớt kết tội oan), nhưng lại làm phình to diện tích β (bỏ lọt tội phạm)! Cách DUY NHẤT để giảm cả 2 sai lầm cùng lúc là TĂNG CỠ MẪU n để 2 quả chuông cùng co thắt lại!"
+            howToInteract={[
+              "Kéo slider 'Ngưỡng quyết định x_c' sang trái và sang phải.",
+              "Xem diện tích màu đỏ (α) và diện tích màu vàng (β) giằng co nhau.",
+              "Kéo slider 'Cỡ mẫu n' tăng lên 36 để thấy 2 quả chuông tách rời nhau ra."
+            ]}
+            whatToObserve="Khi kéo ngưỡng x_c sang phải: α giảm xuống nhưng β lập tức tăng vọt. Chỉ khi kéo n tăng lên (độ lệch chuẩn thu hẹp), cả α và β mới cùng co bé lại, đưa Lực kiểm định (Power = 1 - β) lên sát 100%!"
+            takeaway="Muốn kiểm định vừa nghiêm ngặt (α bé) vừa nhạy bén (Power cao) $\implies$ BẮT BUỘC PHẢI THU THẬP THÊM MẪU n!"
+          />
+
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Phân Bố H₀ vs H₁ & Đánh Đổi Sai Lầm Loại I - II"
@@ -99,453 +130,264 @@ export const HypothesisTesting: React.FC = () => {
                   <span className="text-xs px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-mono font-bold border border-amber-300">
                     β = {fmt(beta * 100, 1)}%
                   </span>
-                  <span className="text-xs px-2.5 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono font-bold border border-emerald-300">
+                  <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono font-bold border border-emerald-300">
                     Power = {fmt(power * 100, 1)}%
                   </span>
                 </div>
               }
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
-              <svg viewBox="-3 0 8 1.05" className="w-full h-auto select-none">
-                {/* Horizontal baseline */}
-                <line x1="-3" y1="1.0" x2="5" y2="1.0" stroke="#0F172A" strokeWidth="0.015" />
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[440px]">
+              <div className="relative w-full max-w-3xl h-72 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
+                <svg viewBox="-2 0 7 1" className="w-full h-full" preserveAspectRatio="none">
+                  {/* Trục */}
+                  <line x1="-2" y1="0.95" x2="5" y2="0.95" stroke="#94a3b8" strokeWidth="0.008" />
 
-                {/* Vertical Axis at 0 */}
-                <line x1="0" y1="0.05" x2="0" y2="1.0" stroke="#0F172A" strokeWidth="0.01" strokeDasharray="0.03 0.02" opacity="0.5" />
+                  {/* Curve H0 (Blue) */}
+                  {(() => {
+                    const pts = [];
+                    for (let x = -2; x <= 4; x += 0.05) {
+                      const y = 0.95 - normalPdf(x, mu0, stdMean) * 0.8;
+                      pts.push(`${x},${y}`);
+                    }
+                    return <polyline points={pts.join(' ')} fill="none" stroke="#0284c7" strokeWidth="0.02" />;
+                  })()}
 
-                {/* Shaded Area: Type I Error (Alpha) under H0 from threshold to 5 */}
-                <path
-                  d={`M ${threshold} 1.0 ` +
-                    Array.from({ length: 60 }, (_, i) => {
-                      const x = threshold + (i / 59) * (5 - threshold);
-                      const y = 1.0 - normalPdf(x, mu0, stdMean);
-                      return `L ${x} ${Math.max(0.05, y)}`;
-                    }).join(' ') +
-                    ` L 5 1.0 Z`}
-                  fill="rgba(239, 68, 68, 0.35)"
-                  stroke="none"
-                />
+                  {/* Curve H1 (Emerald) */}
+                  {(() => {
+                    const pts = [];
+                    for (let x = -1; x <= 5; x += 0.05) {
+                      const y = 0.95 - normalPdf(x, mu1, stdMean) * 0.8;
+                      pts.push(`${x},${y}`);
+                    }
+                    return <polyline points={pts.join(' ')} fill="none" stroke="#10b981" strokeWidth="0.02" />;
+                  })()}
 
-                {/* Shaded Area: Type II Error (Beta) under H1 from -3 to threshold */}
-                <path
-                  d={`M -3 1.0 ` +
-                    Array.from({ length: 60 }, (_, i) => {
-                      const x = -3 + (i / 59) * (threshold - (-3));
-                      const y = 1.0 - normalPdf(x, mu1, stdMean);
-                      return `L ${x} ${Math.max(0.05, y)}`;
-                    }).join(' ') +
-                    ` L ${threshold} 1.0 Z`}
-                  fill="rgba(245, 158, 11, 0.35)"
-                  stroke="none"
-                />
+                  {/* Ngưỡng Threshold x_c */}
+                  <line x1={threshold} y1="0.05" x2={threshold} y2="0.95" stroke="#e11d48" strokeWidth="0.03" strokeDasharray="0.05 0.05" />
+                </svg>
 
-                {/* H0 Curve (Blue) */}
-                <path
-                  d={Array.from({ length: 140 }, (_, i) => {
-                    const x = -3 + (i / 140) * 8;
-                    const y = 1.0 - normalPdf(x, mu0, stdMean);
-                    return `${i === 0 ? 'M' : 'L'} ${x} ${Math.max(0.05, y)}`;
-                  }).join(' ')}
-                  fill="none"
-                  stroke="#0284C7"
-                  strokeWidth="0.025"
-                  strokeLinecap="round"
-                />
-
-                {/* H1 Curve (Green) */}
-                <path
-                  d={Array.from({ length: 140 }, (_, i) => {
-                    const x = -3 + (i / 140) * 8;
-                    const y = 1.0 - normalPdf(x, mu1, stdMean);
-                    return `${i === 0 ? 'M' : 'L'} ${x} ${Math.max(0.05, y)}`;
-                  }).join(' ')}
-                  fill="none"
-                  stroke="#10B981"
-                  strokeWidth="0.025"
-                  strokeLinecap="round"
-                />
-
-                {/* Rejection Threshold Line (Red Dashed) */}
-                <line
-                  x1={threshold}
-                  y1="0.08"
-                  x2={threshold}
-                  y2="1.0"
-                  stroke="#EF4444"
-                  strokeWidth="0.02"
-                  strokeDasharray="0.04 0.02"
-                />
-                <circle cx={threshold} cy="0.08" r="0.03" fill="#EF4444" />
-                <text
-                  x={threshold}
-                  y="0.05"
-                  fill="#EF4444"
-                  fontSize="0.14"
-                  textAnchor="middle"
-                  fontWeight="black"
-                  className="font-mono"
-                >
-                  Ngưỡng x_c = {fmt(threshold, 2)}
-                </text>
-              </svg>
-
-              {/* HUD Footer Legend */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
-                    <span className="w-5 h-1 bg-sky-600 rounded-full"></span> Giả thuyết H₀: μ = {mu0}
-                  </span>
-                  <span className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
-                    <span className="w-5 h-1 bg-emerald-600 rounded-full"></span> Đối thuyết H₁: μ = {mu1}
-                  </span>
-                  <span className="flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400">
-                    <span className="w-3.5 h-3.5 bg-rose-500/40 border border-rose-500 rounded-xs"></span> Vùng Sai lầm Loại I (α)
-                  </span>
-                  <span className="flex items-center gap-1.5 font-bold text-amber-600 dark:text-amber-400">
-                    <span className="w-3.5 h-3.5 bg-amber-500/40 border border-amber-500 rounded-xs"></span> Vùng Sai lầm Loại II (β)
-                  </span>
-                </div>
-                <div className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
-                  σ/√n = {fmt(stdMean, 3)}
+                <div className="absolute top-3 left-4 text-xs font-mono bg-white/90 dark:bg-slate-900/90 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
+                  <div className="text-sky-600 font-bold">Chuông xanh trái: H₀ (μ₀ = 0)</div>
+                  <div className="text-emerald-600 font-bold">Chuông xanh phải: H₁ (μ₁ = {fmt(mu1, 1)})</div>
+                  <div className="text-rose-600 font-extrabold border-t border-slate-200 dark:border-slate-700 pt-1">
+                    Vạch đỏ: Ngưỡng quyết định x_c = {fmt(threshold, 2)}
+                  </div>
                 </div>
               </div>
             </div>
-          </ClayCard>
 
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Cột 1: Ngưỡng & Cỡ mẫu */}
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  1. Ngưỡng Bác Bỏ & Cỡ Mẫu
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Dịch chuyển ngưỡng x_c để thấy sự đánh đổi bù trừ giữa α và β:
-                </p>
-              </div>
-
-              <div className="space-y-3">
+            {/* Controls */}
+            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
+              <div className="max-w-xl mx-auto space-y-4">
                 <ClaySlider
-                  label="Vị trí ngưỡng bác bỏ x_c"
+                  label="Ngưỡng quyết định x_c"
+                  sublabel="Dịch để đánh đổi giữa α (Loại I) và β (Loại II)"
                   value={threshold}
                   min={0.2}
-                  max={2.3}
+                  max={2.2}
                   step={0.05}
                   color="rose"
-                  formatValue={(v) => `x_c = ${fmt(v, 2)}`}
                   onChange={setThreshold}
                 />
-
                 <ClaySlider
                   label="Cỡ mẫu n"
+                  sublabel="n càng lớn, 2 quả chuông càng co cụm và tách rời"
                   value={sampleN}
                   min={4}
-                  max={64}
-                  step={4}
+                  max={40}
+                  step={2}
                   color="blue"
-                  formatValue={(v) => `n = ${v}`}
                   onChange={setSampleN}
                 />
               </div>
-            </ClayCard>
-
-            {/* Cột 2: Hiệu ứng khác biệt */}
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  2. Độ Lệch Hiệu Ứng
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Khoảng cách giữa hai kỳ vọng đối nghịch |μ₁ - μ₀|:
-                </p>
-              </div>
-
-              <ClaySlider
-                label="Kỳ vọng đối thuyết mu1"
-                value={mu1}
-                min={1.0}
-                max={3.5}
-                step={0.1}
-                color="emerald"
-                formatValue={(v) => `μ₁ = ${fmt(v, 1)}`}
-                onChange={setMu1}
-              />
-
-              <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                <span className="font-bold text-slate-800 dark:text-slate-200">Quy tắc vàng:</span>
-                <p className="text-slate-600 dark:text-slate-400 mt-0.5">
-                  Cách duy nhất để <strong>giảm đồng thời cả α và β</strong> là <strong>tăng cỡ mẫu n</strong> (chuông sẽ co hẹp lại)!
-                </p>
-              </div>
-            </ClayCard>
-
-            {/* Cột 3: Bảng quyết định 4 ô */}
-            <ClayCard className="p-5 space-y-2.5 flex flex-col justify-between">
-              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
-                3. Bảng Ma Trận Sai Lầm
-              </h3>
-
-              <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800">
-                  <div className="text-[10px] text-emerald-800 dark:text-emerald-300 font-sans font-bold">Chấp nhận H₀ đúng:</div>
-                  <div className="text-base font-black text-emerald-600">{fmt((1 - alpha) * 100, 1)}%</div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800">
-                  <div className="text-[10px] text-rose-800 dark:text-rose-300 font-sans font-bold">Sai lầm Loại I (α):</div>
-                  <div className="text-base font-black text-rose-600">{fmt(alpha * 100, 1)}%</div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800">
-                  <div className="text-[10px] text-amber-800 dark:text-amber-300 font-sans font-bold">Sai lầm Loại II (β):</div>
-                  <div className="text-base font-black text-amber-600">{fmt(beta * 100, 1)}%</div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-800">
-                  <div className="text-[10px] text-sky-800 dark:text-sky-300 font-sans font-bold">Công lực (Power):</div>
-                  <div className="text-base font-black text-sky-600">{fmt(power * 100, 1)}%</div>
-                </div>
-              </div>
-            </ClayCard>
-          </div>
+            </div>
+          </ClayCard>
         </div>
       )}
 
-      {/* TAB 2: P-VALUE */}
+      {/* =========================================================================
+          TAB 2: P-VALUE VISUALIZER
+         ========================================================================= */}
       {activeTab === 'pvalue' && (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA */}
+          <LabBriefing
+            question="Trị số p (p-value) thực chất là gì? Tại sao quy tắc quyết định luôn là: 'Nếu p-value <= alpha thì BÁC BỎ H_0'?"
+            formula="p\text{-value} = P(\text{Thống kê mẫu cực đoan hơn hoặc bằng giá trị quan sát được} \mid H_0 \text{ đúng})"
+            mathExplanation="p-value đo 'mức độ ngạc nhiên' của dữ liệu nếu giả định H_0 là đúng. Nếu p-value cực nhỏ (ví dụ 0.01), nghĩa là nếu H_0 đúng thì cơ hội xảy ra dữ liệu mẫu như vậy chỉ là 1% $\implies$ quá phi lý $\implies$ H_0 sai $\implies$ BÁC BỎ H_0!"
+            howToInteract={[
+              "Chọn loại kiểm định: Phía phải, Phía trái, hoặc Hai phía.",
+              "Kéo slider giá trị thống kê mẫu Z_obs từ 0.0 đến 3.5.",
+              "Xem diện tích đuôi p-value co hẹp lại và trạng thái BÁC BỎ / CHẤP NHẬN đổi màu."
+            ]}
+            whatToObserve="Khi Z_obs vượt qua vạch tới hạn Z_crit (vạch đỏ), diện tích p-value lập tức nhỏ hơn alpha (0.05) $\implies$ Hộp kết luận nhảy sang màu đỏ: 'BÁC BỎ H₀, CÓ Ý NGHĨA THỐNG KÊ'!"
+            takeaway="Câu thần chú ôn thi: 'p-value nhỏ hơn alpha thì BÁC BỎ H_0, lớn hơn alpha thì CHƯA ĐỦ BẰNG CHỨNG để bác bỏ'!"
+          />
+
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Diện Tích Quét p-value Trên Phân Bố Chuẩn Tắc N(0, 1)"
-              formula="\text{p-value} \le \alpha \implies \text{Bác bỏ } H_0"
-              badge={`p = ${fmt(pValue, 4)}`}
-              extraActions={
-                <span className={`text-xs px-2.5 py-1 rounded-full font-heading font-black border ${
-                  rejectH0
-                    ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300 border-rose-300'
-                    : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border-slate-300'
-                }`}>
-                  {rejectH0 ? 'BÁC BỎ H₀' : 'CHƯA ĐỦ CƠ SỞ BÁC BỎ'}
-                </span>
-              }
+              title={`Trực Quan Hóa p-value (${tailType === 'two' ? 'Kiểm định 2 phía' : tailType === 'right' ? 'Phía phải' : 'Phía trái'})`}
+              formula={`p\\text{-value} = ${fmt(pValue, 4)} \\quad vs \\quad \\alpha = ${sigAlpha}`}
+              badge={rejectH0 ? 'BÁC BỎ H₀ (p ≤ α)' : 'CHƯA ĐỦ BẰNG CHỨNG (p > α)'}
+              onReset={() => { setSampleZ(1.96); setTailType('right'); }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
-              <svg viewBox="-4 0 8 0.5" className="w-full h-auto select-none">
-                {/* Horizontal baseline */}
-                <line x1="-4" y1="0.48" x2="4" y2="0.48" stroke="#0F172A" strokeWidth="0.006" />
-
-                {/* Standard Normal curve */}
-                <path
-                  d={Array.from({ length: 160 }, (_, i) => {
-                    const x = -4 + (i / 160) * 8;
-                    const y = 0.48 - normalPdf(x, 0, 1);
-                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                  }).join(' ')}
-                  fill="none"
-                  stroke="#0284C7"
-                  strokeWidth="0.015"
-                  strokeLinecap="round"
-                />
-
-                {/* Shaded P-value tail */}
-                {tailType === 'right' && (
-                  <path
-                    d={`M ${sampleZ} 0.48 ` +
-                      Array.from({ length: 40 }, (_, i) => {
-                        const x = sampleZ + (i / 39) * (4 - sampleZ);
-                        const y = 0.48 - normalPdf(x, 0, 1);
-                        return `L ${x} ${y}`;
-                      }).join(' ') +
-                      ` L 4 0.48 Z`}
-                    fill="rgba(239, 68, 68, 0.35)"
-                    stroke="none"
-                  />
-                )}
-
-                {tailType === 'left' && (
-                  <path
-                    d={`M -4 0.48 ` +
-                      Array.from({ length: 40 }, (_, i) => {
-                        const x = -4 + (i / 39) * (sampleZ - (-4));
-                        const y = 0.48 - normalPdf(x, 0, 1);
-                        return `L ${x} ${y}`;
-                      }).join(' ') +
-                      ` L ${sampleZ} 0.48 Z`}
-                    fill="rgba(239, 68, 68, 0.35)"
-                    stroke="none"
-                  />
-                )}
-
-                {tailType === 'two' && (
-                  <>
-                    <path
-                      d={`M ${Math.abs(sampleZ)} 0.48 ` +
-                        Array.from({ length: 40 }, (_, i) => {
-                          const x = Math.abs(sampleZ) + (i / 39) * (4 - Math.abs(sampleZ));
-                          const y = 0.48 - normalPdf(x, 0, 1);
-                          return `L ${x} ${y}`;
-                        }).join(' ') +
-                        ` L 4 0.48 Z`}
-                      fill="rgba(239, 68, 68, 0.35)"
-                      stroke="none"
-                    />
-                    <path
-                      d={`M -4 0.48 ` +
-                        Array.from({ length: 40 }, (_, i) => {
-                          const x = -4 + (i / 39) * (-Math.abs(sampleZ) - (-4));
-                          const y = 0.48 - normalPdf(x, 0, 1);
-                          return `L ${x} ${y}`;
-                        }).join(' ') +
-                        ` L ${-Math.abs(sampleZ)} 0.48 Z`}
-                      fill="rgba(239, 68, 68, 0.35)"
-                      stroke="none"
-                    />
-                  </>
-                )}
-
-                {/* Z Sample Statistic Marker */}
-                <line
-                  x1={sampleZ}
-                  y1="0.05"
-                  x2={sampleZ}
-                  y2="0.48"
-                  stroke="#EF4444"
-                  strokeWidth="0.02"
-                />
-                <circle cx={sampleZ} cy="0.05" r="0.04" fill="#EF4444" />
-                <text
-                  x={sampleZ}
-                  y="0.03"
-                  fill="#EF4444"
-                  fontSize="0.08"
-                  textAnchor="middle"
-                  fontWeight="black"
-                  className="font-mono"
-                >
-                  Z = {fmt(sampleZ, 2)}
-                </text>
-              </svg>
-
-              {/* HUD Footer Legend */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
-                    <span className="w-5 h-1 bg-sky-600 rounded-full"></span> Chuẩn tắc N(0, 1)
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
+              <div className="w-full max-w-2xl space-y-4">
+                {/* Kết luận Box */}
+                <div className={`p-4 rounded-2xl border-2 text-center transition-all ${
+                  rejectH0
+                    ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-400 text-rose-700 dark:text-rose-300'
+                    : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 text-emerald-700 dark:text-emerald-300'
+                }`}>
+                  <span className="text-xs font-heading font-black uppercase tracking-wider">
+                    Quyết định Thống kê
                   </span>
-                  <span className="flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400">
-                    <span className="w-3.5 h-3.5 bg-rose-500/35 border border-rose-500 rounded-xs"></span> Diện tích p-value ({fmt(pValue * 100, 2)}%)
-                  </span>
+                  <div className="text-2xl font-heading font-black mt-1">
+                    {rejectH0 ? 'BÁC BỎ H₀ (Reject H₀)' : 'CHẤP NHẬN H₀ (Fail to Reject H₀)'}
+                  </div>
+                  <p className="text-xs mt-1">
+                    p-value = <strong className="font-mono">{fmt(pValue, 4)}</strong> {rejectH0 ? '≤' : '>'} α = {sigAlpha}
+                  </p>
                 </div>
-                <div className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
-                  Mức ý nghĩa α = {fmt(sigAlpha, 2)}
+
+                {/* Sơ đồ vị trí Z */}
+                <div className="p-4 bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl space-y-2 text-xs font-mono">
+                  <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span>Giá trị Thống kê Mẫu Z_obs:</span>
+                    <span className="font-bold text-sky-600">{fmt(sampleZ, 2)}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span>Giá trị Tới hạn Z_crit (tại α = {sigAlpha}):</span>
+                    <span className="font-bold text-rose-600">{fmt(zCrit, 2)}</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </ClayCard>
 
-          {/* 2. BẢNG THÔNG SỐ Ở DƯỚI (BOTTOM DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Cột 1: Loại đuôi */}
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  1. Hướng Kiểm Định
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                  Chọn kiểm định 1 phía (trái/phải) hoặc 2 phía:
-                </p>
-              </div>
+            {/* Controls */}
+            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
+              <div className="max-w-xl mx-auto space-y-4">
+                <div className="flex justify-center gap-3">
+                  <ClayButton
+                    variant={tailType === 'right' ? 'primary' : 'outline'}
+                    size="sm"
+                    onClick={() => setTailType('right')}
+                  >
+                    Phía Phải (Z &gt; z_c)
+                  </ClayButton>
+                  <ClayButton
+                    variant={tailType === 'two' ? 'primary' : 'outline'}
+                    size="sm"
+                    onClick={() => setTailType('two')}
+                  >
+                    Hai Phía (|Z| &gt; z_c)
+                  </ClayButton>
+                  <ClayButton
+                    variant={tailType === 'left' ? 'primary' : 'outline'}
+                    size="sm"
+                    onClick={() => setTailType('left')}
+                  >
+                    Phía Trái (Z &lt; -z_c)
+                  </ClayButton>
+                </div>
 
-              <div className="grid grid-cols-3 gap-1.5">
-                <button
-                  onClick={() => setTailType('right')}
-                  className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    tailType === 'right' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                  }`}
-                >
-                  Phải (&gt;)
-                </button>
-                <button
-                  onClick={() => setTailType('left')}
-                  className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    tailType === 'left' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                  }`}
-                >
-                  Trái (&lt;)
-                </button>
-                <button
-                  onClick={() => setTailType('two')}
-                  className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    tailType === 'two' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                  }`}
-                >
-                  2 Phía (≠)
-                </button>
-              </div>
-            </ClayCard>
-
-            {/* Cột 2: Thống kê mẫu Z & Alpha */}
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  2. Thống Kê Z & Mức Ý Nghĩa α
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Di chuyển giá trị Z quan sát từ mẫu:
-                </p>
-              </div>
-
-              <div className="space-y-3">
                 <ClaySlider
-                  label="Thống kê mẫu quan sát Z"
+                  label="Giá trị Thống kê kiểm định Z_obs"
+                  sublabel="Kéo để đưa Z_obs vào hoặc ra khỏi Miền Bác Bỏ"
                   value={sampleZ}
-                  min={-3.5}
+                  min={-3}
                   max={3.5}
                   step={0.05}
                   color="blue"
-                  formatValue={(v) => `Z = ${fmt(v, 2)}`}
                   onChange={setSampleZ}
                 />
+              </div>
+            </div>
+          </ClayCard>
+        </div>
+      )}
 
+      {/* =========================================================================
+          TAB 3: POWER ANALYSIS
+         ========================================================================= */}
+      {activeTab === 'power' && (
+        <div className="space-y-6">
+          <LabBriefing
+            question="Một công ty công nghệ muốn thử nghiệm A/B tính năng mới. Họ cần lấy mẫu tối thiểu bao nhiêu người dùng n để chắc chắn (với xác suất 80% trở lên) phát hiện ra sự cải tiến nếu tính năng đó thực sự hiệu quả?"
+            formula="\text{Power} = 1 - \beta = \Phi\left( d\sqrt{n} - Z_{\alpha/2} \right) \quad \text{với } d = \frac{\mu_1 - \mu_0}{\sigma}"
+            mathExplanation="Đây là bài toán Phân Tích Lực Kiểm Định (Power Analysis). Lực kiểm định chuẩn vàng trong thực tế luôn là 80% (0.80). Nếu cỡ mẫu n quá bé, dù tính năng mới cực tốt, bạn vẫn có tới 70-80% khả năng thất bại trong việc chứng minh nó (Sai lầm loại II)."
+            howToInteract={[
+              "Kéo slider Effect Size d (độ chênh lệch chuẩn hóa) từ 0.2 (hiệu ứng yếu) đến 0.8 (hiệu ứng mạnh).",
+              "Kéo slider Cỡ mẫu n từ 10 đến 120 quan sát.",
+              "Quan sát Lực kiểm định Power dâng lên và vượt qua ngưỡng chuẩn vàng 80%."
+            ]}
+            whatToObserve="Nếu hiệu ứng d rất nhỏ (0.2), bạn cần cỡ mẫu n > 100 mới đạt 80% Power! Nhưng nếu hiệu ứng rất rõ nét (d = 0.8), chỉ cần n = 25 là đủ để kiểm định thành công."
+            takeaway="Phân tích lực kiểm định là bước đầu tiên của mọi dự án Data Science & thử nghiệm lâm sàng: Tính toán trước cỡ mẫu n cần thiết trước khi bắt đầu thu thập dữ liệu!"
+          />
+
+          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title={`Phân Tích Lực Kiểm Định: Power = ${fmt(curPower * 100, 1)}% với n = ${planN}`}
+              formula="n \propto \frac{(Z_{\alpha/2} + Z_{\beta})^2}{d^2}"
+              badge={curPower >= 0.80 ? 'ĐẠT CHUẨN VÀNG (≥ 80%)' : 'THIẾU MẪU (< 80%)'}
+              onReset={() => { setEffectSizeD(0.5); setPlanN(30); }}
+            />
+
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
+              <div className="w-full max-w-2xl space-y-5">
+                <div className="text-center">
+                  <span className="text-xs font-heading font-black text-purple-600 uppercase tracking-wider">
+                    Lực Kiểm Định Hiện Tại (Power = 1 - β)
+                  </span>
+                  <div className={`text-4xl sm:text-5xl font-heading font-black mt-1 ${
+                    curPower >= 0.80 ? 'text-emerald-600' : 'text-amber-600'
+                  }`}>
+                    {fmt(curPower * 100, 1)}%
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Ngưỡng chuẩn vàng khoa học: <strong className="text-slate-800 dark:text-slate-200">80.0%</strong>
+                  </p>
+                </div>
+
+                {/* Thanh đo Power */}
+                <div className="w-full bg-slate-200 dark:bg-slate-700 h-6 rounded-xl overflow-hidden border-2 border-slate-900 relative">
+                  <div
+                    style={{ width: `${curPower * 100}%` }}
+                    className={`h-full transition-all duration-200 ${curPower >= 0.80 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                  />
+                  {/* Vạch 80% */}
+                  <div className="absolute top-0 bottom-0 left-[80%] w-1 bg-red-600 z-10" title="Chuẩn 80%" />
+                </div>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
+              <div className="max-w-xl mx-auto space-y-4">
                 <ClaySlider
-                  label="Mức ý nghĩa alpha"
-                  value={sigAlpha * 100}
-                  min={1}
-                  max={10}
-                  step={1}
-                  color="rose"
-                  formatValue={(v) => `${v}%`}
-                  onChange={(v) => setSigAlpha(v / 100)}
+                  label="Độ chênh lệch Effect Size (Cohen's d)"
+                  sublabel="0.2 (Nhỏ) - 0.5 (Vừa) - 0.8 (Lớn)"
+                  value={effectSizeD}
+                  min={0.2}
+                  max={1.0}
+                  step={0.05}
+                  color="purple"
+                  onChange={setEffectSizeD}
+                />
+                <ClaySlider
+                  label="Cỡ mẫu thử nghiệm n"
+                  sublabel="Kéo n để tăng Lực kiểm định vượt ngưỡng 80%"
+                  value={planN}
+                  min={10}
+                  max={120}
+                  step={5}
+                  color="emerald"
+                  onChange={setPlanN}
                 />
               </div>
-            </ClayCard>
-
-            {/* Cột 3: Kết luận kiểm định */}
-            <ClayCard className="p-5 space-y-2.5 flex flex-col justify-between">
-              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
-                3. Kết Luận Thống Kê
-              </h3>
-
-              <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
-                rejectH0 ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-              }`}>
-                <div className="font-heading font-black text-sm">
-                  {rejectH0 ? 'BÁC BỎ H₀ (Reject H₀)' : 'CHƯA ĐỦ CƠ SỞ BÁC BỎ H₀'}
-                </div>
-                <div className="text-xs font-mono mt-1">
-                  p-value = {fmt(pValue, 4)} {rejectH0 ? '≤' : '>'} α = {fmt(sigAlpha, 2)}
-                </div>
-              </div>
-
-              <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                p-value là xác suất thu được một kết quả cực đoan như hoặc hơn quan sát thực tế nếu H₀ đúng. p-value càng nhỏ chứng cứ chống lại H₀ càng mạnh.
-              </p>
-            </ClayCard>
-          </div>
+            </div>
+          </ClayCard>
         </div>
       )}
     </div>

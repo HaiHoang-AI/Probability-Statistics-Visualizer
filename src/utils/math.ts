@@ -124,3 +124,36 @@ export function fmt(num: number, digits: number = 2): string {
     maximumFractionDigits: digits
   });
 }
+
+// Cauchy distribution PDF (Fat tails, infinite variance)
+export function cauchyPdf(x: number, x0: number = 0, gamma: number = 1): number {
+  if (gamma <= 0) return 0;
+  const z = (x - x0) / gamma;
+  return 1 / (Math.PI * gamma * (1 + z * z));
+}
+
+// Cauchy random variable generator via inverse transform sampling
+export function randomCauchy(x0: number = 0, gamma: number = 1): number {
+  const u = Math.random();
+  return x0 + gamma * Math.tan(Math.PI * (u - 0.5));
+}
+
+// Exponential random variable generator
+export function randomExponential(lambda: number = 1): number {
+  if (lambda <= 0) return 0;
+  return -Math.log(1 - Math.random()) / lambda;
+}
+
+// Poisson random variable generator (Knuth's algorithm)
+export function randomPoisson(lambda: number): number {
+  if (lambda <= 0) return 0;
+  const L = Math.exp(-lambda);
+  let k = 0;
+  let p = 1;
+  do {
+    k++;
+    p *= Math.random();
+  } while (p > L);
+  return k - 1;
+}
+
