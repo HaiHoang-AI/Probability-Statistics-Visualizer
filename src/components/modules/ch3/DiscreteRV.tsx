@@ -115,7 +115,108 @@ export const DiscreteRV: React.FC = () => {
         </div>
       </div>
 
-      {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+      <div className="flex flex-col lg:flex-row gap-6 items-start">
+        {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+        <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+          <ClayCard glowColor="amber" className="p-5">
+          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+            Điều chỉnh Tham số
+          </h4>
+
+          {dist === 'binomial' && (
+            <div className="space-y-3">
+              <ClaySlider
+                label="Số phép thử n"
+                value={binN}
+                min={1}
+                max={20}
+                step={1}
+                color="orange"
+                onChange={setBinN}
+              />
+              <ClaySlider
+                label="Xác suất thành công p"
+                value={binP}
+                min={0.05}
+                max={0.95}
+                step={0.05}
+                color="orange"
+                formatValue={(v) => fmt(v, 2)}
+                onChange={setBinP}
+              />
+            </div>
+          )}
+
+          {dist === 'poisson' && (
+            <ClaySlider
+              label="Tần suất trung bình lambda"
+              value={poiLambda}
+              min={0.5}
+              max={10}
+              step={0.5}
+              color="amber"
+              onChange={setPoiLambda}
+            />
+          )}
+
+          {dist === 'geometric' && (
+            <ClaySlider
+              label="Xác suất thành công p"
+              value={geomP}
+              min={0.1}
+              max={0.9}
+              step={0.05}
+              color="emerald"
+              formatValue={(v) => fmt(v, 2)}
+              onChange={setGeomP}
+            />
+          )}
+        </ClayCard>
+
+        {/* Card 2: Công thức Toán học */}
+        <ClayCard glowColor="blue" className="p-5">
+          <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+            Công thức Khối Xác suất
+          </h4>
+          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
+            Hàm PMF gán khối lượng xác suất cụ thể cho từng giá trị <MathView math="k" />:
+          </p>
+          <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
+            <MathView math={pmfFormula} />
+          </div>
+        </ClayCard>
+
+        {/* Card 3: Thống kê Moment */}
+        <ClayCard glowColor="emerald" className="p-5">
+          <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+            Đặc trưng Số của Phân bố
+          </h4>
+          <div className="space-y-2.5 text-sm sm:text-[15px]">
+            <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-600 dark:text-slate-400 font-medium">Kỳ vọng E[X]:</span>
+              <span className="font-mono font-black text-red-600 dark:text-red-400 text-base sm:text-lg">
+                {fmt(mean, 2)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-600 dark:text-slate-400 font-medium">Phương sai Var(X):</span>
+              <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">
+                {fmt(variance, 2)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-1.5">
+              <span className="text-slate-600 dark:text-slate-400 font-medium">Độ lệch chuẩn sigma:</span>
+              <span className="font-mono font-black text-amber-600 dark:text-amber-400 text-base sm:text-lg">
+                {fmt(sigma, 2)}
+              </span>
+            </div>
+          </div>
+        </ClayCard>
+        </div>
+
+        {/* RIGHT COLUMN: GRAPH STAGE */}
+        <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
       <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
         <DesmosStageHeader
           title="Hàm Khối Xác Suất PMF & Trọng Tâm Vật Lý Kỳ Vọng E[X]"
@@ -260,104 +361,7 @@ export const DiscreteRV: React.FC = () => {
           </div>
         </div>
       </ClayCard>
-
-      {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Card 1: Sliders */}
-        <ClayCard glowColor="amber" className="p-5">
-          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-            Điều chỉnh Tham số
-          </h4>
-
-          {dist === 'binomial' && (
-            <div className="space-y-3">
-              <ClaySlider
-                label="Số phép thử n"
-                value={binN}
-                min={1}
-                max={20}
-                step={1}
-                color="orange"
-                onChange={setBinN}
-              />
-              <ClaySlider
-                label="Xác suất thành công p"
-                value={binP}
-                min={0.05}
-                max={0.95}
-                step={0.05}
-                color="orange"
-                formatValue={(v) => fmt(v, 2)}
-                onChange={setBinP}
-              />
-            </div>
-          )}
-
-          {dist === 'poisson' && (
-            <ClaySlider
-              label="Tần suất trung bình lambda"
-              value={poiLambda}
-              min={0.5}
-              max={10}
-              step={0.5}
-              color="amber"
-              onChange={setPoiLambda}
-            />
-          )}
-
-          {dist === 'geometric' && (
-            <ClaySlider
-              label="Xác suất thành công p"
-              value={geomP}
-              min={0.1}
-              max={0.9}
-              step={0.05}
-              color="emerald"
-              formatValue={(v) => fmt(v, 2)}
-              onChange={setGeomP}
-            />
-          )}
-        </ClayCard>
-
-        {/* Card 2: Công thức Toán học */}
-        <ClayCard glowColor="blue" className="p-5">
-          <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-            Công thức Khối Xác suất
-          </h4>
-          <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
-            Hàm PMF gán khối lượng xác suất cụ thể cho từng giá trị <MathView math="k" />:
-          </p>
-          <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
-            <MathView math={pmfFormula} />
-          </div>
-        </ClayCard>
-
-        {/* Card 3: Thống kê Moment */}
-        <ClayCard glowColor="emerald" className="p-5">
-          <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-            Đặc trưng Số của Phân bố
-          </h4>
-          <div className="space-y-2.5 text-sm sm:text-[15px]">
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-              <span className="text-slate-600 dark:text-slate-400 font-medium">Kỳ vọng E[X]:</span>
-              <span className="font-mono font-black text-red-600 dark:text-red-400 text-base sm:text-lg">
-                {fmt(mean, 2)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-              <span className="text-slate-600 dark:text-slate-400 font-medium">Phương sai Var(X):</span>
-              <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">
-                {fmt(variance, 2)}
-              </span>
-            </div>
-            <div className="flex justify-between items-center py-1.5">
-              <span className="text-slate-600 dark:text-slate-400 font-medium">Độ lệch chuẩn sigma:</span>
-              <span className="font-mono font-black text-amber-600 dark:text-amber-400 text-base sm:text-lg">
-                {fmt(sigma, 2)}
-              </span>
-            </div>
-          </div>
-        </ClayCard>
+        </div>
       </div>
     </div>
   );

@@ -107,7 +107,55 @@ export const BasicProbability: React.FC = () => {
 
       {activeSub === 'monty' ? (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Quy tắc Trò chơi
+              </h4>
+              <ol className="text-sm sm:text-[15px] space-y-2 list-decimal list-inside text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                <li>Bạn chọn 1 cánh cửa bất kỳ trong số 3 cánh cửa.</li>
+                <li>MC biết rõ xe ở đâu, luôn mở 1 trong 2 cánh cửa còn lại có <strong>con Dê</strong>.</li>
+                <li>Bạn được quyền chọn: <strong>Đổi cửa</strong> hay <strong>Giữ nguyên</strong>.</li>
+              </ol>
+            </ClayCard>
+
+            {/* Card 2: Giải thích Bayes */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Bản chất Toán học Bayes
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                Lúc đầu, xác suất bạn chọn trúng Xe chỉ là <MathView math="P(\text{Trúng}) = 1/3" />, xác suất Xe nằm ở 2 cửa kia là <MathView math="2/3" />. Khi MC loại bỏ 1 con Dê, toàn bộ <MathView math="2/3" /> xác suất dồn hết vào cánh cửa còn lại!
+              </p>
+            </ClayCard>
+
+            {/* Card 3: Thống kê & So sánh */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                So sánh Chiến lược
+              </h4>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lý thuyết Đổi cửa:</span>
+                  <span className="font-mono font-bold text-emerald-600 text-sm sm:text-base">66.67% (2/3)</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lý thuyết Giữ cửa:</span>
+                  <span className="font-mono font-bold text-slate-500 text-sm sm:text-base">33.33% (1/3)</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lợi thế khi Đổi cửa:</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">Gấp 2 lần</span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Mô phỏng Trực quan Nghịch lý 3 Cánh Cửa Monty Hall"
@@ -213,56 +261,83 @@ export const BasicProbability: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Hướng dẫn Thao tác */}
-            <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Quy tắc Trò chơi
-              </h4>
-              <ol className="text-sm sm:text-[15px] space-y-2 list-decimal list-inside text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                <li>Bạn chọn 1 cánh cửa bất kỳ trong số 3 cánh cửa.</li>
-                <li>MC biết rõ xe ở đâu, luôn mở 1 trong 2 cánh cửa còn lại có <strong>con Dê</strong>.</li>
-                <li>Bạn được quyền chọn: <strong>Đổi cửa</strong> hay <strong>Giữ nguyên</strong>.</li>
-              </ol>
-            </ClayCard>
-
-            {/* Card 2: Giải thích Bayes */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Bản chất Toán học Bayes
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                Lúc đầu, xác suất bạn chọn trúng Xe chỉ là <MathView math="P(\text{Trúng}) = 1/3" />, xác suất Xe nằm ở 2 cửa kia là <MathView math="2/3" />. Khi MC loại bỏ 1 con Dê, toàn bộ <MathView math="2/3" /> xác suất dồn hết vào cánh cửa còn lại!
-              </p>
-            </ClayCard>
-
-            {/* Card 3: Thống kê & So sánh */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                So sánh Chiến lược
-              </h4>
-              <div className="space-y-2.5 text-sm sm:text-[15px]">
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lý thuyết Đổi cửa:</span>
-                  <span className="font-mono font-bold text-emerald-600 text-sm sm:text-base">66.67% (2/3)</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lý thuyết Giữ cửa:</span>
-                  <span className="font-mono font-bold text-slate-500 text-sm sm:text-base">33.33% (1/3)</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Lợi thế khi Đổi cửa:</span>
-                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">Gấp 2 lần</span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
         </div>
       ) : (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="rose" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Thông số Y tế
+              </h4>
+              <ClaySlider
+                label="Tỷ lệ mắc bệnh nền P(D)"
+                value={prevalence * 100}
+                min={0.01}
+                max={1.0}
+                step={0.01}
+                color="rose"
+                formatValue={(v) => `${fmt(v, 2)}%`}
+                onChange={(v) => setPrevalence(v / 100)}
+              />
+              <div className="mt-2">
+                <ClaySlider
+                  label="Độ nhạy Sensitivity P(+|D)"
+                  value={sensitivity * 100}
+                  min={90}
+                  max={99.9}
+                  step={0.1}
+                  color="emerald"
+                  formatValue={(v) => `${fmt(v, 1)}%`}
+                  onChange={(v) => setSensitivity(v / 100)}
+                />
+              </div>
+              <div className="mt-2">
+                <ClaySlider
+                  label="Độ đặc hiệu Specificity P(-|Dᶜ)"
+                  value={specificity * 100}
+                  min={90}
+                  max={99.9}
+                  step={0.1}
+                  color="blue"
+                  formatValue={(v) => `${fmt(v, 1)}%`}
+                  onChange={(v) => setSpecificity(v / 100)}
+                />
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Công thức Bayes */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Công thức Bayes Thay số
+              </h4>
+              <div className="space-y-2.5 text-sm sm:text-base font-mono text-slate-700 dark:text-slate-200 font-semibold">
+                <div>P(D) = {fmt(prevalence, 4)}</div>
+                <div>P(+|D) = {fmt(sensitivity, 3)}</div>
+                <div>P(+|Dᶜ) = 1 - {fmt(specificity, 3)} = {fmt(1 - specificity, 3)}</div>
+                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 font-bold text-base sm:text-lg">
+                  P(+) = {fmt(pTotalPositive, 5)}
+                </div>
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Nghịch lý Trực quan */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Bản chất Nghịch lý
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                Khi một căn bệnh rất hiếm, số người khỏe mạnh chiếm đại đa số (9,990 người). Dù que thử sai sót rất ít (1%), 1% của nhóm khỏe mạnh ({falsePos} người) vẫn <strong>lớn gấp nhiều lần</strong> tổng số người thực sự mắc bệnh ({popSick} người). Do đó, cần test khẳng định lần 2!
+              </p>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Phân tích Luồng Dân số 10,000 Người & Nghịch lý Dương tính Giả"
@@ -333,74 +408,7 @@ export const BasicProbability: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Sliders */}
-            <ClayCard glowColor="rose" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Thông số Y tế
-              </h4>
-              <ClaySlider
-                label="Tỷ lệ mắc bệnh nền P(D)"
-                value={prevalence * 100}
-                min={0.01}
-                max={1.0}
-                step={0.01}
-                color="rose"
-                formatValue={(v) => `${fmt(v, 2)}%`}
-                onChange={(v) => setPrevalence(v / 100)}
-              />
-              <div className="mt-2">
-                <ClaySlider
-                  label="Độ nhạy Sensitivity P(+|D)"
-                  value={sensitivity * 100}
-                  min={90}
-                  max={99.9}
-                  step={0.1}
-                  color="emerald"
-                  formatValue={(v) => `${fmt(v, 1)}%`}
-                  onChange={(v) => setSensitivity(v / 100)}
-                />
-              </div>
-              <div className="mt-2">
-                <ClaySlider
-                  label="Độ đặc hiệu Specificity P(-|Dᶜ)"
-                  value={specificity * 100}
-                  min={90}
-                  max={99.9}
-                  step={0.1}
-                  color="blue"
-                  formatValue={(v) => `${fmt(v, 1)}%`}
-                  onChange={(v) => setSpecificity(v / 100)}
-                />
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Công thức Bayes */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Công thức Bayes Thay số
-              </h4>
-              <div className="space-y-2.5 text-sm sm:text-base font-mono text-slate-700 dark:text-slate-200 font-semibold">
-                <div>P(D) = {fmt(prevalence, 4)}</div>
-                <div>P(+|D) = {fmt(sensitivity, 3)}</div>
-                <div>P(+|Dᶜ) = 1 - {fmt(specificity, 3)} = {fmt(1 - specificity, 3)}</div>
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 text-sky-600 dark:text-sky-400 font-bold text-base sm:text-lg">
-                  P(+) = {fmt(pTotalPositive, 5)}
-                </div>
-              </div>
-            </ClayCard>
-
-            {/* Card 3: Nghịch lý Trực quan */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Bản chất Nghịch lý
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                Khi một căn bệnh rất hiếm, số người khỏe mạnh chiếm đại đa số (9,990 người). Dù que thử sai sót rất ít (1%), 1% của nhóm khỏe mạnh ({falsePos} người) vẫn <strong>lớn gấp nhiều lần</strong> tổng số người thực sự mắc bệnh ({popSick} người). Do đó, cần test khẳng định lần 2!
-              </p>
-            </ClayCard>
+            </div>
           </div>
         </div>
       )}

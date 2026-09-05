@@ -148,7 +148,103 @@ export const DerivedConvolution: React.FC = () => {
         <div className="space-y-6">
 
           {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT TRÊN Ô GRID) */}
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Card 1: Vị trí quét z */}
+            <ClayCard glowColor="orange" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Vị trí quét trượt z
+              </h4>
+              <ClaySlider
+                label="Giá trị z"
+                value={zValue}
+                min={0}
+                max={2}
+                step={0.02}
+                formatValue={(v) => fmt(v, 2)}
+                color="orange"
+                onChange={(v) => {
+                  setIsPlaying(false);
+                  setZValue(v);
+                }}
+              />
+              <div className="mt-4 flex gap-2">
+                <ClayButton
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIsPlaying(false);
+                    setZValue(0);
+                  }}
+                  className="w-full text-xs"
+                >
+                  Về z = 0
+                </ClayButton>
+                <ClayButton
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setIsPlaying(false);
+                    setZValue(1.0);
+                  }}
+                  className="w-full text-xs"
+                >
+                  Đỉnh z = 1.0
+                </ClayButton>
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Bản chất Toán học (Slide 15) */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Công thức Giải tích (Slide 15)
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
+                Khi <MathView math="X, Y \sim \mathcal{U}[0, 1]" />, tích chập biến 2 khối hình chữ nhật thành <strong>phân bố hình tam giác</strong>:
+              </p>
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 text-sm sm:text-base text-center font-mono font-bold text-sky-700 dark:text-sky-300">
+                <MathView math="f_Z(z) = \begin{cases} z & 0 \le z \le 1 \\ 2 - z & 1 < z \le 2 \end{cases}" />
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Trạng thái Tích phân */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Trạng thái Giao diện Tích phân
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Pha chuyển động:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    {zValue <= 0
+                      ? 'Chưa tiếp xúc'
+                      : zValue <= 1
+                      ? 'Đang tiến vào (Diện tích tăng)'
+                      : zValue < 2
+                      ? 'Đang rời khỏi (Diện tích giảm)'
+                      : 'Đã tách rời hoàn toàn'}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Độ dài giao miền:</span>
+                  <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                    {fmt(zValue <= 1 ? zValue : Math.max(0, 2 - zValue), 2)} đv
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Mật độ <MathView math="f_Z(z)" />:</span>
+                  <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                    {fmt(zValue <= 1 ? zValue : Math.max(0, 2 - zValue), 2)}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Mô phỏng Quét Tích chập & Diện tích Giao tích phân"
               formula="f_Z(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z-x) dx"
@@ -340,98 +436,7 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Vị trí quét z */}
-            <ClayCard glowColor="orange" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Vị trí quét trượt z
-              </h4>
-              <ClaySlider
-                label="Giá trị z"
-                value={zValue}
-                min={0}
-                max={2}
-                step={0.02}
-                formatValue={(v) => fmt(v, 2)}
-                color="orange"
-                onChange={(v) => {
-                  setIsPlaying(false);
-                  setZValue(v);
-                }}
-              />
-              <div className="mt-4 flex gap-2">
-                <ClayButton
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setIsPlaying(false);
-                    setZValue(0);
-                  }}
-                  className="w-full text-xs"
-                >
-                  Về z = 0
-                </ClayButton>
-                <ClayButton
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setIsPlaying(false);
-                    setZValue(1.0);
-                  }}
-                  className="w-full text-xs"
-                >
-                  Đỉnh z = 1.0
-                </ClayButton>
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Bản chất Toán học (Slide 15) */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Công thức Giải tích (Slide 15)
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
-                Khi <MathView math="X, Y \sim \mathcal{U}[0, 1]" />, tích chập biến 2 khối hình chữ nhật thành <strong>phân bố hình tam giác</strong>:
-              </p>
-              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800/80 border border-sky-200 dark:border-slate-700 text-sm sm:text-base text-center font-mono font-bold text-sky-700 dark:text-sky-300">
-                <MathView math="f_Z(z) = \begin{cases} z & 0 \le z \le 1 \\ 2 - z & 1 < z \le 2 \end{cases}" />
-              </div>
-            </ClayCard>
-
-            {/* Card 3: Trạng thái Tích phân */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Trạng thái Giao diện Tích phân
-              </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Pha chuyển động:</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-200">
-                    {zValue <= 0
-                      ? 'Chưa tiếp xúc'
-                      : zValue <= 1
-                      ? 'Đang tiến vào (Diện tích tăng)'
-                      : zValue < 2
-                      ? 'Đang rời khỏi (Diện tích giảm)'
-                      : 'Đã tách rời hoàn toàn'}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Độ dài giao miền:</span>
-                  <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
-                    {fmt(zValue <= 1 ? zValue : Math.max(0, 2 - zValue), 2)} đv
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Mật độ <MathView math="f_Z(z)" />:</span>
-                  <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
-                    {fmt(zValue <= 1 ? zValue : Math.max(0, 2 - zValue), 2)}
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -456,7 +461,98 @@ export const DerivedConvolution: React.FC = () => {
       {activeTab === 'correlation' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Card 1: Slider rho */}
+            <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Điều chỉnh Hệ số Tương quan
+              </h4>
+              <ClaySlider
+                label="Hệ số Pearson rho"
+                value={rho}
+                min={-1}
+                max={1}
+                step={0.05}
+                color="amber"
+                formatValue={(v) => fmt(v, 2)}
+                onChange={(v) => {
+                  setShowParabola(false);
+                  setRho(v);
+                }}
+              />
+              <div className="mt-3 flex gap-2">
+                <button
+                  onClick={() => { setShowParabola(false); setRho(-0.9); }}
+                  className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                >
+                  ρ = -0.9
+                </button>
+                <button
+                  onClick={() => { setShowParabola(false); setRho(0); }}
+                  className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                >
+                  ρ = 0.0
+                </button>
+                <button
+                  onClick={() => { setShowParabola(false); setRho(0.9); }}
+                  className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
+                >
+                  ρ = +0.9
+                </button>
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Bản chất Không tương quan vs Độc lập */}
+            <ClayCard glowColor="purple" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Không tương quan ≠ Độc lập
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                {showParabola ? (
+                  <span>
+                    Khi <MathView math="Y = X^2" />, do tính đối xứng quanh 0, <MathView math="\text{Cov}(X, Y) = 0 \implies \rho = 0" />. Hai biến <strong>không tương quan tuyến tính</strong>, nhưng phụ thuộc hoàn toàn!
+                  </span>
+                ) : Math.abs(rho) > 0.75 ? (
+                  'Tương quan tuyến tính rất mạnh: Đám mây điểm co cụm thành một dải hẹp quanh đường hồi quy.'
+                ) : Math.abs(rho) < 0.25 ? (
+                  'Tương quan gần 0: Đám mây phân tán đều tròn, biết X không giúp ích dự đoán Y bằng phương pháp tuyến tính.'
+                ) : (
+                  'Tương quan tuyến tính mức độ vừa phải.'
+                )}
+              </p>
+            </ClayCard>
+
+            {/* Card 3: Thống kê Mẫu */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Chỉ số Bivariate
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Số điểm quan sát:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">250 mẫu</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Phương sai giải thích:</span>
+                  <span className="font-mono font-bold text-sky-600 dark:text-sky-400">
+                    {showParabola ? '0.0%' : `${fmt(rho * rho * 100, 1)}%`}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Hệ số góc hồi quy:</span>
+                  <span className="font-mono font-extrabold text-amber-600 dark:text-amber-400 text-sm">
+                    {showParabola ? '0.00' : fmt(rho, 2)}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Đám Mây Điểm Bivariate & Hệ Số Pearson ρ"
               formula="\rho = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} \in [-1, 1]"
@@ -571,93 +667,7 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Slider rho */}
-            <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Điều chỉnh Hệ số Tương quan
-              </h4>
-              <ClaySlider
-                label="Hệ số Pearson rho"
-                value={rho}
-                min={-1}
-                max={1}
-                step={0.05}
-                color="amber"
-                formatValue={(v) => fmt(v, 2)}
-                onChange={(v) => {
-                  setShowParabola(false);
-                  setRho(v);
-                }}
-              />
-              <div className="mt-3 flex gap-2">
-                <button
-                  onClick={() => { setShowParabola(false); setRho(-0.9); }}
-                  className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
-                >
-                  ρ = -0.9
-                </button>
-                <button
-                  onClick={() => { setShowParabola(false); setRho(0); }}
-                  className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
-                >
-                  ρ = 0.0
-                </button>
-                <button
-                  onClick={() => { setShowParabola(false); setRho(0.9); }}
-                  className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 cursor-pointer"
-                >
-                  ρ = +0.9
-                </button>
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Bản chất Không tương quan vs Độc lập */}
-            <ClayCard glowColor="purple" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Không tương quan ≠ Độc lập
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                {showParabola ? (
-                  <span>
-                    Khi <MathView math="Y = X^2" />, do tính đối xứng quanh 0, <MathView math="\text{Cov}(X, Y) = 0 \implies \rho = 0" />. Hai biến <strong>không tương quan tuyến tính</strong>, nhưng phụ thuộc hoàn toàn!
-                  </span>
-                ) : Math.abs(rho) > 0.75 ? (
-                  'Tương quan tuyến tính rất mạnh: Đám mây điểm co cụm thành một dải hẹp quanh đường hồi quy.'
-                ) : Math.abs(rho) < 0.25 ? (
-                  'Tương quan gần 0: Đám mây phân tán đều tròn, biết X không giúp ích dự đoán Y bằng phương pháp tuyến tính.'
-                ) : (
-                  'Tương quan tuyến tính mức độ vừa phải.'
-                )}
-              </p>
-            </ClayCard>
-
-            {/* Card 3: Thống kê Mẫu */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Chỉ số Bivariate
-              </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Số điểm quan sát:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">250 mẫu</span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Phương sai giải thích:</span>
-                  <span className="font-mono font-bold text-sky-600 dark:text-sky-400">
-                    {showParabola ? '0.0%' : `${fmt(rho * rho * 100, 1)}%`}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Hệ số góc hồi quy:</span>
-                  <span className="font-mono font-extrabold text-amber-600 dark:text-amber-400 text-sm">
-                    {showParabola ? '0.00' : fmt(rho, 2)}
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -681,7 +691,86 @@ export const DerivedConvolution: React.FC = () => {
       {activeTab === 'totalvar' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Card 1: Sliders */}
+            <ClayCard glowColor="orange" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Điều chỉnh Thành phần
+              </h4>
+              <ClaySlider
+                label="Khoảng cách giữa các nhóm"
+                sublabel="Tăng Var(E[X|Y])"
+                value={groupGap}
+                min={0.5}
+                max={5}
+                step={0.1}
+                color="orange"
+                onChange={setGroupGap}
+              />
+              <div className="mt-3">
+                <ClaySlider
+                  label="Độ phân tán nội bộ nhóm"
+                  sublabel="Tăng E[Var(X|Y)]"
+                  value={withinVar}
+                  min={0.5}
+                  max={5}
+                  step={0.1}
+                  color="blue"
+                  onChange={setWithinVar}
+                />
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Ý nghĩa Lý thuyết */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Ý nghĩa Định lý Eve
+              </h4>
+              <ul className="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                <li className="flex items-start gap-1.5">
+                  <span className="font-bold text-sky-600">• Var(E[X|Y]):</span>
+                  <span>Phương sai giải thích được nhờ biến điều kiện Y (khoảng cách giữa các tâm nhóm).</span>
+                </li>
+                <li className="flex items-start gap-1.5">
+                  <span className="font-bold text-slate-500">• E[Var(X|Y)]:</span>
+                  <span>Phương sai không giải thích được, do nhiễu nội bộ từng nhóm.</span>
+                </li>
+              </ul>
+            </ClayCard>
+
+            {/* Card 3: Thống kê Tổng hợp */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Tổng Phương sai Var(X)
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Tổng Var(X):</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-white text-base">
+                    {fmt(totalVariance, 2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Tỷ lệ giải thích:</span>
+                  <span className="font-mono font-bold text-sky-600 dark:text-sky-400">
+                    {betweenPct}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Tỷ lệ chưa giải thích:</span>
+                  <span className="font-mono font-bold text-slate-500">
+                    {withinPct}%
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Trực quan Luật Phân rã Phương sai Toàn phần (Eve's Law)"
               formula="\text{Var}(X) = \text{Var}(\mathbb{E}[X|Y]) + \mathbb{E}[\text{Var}(X|Y)]"
@@ -771,81 +860,7 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Sliders */}
-            <ClayCard glowColor="orange" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Điều chỉnh Thành phần
-              </h4>
-              <ClaySlider
-                label="Khoảng cách giữa các nhóm"
-                sublabel="Tăng Var(E[X|Y])"
-                value={groupGap}
-                min={0.5}
-                max={5}
-                step={0.1}
-                color="orange"
-                onChange={setGroupGap}
-              />
-              <div className="mt-3">
-                <ClaySlider
-                  label="Độ phân tán nội bộ nhóm"
-                  sublabel="Tăng E[Var(X|Y)]"
-                  value={withinVar}
-                  min={0.5}
-                  max={5}
-                  step={0.1}
-                  color="blue"
-                  onChange={setWithinVar}
-                />
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Ý nghĩa Lý thuyết */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Ý nghĩa Định lý Eve
-              </h4>
-              <ul className="text-xs space-y-2 text-slate-600 dark:text-slate-300">
-                <li className="flex items-start gap-1.5">
-                  <span className="font-bold text-sky-600">• Var(E[X|Y]):</span>
-                  <span>Phương sai giải thích được nhờ biến điều kiện Y (khoảng cách giữa các tâm nhóm).</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <span className="font-bold text-slate-500">• E[Var(X|Y)]:</span>
-                  <span>Phương sai không giải thích được, do nhiễu nội bộ từng nhóm.</span>
-                </li>
-              </ul>
-            </ClayCard>
-
-            {/* Card 3: Thống kê Tổng hợp */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Tổng Phương sai Var(X)
-              </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Tổng Var(X):</span>
-                  <span className="font-mono font-extrabold text-slate-900 dark:text-white text-base">
-                    {fmt(totalVariance, 2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Tỷ lệ giải thích:</span>
-                  <span className="font-mono font-bold text-sky-600 dark:text-sky-400">
-                    {betweenPct}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Tỷ lệ chưa giải thích:</span>
-                  <span className="font-mono font-bold text-slate-500">
-                    {withinPct}%
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -869,7 +884,107 @@ export const DerivedConvolution: React.FC = () => {
       {activeTab === 'transform' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Card 1: Chọn hàm & Slider x */}
+            <ClayCard glowColor="purple" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Hàm chuyển đổi $Y = g(X)$
+              </h4>
+              <div className="flex gap-2 mb-3">
+                <button
+                  onClick={() => setTransformType('square')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                    transformType === 'square' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  $Y = X^2$
+                </button>
+                <button
+                  onClick={() => setTransformType('linear')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                    transformType === 'linear' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  $Y = 2X+1$
+                </button>
+                <button
+                  onClick={() => setTransformType('exp')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                    transformType === 'exp' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  $Y = e^X$
+                </button>
+              </div>
+
+              <ClaySlider
+                label="Điểm khảo sát x"
+                sublabel="Quan sát độ co giãn không gian"
+                value={xSlider}
+                min={0.2}
+                max={2.0}
+                step={0.05}
+                color="purple"
+                formatValue={(v) => fmt(v, 2)}
+                onChange={setXSlider}
+              />
+            </ClayCard>
+
+            {/* Card 2: Bản chất Jacobian */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Ý nghĩa Hệ số Co giãn
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                Độ dốc <MathView math="|g'(x)|" /> chính là hệ số kéo giãn độ dài vi phân: <MathView math="dy = |g'(x)| dx" />.
+                Chỗ nào đồ thị uốn cong dốc đứng, không gian y bị kéo rộng ra khiến mật độ xác suất <MathView math="f_Y(y)" /> bị loãng và hạ thấp!
+              </p>
+            </ClayCard>
+
+            {/* Card 3: Bảng giá trị tức thời */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Giá trị tại điểm x = {fmt(xSlider, 2)}
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Giá trị $y = g(x)$:</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">
+                    {fmt(transformType === 'square' ? xSlider ** 2 : transformType === 'linear' ? 2 * xSlider + 1 : Math.exp(xSlider), 2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Độ dốc $|g'(x)|$:</span>
+                  <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                    {fmt(transformType === 'square' ? 2 * xSlider : transformType === 'linear' ? 2 : Math.exp(xSlider), 2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Mật độ <MathView math="f_Y(y)" />:</span>
+                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                    {fmt(
+                      0.5 /
+                        Math.max(
+                          0.01,
+                          transformType === 'square'
+                            ? 2 * xSlider
+                            : transformType === 'linear'
+                            ? 2
+                            : Math.exp(xSlider)
+                        ),
+                      3
+                    )}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title={`Đổi biến Hàm Mật độ: Y = ${transformType === 'square' ? 'X²' : transformType === 'linear' ? '2X + 1' : 'e^X'}`}
               formula="f_Y(y) = \frac{f_X(x)}{|g'(x)|}"
@@ -1050,102 +1165,7 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Chọn hàm & Slider x */}
-            <ClayCard glowColor="purple" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Hàm chuyển đổi $Y = g(X)$
-              </h4>
-              <div className="flex gap-2 mb-3">
-                <button
-                  onClick={() => setTransformType('square')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    transformType === 'square' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
-                  }`}
-                >
-                  $Y = X^2$
-                </button>
-                <button
-                  onClick={() => setTransformType('linear')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    transformType === 'linear' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
-                  }`}
-                >
-                  $Y = 2X+1$
-                </button>
-                <button
-                  onClick={() => setTransformType('exp')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    transformType === 'exp' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
-                  }`}
-                >
-                  $Y = e^X$
-                </button>
-              </div>
-
-              <ClaySlider
-                label="Điểm khảo sát x"
-                sublabel="Quan sát độ co giãn không gian"
-                value={xSlider}
-                min={0.2}
-                max={2.0}
-                step={0.05}
-                color="purple"
-                formatValue={(v) => fmt(v, 2)}
-                onChange={setXSlider}
-              />
-            </ClayCard>
-
-            {/* Card 2: Bản chất Jacobian */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Ý nghĩa Hệ số Co giãn
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                Độ dốc <MathView math="|g'(x)|" /> chính là hệ số kéo giãn độ dài vi phân: <MathView math="dy = |g'(x)| dx" />.
-                Chỗ nào đồ thị uốn cong dốc đứng, không gian y bị kéo rộng ra khiến mật độ xác suất <MathView math="f_Y(y)" /> bị loãng và hạ thấp!
-              </p>
-            </ClayCard>
-
-            {/* Card 3: Bảng giá trị tức thời */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Giá trị tại điểm x = {fmt(xSlider, 2)}
-              </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Giá trị $y = g(x)$:</span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-white">
-                    {fmt(transformType === 'square' ? xSlider ** 2 : transformType === 'linear' ? 2 * xSlider + 1 : Math.exp(xSlider), 2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Độ dốc $|g'(x)|$:</span>
-                  <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
-                    {fmt(transformType === 'square' ? 2 * xSlider : transformType === 'linear' ? 2 : Math.exp(xSlider), 2)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Mật độ <MathView math="f_Y(y)" />:</span>
-                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
-                    {fmt(
-                      0.5 /
-                        Math.max(
-                          0.01,
-                          transformType === 'square'
-                            ? 2 * xSlider
-                            : transformType === 'linear'
-                            ? 2
-                            : Math.exp(xSlider)
-                        ),
-                      3
-                    )}
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -1169,7 +1189,95 @@ export const DerivedConvolution: React.FC = () => {
       {activeTab === 'extremes' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Card 1: Chế độ & Số linh kiện n */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Cấu hình Hệ thống
+              </h4>
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setExtremeType('max')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                    extremeType === 'max' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  Hệ Song Song (Max)
+                </button>
+                <button
+                  onClick={() => setExtremeType('min')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                    extremeType === 'min' ? 'bg-emerald-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  Hệ Nối Tiếp (Min)
+                </button>
+              </div>
+
+              <ClaySlider
+                label="Số lượng linh kiện n"
+                value={compN}
+                min={1}
+                max={15}
+                step={1}
+                color={extremeType === 'max' ? 'blue' : 'emerald'}
+                onChange={setCompN}
+              />
+            </ClayCard>
+
+            {/* Card 2: Quy luật Độ tin cậy */}
+            {/* Card 2: Bản chất Toán học */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Quy luật Phân phối Cực trị
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                {extremeType === 'max' ? (
+                  <span>
+                    Trong hệ song song dự phòng, hệ thống chỉ tắt khi linh kiện cuối cùng hỏng. Khi <MathView math="n \to \infty" />, tuổi thọ trung bình tiệm cận cực đại 10: <MathView math="\mathbb{E}[W] = \frac{n}{n+1} \times 10" />.
+                  </span>
+                ) : (
+                  <span>
+                    Trong hệ nối tiếp, chỉ cần 1 linh kiện hỏng là toàn bộ hệ thống sập ngay. Khi <MathView math="n" /> càng lớn, tuổi thọ trung bình lao dốc nhanh về 0: <MathView math="\mathbb{E}[V] = \frac{1}{n+1} \times 10" />.
+                  </span>
+                )}
+              </p>
+            </ClayCard>
+
+            {/* Card 3: Thống kê Tuổi thọ */}
+            <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Chỉ số Tuổi thọ Hệ thống
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Số linh kiện n:</span>
+                  <span className="font-mono font-bold text-slate-900 dark:text-white">{compN} linh kiện</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Tuổi thọ trung bình:</span>
+                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                    {extremeType === 'max' ? fmt((10 * compN) / (compN + 1), 2) : fmt(10 / (compN + 1), 2)} năm
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Trung vị (Median 50%):</span>
+                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                    {extremeType === 'max'
+                      ? fmt(10 * Math.pow(0.5, 1 / compN), 2)
+                      : fmt(10 * (1 - Math.pow(0.5, 1 / compN)), 2)}{' '}
+                    năm
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title={`Mô phỏng Phân phối Cực trị: ${extremeType === 'max' ? 'Hệ Song Song W = max(X₁..Xₙ)' : 'Hệ Nối Tiếp V = min(X₁..Xₙ)'}`}
               formula={extremeType === 'max' ? `F_{\\max}(w) = [F(w)]^{${compN}}` : `F_{\\min}(v) = 1 - [1 - F(v)]^{${compN}}`}
@@ -1258,90 +1366,7 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Chế độ & Số linh kiện n */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Cấu hình Hệ thống
-              </h4>
-              <div className="flex gap-2 mb-4">
-                <button
-                  onClick={() => setExtremeType('max')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    extremeType === 'max' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
-                  }`}
-                >
-                  Hệ Song Song (Max)
-                </button>
-                <button
-                  onClick={() => setExtremeType('min')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    extremeType === 'min' ? 'bg-emerald-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
-                  }`}
-                >
-                  Hệ Nối Tiếp (Min)
-                </button>
-              </div>
-
-              <ClaySlider
-                label="Số lượng linh kiện n"
-                value={compN}
-                min={1}
-                max={15}
-                step={1}
-                color={extremeType === 'max' ? 'blue' : 'emerald'}
-                onChange={setCompN}
-              />
-            </ClayCard>
-
-            {/* Card 2: Quy luật Độ tin cậy */}
-            {/* Card 2: Bản chất Toán học */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Quy luật Phân phối Cực trị
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                {extremeType === 'max' ? (
-                  <span>
-                    Trong hệ song song dự phòng, hệ thống chỉ tắt khi linh kiện cuối cùng hỏng. Khi <MathView math="n \to \infty" />, tuổi thọ trung bình tiệm cận cực đại 10: <MathView math="\mathbb{E}[W] = \frac{n}{n+1} \times 10" />.
-                  </span>
-                ) : (
-                  <span>
-                    Trong hệ nối tiếp, chỉ cần 1 linh kiện hỏng là toàn bộ hệ thống sập ngay. Khi <MathView math="n" /> càng lớn, tuổi thọ trung bình lao dốc nhanh về 0: <MathView math="\mathbb{E}[V] = \frac{1}{n+1} \times 10" />.
-                  </span>
-                )}
-              </p>
-            </ClayCard>
-
-            {/* Card 3: Thống kê Tuổi thọ */}
-            <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Chỉ số Tuổi thọ Hệ thống
-              </h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Số linh kiện n:</span>
-                  <span className="font-mono font-bold text-slate-900 dark:text-white">{compN} linh kiện</span>
-                </div>
-                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Tuổi thọ trung bình:</span>
-                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
-                    {extremeType === 'max' ? fmt((10 * compN) / (compN + 1), 2) : fmt(10 / (compN + 1), 2)} năm
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Trung vị (Median 50%):</span>
-                  <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-                    {extremeType === 'max'
-                      ? fmt(10 * Math.pow(0.5, 1 / compN), 2)
-                      : fmt(10 * (1 - Math.pow(0.5, 1 / compN)), 2)}{' '}
-                    năm
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing

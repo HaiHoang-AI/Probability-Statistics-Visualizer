@@ -213,72 +213,10 @@ export const LimitTheoremsCLT: React.FC = () => {
       {activeTab === 'clt' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
-            <DesmosStageHeader
-              title="Phân Bố Mẫu vs Chuông Gauss Lý Thuyết"
-              formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)"
-              badge={`5,000 Mẫu | n = ${sampleSizeN}`}
-              onReset={runSimulation}
-            />
-
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
-              <div className="relative w-full h-80 sm:h-96 flex items-end gap-1 pt-8 pb-8 px-4 sm:px-8 select-none">
-                {/* Histogram Bars sitting directly on the grid */}
-                {histogram.map((bin, i) => (
-                  <div
-                    key={i}
-                    className="flex-1 bg-sky-500/85 hover:bg-sky-600 dark:bg-sky-500 dark:hover:bg-sky-400 rounded-t-sm transition-all duration-150 border-t border-sky-600 dark:border-sky-300 shadow-xs"
-                    style={{ height: `${Math.max(2, bin.heightPercent)}%` }}
-                    title={`Khoảng: [${fmt(bin.x0, 2)}, ${fmt(bin.x1, 2)}] - Mẫu: ${bin.count}`}
-                  />
-                ))}
-
-                {/* SVG Overlay: Desmos Gaussian Bell Curve directly on the grid */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none p-4 sm:p-8" viewBox="0 0 800 320" preserveAspectRatio="none">
-                  {(() => {
-                    const maxNorm = normalPdf(trueMean, trueMean, theoreticalStd);
-                    const points = [];
-                    for (let px = 0; px <= 800; px += 8) {
-                      const xVal = minVal + (px / 800) * (maxVal - minVal);
-                      const pdfVal = normalPdf(xVal, trueMean, theoreticalStd);
-                      const py = 300 - (pdfVal / maxNorm) * 260;
-                      points.push(`${px},${py}`);
-                    }
-                    return (
-                      <polyline
-                        points={points.join(' ')}
-                        fill="none"
-                        stroke="#EA580C"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                      />
-                    );
-                  })()}
-                </svg>
-              </div>
-
-              {/* HUD Footer Legend */}
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
-                    <span className="w-3 h-3 bg-sky-500 rounded-xs"></span>
-                    Histogram Mẫu (5,000 thực nghiệm)
-                  </span>
-                  <span className="flex items-center gap-1.5 font-semibold text-orange-600 dark:text-orange-400">
-                    <span className="w-4 h-1 bg-orange-600 rounded-full"></span>
-                    Chuông Gauss Chuẩn Hóa
-                  </span>
-                </div>
-                <div className="font-mono text-slate-500 text-[11px]">
-                  μ = {fmt(trueMean, 2)} | σ/√n = {fmt(theoreticalStd, 3)}
-                </div>
-              </div>
-            </div>
-          </ClayCard>
-
-          {/* Bottom Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <ClayCard glowColor="blue" className="p-5">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
               <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                 Phân bố biến gốc X
               </h4>
@@ -366,6 +304,73 @@ export const LimitTheoremsCLT: React.FC = () => {
                 </div>
               </div>
             </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title="Phân Bố Mẫu vs Chuông Gauss Lý Thuyết"
+              formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)"
+              badge={`5,000 Mẫu | n = ${sampleSizeN}`}
+              onReset={runSimulation}
+            />
+
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <div className="relative w-full h-80 sm:h-96 flex items-end gap-1 pt-8 pb-8 px-4 sm:px-8 select-none">
+                {/* Histogram Bars sitting directly on the grid */}
+                {histogram.map((bin, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 bg-sky-500/85 hover:bg-sky-600 dark:bg-sky-500 dark:hover:bg-sky-400 rounded-t-sm transition-all duration-150 border-t border-sky-600 dark:border-sky-300 shadow-xs"
+                    style={{ height: `${Math.max(2, bin.heightPercent)}%` }}
+                    title={`Khoảng: [${fmt(bin.x0, 2)}, ${fmt(bin.x1, 2)}] - Mẫu: ${bin.count}`}
+                  />
+                ))}
+
+                {/* SVG Overlay: Desmos Gaussian Bell Curve directly on the grid */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none p-4 sm:p-8" viewBox="0 0 800 320" preserveAspectRatio="none">
+                  {(() => {
+                    const maxNorm = normalPdf(trueMean, trueMean, theoreticalStd);
+                    const points = [];
+                    for (let px = 0; px <= 800; px += 8) {
+                      const xVal = minVal + (px / 800) * (maxVal - minVal);
+                      const pdfVal = normalPdf(xVal, trueMean, theoreticalStd);
+                      const py = 300 - (pdfVal / maxNorm) * 260;
+                      points.push(`${px},${py}`);
+                    }
+                    return (
+                      <polyline
+                        points={points.join(' ')}
+                        fill="none"
+                        stroke="#EA580C"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                      />
+                    );
+                  })()}
+                </svg>
+              </div>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
+                    <span className="w-3 h-3 bg-sky-500 rounded-xs"></span>
+                    Histogram Mẫu (5,000 thực nghiệm)
+                  </span>
+                  <span className="flex items-center gap-1.5 font-semibold text-orange-600 dark:text-orange-400">
+                    <span className="w-4 h-1 bg-orange-600 rounded-full"></span>
+                    Chuông Gauss Chuẩn Hóa
+                  </span>
+                </div>
+                <div className="font-mono text-slate-500 text-[11px]">
+                  μ = {fmt(trueMean, 2)} | σ/√n = {fmt(theoreticalStd, 3)}
+                </div>
+              </div>
+            </div>
+          </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -389,7 +394,65 @@ export const LimitTheoremsCLT: React.FC = () => {
       {activeTab === 'lln' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Ống Dung Sai Epsilon
+                </h4>
+                <ClaySlider
+                  label="Độ rộng ống dung sai Epsilon (ε)"
+                  value={epsilon}
+                  min={0.02}
+                  max={0.2}
+                  step={0.01}
+                  color="blue"
+                  onChange={setEpsilon}
+                />
+                <div className="mt-4">
+                  <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={generateLlnPaths}>
+                    🎲 Sinh 15 Quỹ Đạo Mới
+                  </ClayButton>
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="purple" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Luật Số Lớn (LLN)
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Khi cỡ mẫu n tăng lên, xác suất trung bình mẫu lệch khỏi kỳ vọng lớn hơn epsilon sẽ tiến về 0:
+                </p>
+                <div className="mt-2.5 p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 font-bold text-sky-700 dark:text-sky-300 text-xs text-center">
+                  <MathView math="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Thông Số Hội Tụ
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Kỳ vọng chân lý mu:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">0.50</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Dung sai ống:</span>
+                    <span className="font-mono font-bold text-sky-600">±{fmt(epsilon, 2)}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Số bước tối đa:</span>
+                    <span className="font-mono font-bold text-emerald-600">n = 400 bước</span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="15 Quỹ Đạo Hội Tụ Của Trung Bình Mẫu (Tung Đồng Xu μ = 0.5)"
               formula="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0"
@@ -469,27 +532,9 @@ export const LimitTheoremsCLT: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Độ rộng ống dung sai Epsilon (ε)"
-                  value={epsilon}
-                  min={0.02}
-                  max={0.2}
-                  step={0.01}
-                  color="blue"
-                  onChange={setEpsilon}
-                />
-                <div className="text-center pt-1">
-                  <ClayButton variant="primary" size="md" onClick={generateLlnPaths}>
-                    Sinh 15 Quỹ Đạo Mới
-                  </ClayButton>
-                </div>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Nếu ta tung một đồng xu cân bằng 1,000 lần, làm sao chắc chắn rằng tỷ lệ ra mặt ngửa sẽ dần dần ổn định quanh 0.5? Bản chất của Luật số lớn là gì?"
@@ -512,7 +557,72 @@ export const LimitTheoremsCLT: React.FC = () => {
       {activeTab === 'bounds' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="rose" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Độ Lệch Ngưỡng k
+                </h4>
+                <ClaySlider
+                  label="Ngưỡng lệch k (số lần độ lệch chuẩn)"
+                  value={boundK}
+                  min={1.5}
+                  max={4.0}
+                  step={0.1}
+                  color="rose"
+                  formatValue={(v) => `${fmt(v, 1)}σ`}
+                  onChange={setBoundK}
+                />
+                <div className="mt-3 flex gap-2">
+                  {[1.5, 2.0, 2.5, 3.0, 3.5].map((quickK) => (
+                    <button
+                      key={quickK}
+                      onClick={() => setBoundK(quickK)}
+                      className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
+                    >
+                      {quickK}σ
+                    </button>
+                  ))}
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  So Sánh Các Cận Đuôi
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Chebyshev chỉ dùng phương sai cho cận O(1/k²). Chernoff dùng toàn bộ MGF cho cận giảm theo hàm mũ O(e^(-k²/2)).
+                </p>
+                <div className="mt-2.5 p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800 font-bold text-amber-700 dark:text-amber-300 text-xs text-center">
+                  <MathView math="P(|X| \ge k) \le \inf_{s>0} e^{-sk} M_X(s) \le \frac{\sigma^2}{k^2}" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  So Sánh Kết Quả
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Xác suất thực:</span>
+                    <span className="font-mono font-extrabold text-emerald-600">{fmt(exactProb * 100, 3)}%</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Cận Chernoff:</span>
+                    <span className="font-mono font-bold text-amber-600">≤ {fmt(chernoffBound * 100, 3)}%</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Cận Chebyshev:</span>
+                    <span className="font-mono font-bold text-rose-600">≤ {fmt(chebyshevBound * 100, 3)}%</span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="So Sánh Độ Thắt Chặt Của Cận Đuôi Xác Suất (N(0, 1))"
               formula="P(|X| \ge k) \le \text{Chernoff} \le \text{Chebyshev}"
@@ -613,23 +723,9 @@ export const LimitTheoremsCLT: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Độ lệch ngưỡng k (số độ lệch chuẩn)"
-                  value={boundK}
-                  min={1.5}
-                  max={4.0}
-                  step={0.1}
-                  color="rose"
-                  formatValue={(v) => `${fmt(v, 1)}σ`}
-                  onChange={setBoundK}
-                />
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Trong lý thuyết tính toán và máy học, ta rất hay cần chặn cận xác suất xảy ra biến cố cực đoan $P(X \ge a)$ khi không biết chính xác hàm phân phối. Tại sao cận Chernoff lại vượt trội hoàn toàn so với Markov và Chebyshev?"
@@ -652,7 +748,66 @@ export const LimitTheoremsCLT: React.FC = () => {
       {activeTab === 'cauchy' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="rose" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Cỡ Mẫu Khảo Sát
+                </h4>
+                <ClaySlider
+                  label="Cỡ mẫu n"
+                  sublabel="Tăng n không giúp Cauchy hội tụ"
+                  value={cauchyN}
+                  min={1}
+                  max={50}
+                  step={1}
+                  color="rose"
+                  onChange={setCauchyN}
+                />
+                <div className="mt-4">
+                  <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={runCauchySim}>
+                    🎲 Lấy 150 Mẫu Mới
+                  </ClayButton>
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Ngoại Lệ Định Lý CLT
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Phân phối Cauchy có đuôi cực dày khiến kỳ vọng và phương sai phân kỳ ra vô hạn:
+                </p>
+                <div className="mt-2.5 p-2 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 font-bold text-red-700 dark:text-red-300 text-xs text-center">
+                  <MathView math="X \sim \text{Cauchy}(0,1) \implies \mathbb{E}[|X|]=\infty, \, \bar{X}_n \sim \text{Cauchy}(0,1)" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Trạng Thái Hội Tụ
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Đường Gaussian:</span>
+                    <span className="font-mono font-bold text-sky-600">Hội tụ êm ả về 0</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Đường Cauchy:</span>
+                    <span className="font-mono font-bold text-rose-600">Giật nổ cực đoan</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Kết luận:</span>
+                    <span className="font-mono font-bold text-amber-600">CLT sụp đổ</span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="So Sánh Hội Tụ Trung Bình Mẫu: Gaussian Chuẩn vs Cauchy Đuôi Dày"
               formula="\text{Gaussian: } \text{Var}(\bar{X}_n) = \frac{\sigma^2}{n} \to 0 \quad \text{vs} \quad \text{Cauchy: } \bar{X}_n \sim \text{Cauchy}"
@@ -735,28 +890,9 @@ export const LimitTheoremsCLT: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Cỡ mẫu n"
-                  sublabel="Tăng n không giúp Cauchy hội tụ"
-                  value={cauchyN}
-                  min={1}
-                  max={50}
-                  step={1}
-                  color="blue"
-                  onChange={setCauchyN}
-                />
-                <div className="text-center pt-1">
-                  <ClayButton variant="primary" size="md" onClick={runCauchySim}>
-                    Lấy 150 Mẫu Mới
-                  </ClayButton>
-                </div>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Liệu định lý giới hạn trung tâm CLT có luôn luôn đúng cho mọi biến ngẫu nhiên không? Khi nào thì việc lấy trung bình mẫu KHÔNG THỂ triệt tiêu được rủi ro?"

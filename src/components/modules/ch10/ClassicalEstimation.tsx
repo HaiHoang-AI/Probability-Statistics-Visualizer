@@ -158,7 +158,70 @@ export const ClassicalEstimation: React.FC = () => {
       {activeTab === 'ci' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Mức Tin Cậy (1 - α)
+              </h4>
+              <ClaySlider
+                label="Độ tin cậy"
+                value={confLevel}
+                min={0.8}
+                max={0.99}
+                step={0.01}
+                color="blue"
+                formatValue={(v) => `${Math.round(v * 100)}%`}
+                onChange={setConfLevel}
+              />
+              <div className="mt-3 flex gap-2">
+                {[0.8, 0.9, 0.95, 0.99].map((lvl) => (
+                  <button
+                    key={lvl}
+                    onClick={() => setConfLevel(lvl)}
+                    className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
+                  >
+                    {Math.round(lvl * 100)}%
+                  </button>
+                ))}
+              </div>
+            </ClayCard>
+
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Cỡ Mẫu n Lấy Thử
+              </h4>
+              <ClaySlider
+                label="Số quan sát n"
+                sublabel="Càng lớn thì khoảng càng hẹp"
+                value={sampleSizeN}
+                min={5}
+                max={100}
+                step={5}
+                color="emerald"
+                onChange={setSampleSizeN}
+              />
+              <div className="mt-4 text-center">
+                <ClayButton variant="primary" size="md" onClick={generateIntervals} className="w-full text-xs">
+                  Lấy Lại 100 Mẫu Ngẫu Nhiên
+                </ClayButton>
+              </div>
+            </ClayCard>
+
+            <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Bản chất Tần Suất
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
+                Tham số <MathView math="\mu" /> là cố định và duy nhất. Khoảng tin cậy là ngẫu nhiên, thay đổi theo từng mẫu. Phát biểu đúng: Có 95% số khoảng sinh ra sẽ bao trùm giá trị thực <MathView math="\mu" />.
+              </p>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="100 Khoảng Tin Cậy Xếp Chồng Độc Lập"
               formula="CI = \left[\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}}, \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\right]"
@@ -234,65 +297,7 @@ export const ClassicalEstimation: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* Bottom Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Mức Tin Cậy (1 - α)
-              </h4>
-              <ClaySlider
-                label="Độ tin cậy"
-                value={confLevel}
-                min={0.8}
-                max={0.99}
-                step={0.01}
-                color="blue"
-                formatValue={(v) => `${Math.round(v * 100)}%`}
-                onChange={setConfLevel}
-              />
-              <div className="mt-3 flex gap-2">
-                {[0.8, 0.9, 0.95, 0.99].map((lvl) => (
-                  <button
-                    key={lvl}
-                    onClick={() => setConfLevel(lvl)}
-                    className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
-                  >
-                    {Math.round(lvl * 100)}%
-                  </button>
-                ))}
-              </div>
-            </ClayCard>
-
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Cỡ Mẫu n Lấy Thử
-              </h4>
-              <ClaySlider
-                label="Số quan sát n"
-                sublabel="Càng lớn thì khoảng càng hẹp"
-                value={sampleSizeN}
-                min={5}
-                max={100}
-                step={5}
-                color="emerald"
-                onChange={setSampleSizeN}
-              />
-              <div className="mt-4 text-center">
-                <ClayButton variant="primary" size="md" onClick={generateIntervals} className="w-full text-xs">
-                  Lấy Lại 100 Mẫu Ngẫu Nhiên
-                </ClayButton>
-              </div>
-            </ClayCard>
-
-            <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Bản chất Tần Suất
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed font-normal">
-                Tham số <MathView math="\mu" /> là cố định và duy nhất. Khoảng tin cậy là ngẫu nhiên, thay đổi theo từng mẫu. Phát biểu đúng: Có 95% số khoảng sinh ra sẽ bao trùm giá trị thực <MathView math="\mu" />.
-              </p>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -316,7 +321,73 @@ export const ClassicalEstimation: React.FC = () => {
       {activeTab === 'student' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="purple" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Bậc Tự Do (df)
+                </h4>
+                <ClaySlider
+                  label="Bậc tự do nu (Degrees of Freedom = n - 1)"
+                  value={dfNu}
+                  min={1}
+                  max={35}
+                  step={1}
+                  color="purple"
+                  onChange={setDfNu}
+                />
+                <div className="mt-3 flex gap-2">
+                  {[1, 5, 15, 30].map((quickNu) => (
+                    <button
+                      key={quickNu}
+                      onClick={() => setDfNu(quickNu)}
+                      className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
+                    >
+                      nu={quickNu}
+                    </button>
+                  ))}
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Bản Chất Student t
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Khi chưa biết phương sai tổng thể, ta dùng độ lệch chuẩn mẫu S khiến phân phối có <strong>đuôi dày hơn</strong> để bù đắp bất định.
+                </p>
+                <div className="mt-3 p-2.5 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-center font-mono font-bold text-purple-700 dark:text-purple-300 text-sm">
+                  <MathView math="T = \frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t(\nu = n - 1)" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Hội Tụ Tiệm Cận
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Bậc tự do nu:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{dfNu}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Cỡ mẫu tương ứng:</span>
+                    <span className="font-mono font-extrabold text-purple-600 dark:text-purple-400 text-sm">n = {dfNu + 1}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Trạng thái:</span>
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      {dfNu >= 30 ? 'Trùng khít Gauss N(0,1)' : 'Đuôi dày (Bất định cao)'}
+                    </span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="So Sánh Phân Bố Student t vs Chuẩn Chuẩn Hóa Gauss"
               formula="t(\nu) \xrightarrow{\nu \to \infty} \mathcal{N}(0, 1)"
@@ -378,22 +449,9 @@ export const ClassicalEstimation: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Bậc tự do ν (Degrees of Freedom = n - 1)"
-                  value={dfNu}
-                  min={1}
-                  max={35}
-                  step={1}
-                  color="purple"
-                  onChange={setDfNu}
-                />
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Khi cỡ mẫu $n$ nhỏ (ví dụ $n < 30$) và chưa biết phương sai tổng thể $\sigma^2$, tại sao bắt buộc phải dùng phân phối Student $t$ thay cho phân phối Chuẩn Gauss?"
@@ -416,7 +474,75 @@ export const ClassicalEstimation: React.FC = () => {
       {activeTab === 'bessel' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Cỡ Mẫu Khảo Sát
+                </h4>
+                <ClaySlider
+                  label="Cỡ mẫu nhỏ n"
+                  sublabel="Khi n nhỏ, hiệu ứng chệch thể hiện rõ nhất"
+                  value={besselSampleSize}
+                  min={2}
+                  max={15}
+                  step={1}
+                  color="blue"
+                  onChange={setBesselSampleSize}
+                />
+                <div className="mt-3">
+                  <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={runBesselMonteCarlo}>
+                    🎲 Lấy Lại 2,500 Lần Mẫu
+                  </ClayButton>
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="amber" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Bí Ẩn Hiệu Chỉnh Bessel
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Nếu chia cho n, kỳ vọng phương sai mẫu luôn <strong>ước lượng non</strong>:
+                </p>
+                <div className="mt-2.5 space-y-2 text-xs">
+                  <div className="p-2 rounded-xl bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800 font-bold text-red-700 dark:text-red-300">
+                    <MathView math="\mathbb{E}[S^2_n] = \frac{n-1}{n}\sigma^2 < \sigma^2 \quad (\text{Bị chệch})" />
+                  </div>
+                  <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 font-bold text-emerald-700 dark:text-emerald-300">
+                    <MathView math="\mathbb{E}[S^2_{n-1}] = \sigma^2 \quad (\text{Không chệch})" />
+                  </div>
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Kết Quả Monte Carlo
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">sigma^2 chân lý:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">4.00</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Không chệch (n - 1):</span>
+                    <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                      {besselRuns ? fmt(besselRuns.unbiasedVar, 2) : '...'}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Có chệch (n):</span>
+                    <span className="font-mono font-extrabold text-rose-600 dark:text-rose-400 text-sm">
+                      {besselRuns ? fmt(besselRuns.biasedVar, 2) : '...'}
+                    </span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Mô phỏng Monte Carlo 2,500 Lần: Kiểm chứng Độ Chệch Hiệu Chỉnh Bessel"
               formula="\mathbb{E}[S^2_{n-1}] = \sigma^2 \quad \text{vs} \quad \mathbb{E}[S^2_n] = \frac{n-1}{n}\sigma^2"
@@ -505,28 +631,9 @@ export const ClassicalEstimation: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Cỡ mẫu nhỏ n"
-                  sublabel="Khi n nhỏ, hiệu ứng chệch thể hiện rõ nhất"
-                  value={besselSampleSize}
-                  min={2}
-                  max={15}
-                  step={1}
-                  color="blue"
-                  onChange={setBesselSampleSize}
-                />
-                <div className="text-center pt-1">
-                  <ClayButton variant="primary" size="md" onClick={runBesselMonteCarlo}>
-                    Chạy Lại 2,500 Lần Lấy Mẫu
-                  </ClayButton>
-                </div>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Tại sao trong công thức tính phương sai mẫu $S^2$, ta bắt buộc phải chia cho $n - 1$ (Hiệu chỉnh Bessel) thay vì chia cho $n$ như trực giác tự nhiên?"
@@ -549,7 +656,77 @@ export const ClassicalEstimation: React.FC = () => {
       {activeTab === 'mle' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Quản Lý Mẫu Quan Sát
+                </h4>
+                <div className="flex gap-2 mb-3">
+                  <ClayButton
+                    variant="primary"
+                    size="md"
+                    className="flex-1 text-xs"
+                    onClick={() => setMlePoints([...mlePoints, Math.round((2 + Math.random() * 6) * 10) / 10])}
+                  >
+                    + Thêm Mẫu Mới
+                  </ClayButton>
+                  <ClayButton
+                    variant="outline"
+                    size="md"
+                    className="flex-1 text-xs"
+                    onClick={() => setMlePoints(mlePoints.slice(0, -1))}
+                    disabled={mlePoints.length <= 1}
+                  >
+                    - Xóa Điểm Cuối
+                  </ClayButton>
+                </div>
+                <div className="text-xs text-slate-500 font-mono">
+                  Dữ liệu: [{mlePoints.map(p => fmt(p, 1)).join(', ')}]
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="amber" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Nguyên Lý Cực Đại Hợp Lý
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Giá trị mu tối ưu chính là tọa độ đỉnh của đường cong Log-Likelihood:
+                </p>
+                <div className="mt-2.5 p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm">
+                  <MathView math="\hat{\mu}_{\text{MLE}} = \arg\max \ln L(\mu) = \bar{X}" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Ước Lượng Điểm MLE
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Số điểm mẫu n:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{mlePoints.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Đỉnh MLE mu_hat:</span>
+                    <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                      {fmt(mleMean, 2)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Kết luận:</span>
+                    <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      mu_MLE trùng khít X_bar
+                    </span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Đường Cong Hàm Hợp Lý Cực Đại L(μ)"
               formula="\hat{\mu}_{\text{MLE}} = \arg\max_\mu L(\mu) = \bar{X}"
@@ -636,28 +813,9 @@ export const ClassicalEstimation: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto flex justify-center gap-3">
-                <ClayButton
-                  variant="primary"
-                  size="md"
-                  onClick={() => setMlePoints([...mlePoints, Math.round((2 + Math.random() * 6) * 10) / 10])}
-                >
-                  Thêm Điểm Mẫu Mới
-                </ClayButton>
-                <ClayButton
-                  variant="outline"
-                  size="md"
-                  onClick={() => setMlePoints(mlePoints.slice(0, -1))}
-                  disabled={mlePoints.length <= 1}
-                >
-                  Xóa Điểm Cuối
-                </ClayButton>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Khi ta thu được một tập dữ liệu mẫu, làm thế nào để tìm ra giá trị tham số $\mu$ có khả năng cao nhất đã sinh ra bộ dữ liệu đó? Nguyên lý Hợp lý Cực đại (MLE) hoạt động ra sao?"

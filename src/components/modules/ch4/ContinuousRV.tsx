@@ -95,7 +95,93 @@ export const ContinuousRV: React.FC = () => {
 
       {activeSub === 'normal' ? (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Tham số Gauss N(μ, σ²)
+              </h4>
+              <ClaySlider
+                label="Kỳ vọng mu"
+                value={mu}
+                min={-3}
+                max={3}
+                step={0.2}
+                color="blue"
+                onChange={setMu}
+              />
+              <div className="mt-2">
+                <ClaySlider
+                  label="Độ lệch chuẩn sigma"
+                  value={sigma}
+                  min={0.4}
+                  max={2.5}
+                  step={0.1}
+                  color="blue"
+                  onChange={setSigma}
+                />
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Khoảng tích phân */}
+            <ClayCard glowColor="orange" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Khoảng Tích phân [X₁, X₂]
+              </h4>
+              <ClaySlider
+                label="Cận dưới X1"
+                value={rangeX1}
+                min={-4}
+                max={rangeX2 - 0.2}
+                step={0.1}
+                color="orange"
+                onChange={setRangeX1}
+              />
+              <div className="mt-2">
+                <ClaySlider
+                  label="Cận trên X2"
+                  value={rangeX2}
+                  min={rangeX1 + 0.2}
+                  max={4}
+                  step={0.1}
+                  color="orange"
+                  onChange={setRangeX2}
+                />
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Thống kê & Công thức */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Xác suất Tích phân
+              </h4>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Diện tích tích phân:</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">
+                    {fmt(pArea * 100, 2)}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Điểm uốn (Inflection):</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
+                    {fmt(mu - sigma, 1)} và {fmt(mu + sigma, 1)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Đỉnh mật độ cực đại:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
+                    {fmt(1 / (sigma * Math.sqrt(2 * Math.PI)), 3)}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Đồ thị Hàm Mật Độ PDF Chuẩn Gauss & Diện Tích Tích Phân"
@@ -218,94 +304,73 @@ export const ContinuousRV: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Tham số phân bố */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Tham số Gauss N(μ, σ²)
-              </h4>
-              <ClaySlider
-                label="Kỳ vọng mu"
-                value={mu}
-                min={-3}
-                max={3}
-                step={0.2}
-                color="blue"
-                onChange={setMu}
-              />
-              <div className="mt-2">
-                <ClaySlider
-                  label="Độ lệch chuẩn sigma"
-                  value={sigma}
-                  min={0.4}
-                  max={2.5}
-                  step={0.1}
-                  color="blue"
-                  onChange={setSigma}
-                />
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Khoảng tích phân */}
-            <ClayCard glowColor="orange" className="p-5">
-              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Khoảng Tích phân [X₁, X₂]
-              </h4>
-              <ClaySlider
-                label="Cận dưới X1"
-                value={rangeX1}
-                min={-4}
-                max={rangeX2 - 0.2}
-                step={0.1}
-                color="orange"
-                onChange={setRangeX1}
-              />
-              <div className="mt-2">
-                <ClaySlider
-                  label="Cận trên X2"
-                  value={rangeX2}
-                  min={rangeX1 + 0.2}
-                  max={4}
-                  step={0.1}
-                  color="orange"
-                  onChange={setRangeX2}
-                />
-              </div>
-            </ClayCard>
-
-            {/* Card 3: Thống kê & Công thức */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Xác suất Tích phân
-              </h4>
-              <div className="space-y-2.5 text-sm sm:text-[15px]">
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Diện tích tích phân:</span>
-                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">
-                    {fmt(pArea * 100, 2)}%
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Điểm uốn (Inflection):</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
-                    {fmt(mu - sigma, 1)} và {fmt(mu + sigma, 1)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Đỉnh mật độ cực đại:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">
-                    {fmt(1 / (sigma * Math.sqrt(2 * Math.PI)), 3)}
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
         </div>
       ) : (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Thao tác Mô phỏng
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-4 leading-relaxed font-normal">
+                Thả ngẫu nhiên các cây kim dài <MathView math="\ell = 35" /> lên mặt phẳng có các đường kẻ song song cách nhau <MathView math="d = 50" />.
+              </p>
+              <div className="flex gap-2">
+                <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(100)} className="w-full text-xs sm:text-sm">
+                  + 100 Kim
+                </ClayButton>
+                <ClayButton variant="secondary" size="sm" onClick={() => dropNeedles(1000)} className="w-full text-xs sm:text-sm">
+                  + 1,000 Kim
+                </ClayButton>
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Công thức Hình học Buffon */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Công thức Tích phân Buffon (1777)
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
+                Xác suất cây kim cắt đường kẻ:
+              </p>
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
+                <MathView math="P = \frac{2\ell}{\pi d} \implies \pi = \frac{2\ell}{d \cdot P}" />
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Kết quả Ước lượng Pi */}
+            <ClayCard glowColor="rose" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Ước lượng Số Pi
+              </h4>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Giá trị Monte Carlo:</span>
+                  <span className="font-mono font-black text-teal-600 dark:text-teal-400 text-base sm:text-lg">
+                    {fmt(estimatedPi, 4)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Số Pi thực tế:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">3.14159...</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Sai số tuyệt đối:</span>
+                  <span className="font-mono font-bold text-rose-500 text-sm sm:text-base">
+                    {fmt(piError, 4)}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Mô phỏng Thả Cây kim Buffon & Ước lượng Monte Carlo số Pi"
@@ -378,64 +443,7 @@ export const ContinuousRV: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Thao tác */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Thao tác Mô phỏng
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-4 leading-relaxed font-normal">
-                Thả ngẫu nhiên các cây kim dài <MathView math="\ell = 35" /> lên mặt phẳng có các đường kẻ song song cách nhau <MathView math="d = 50" />.
-              </p>
-              <div className="flex gap-2">
-                <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(100)} className="w-full text-xs sm:text-sm">
-                  + 100 Kim
-                </ClayButton>
-                <ClayButton variant="secondary" size="sm" onClick={() => dropNeedles(1000)} className="w-full text-xs sm:text-sm">
-                  + 1,000 Kim
-                </ClayButton>
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Công thức Hình học Buffon */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Công thức Tích phân Buffon (1777)
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
-                Xác suất cây kim cắt đường kẻ:
-              </p>
-              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
-                <MathView math="P = \frac{2\ell}{\pi d} \implies \pi = \frac{2\ell}{d \cdot P}" />
-              </div>
-            </ClayCard>
-
-            {/* Card 3: Kết quả Ước lượng Pi */}
-            <ClayCard glowColor="rose" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Ước lượng Số Pi
-              </h4>
-              <div className="space-y-2.5 text-sm sm:text-[15px]">
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Giá trị Monte Carlo:</span>
-                  <span className="font-mono font-black text-teal-600 dark:text-teal-400 text-base sm:text-lg">
-                    {fmt(estimatedPi, 4)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Số Pi thực tế:</span>
-                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">3.14159...</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Sai số tuyệt đối:</span>
-                  <span className="font-mono font-bold text-rose-500 text-sm sm:text-base">
-                    {fmt(piError, 4)}
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
         </div>
       )}

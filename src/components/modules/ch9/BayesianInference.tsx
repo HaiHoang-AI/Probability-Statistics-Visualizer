@@ -147,7 +147,106 @@ export const BayesianInference: React.FC = () => {
       {activeTab === 'beta-binomial' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  1. Niềm Tin Tiên Nghiệm (Prior)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Điều chỉnh niềm tin ban đầu của bạn về xác suất ngửa θ:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <ClaySlider
+                  label="Alpha Tiên nghiệm (Số ngửa giả định)"
+                  value={alphaPrior}
+                  min={1}
+                  max={10}
+                  step={0.5}
+                  color="purple"
+                  onChange={setAlphaPrior}
+                />
+                <ClaySlider
+                  label="Beta Tiên nghiệm (Số sấp giả định)"
+                  value={betaPrior}
+                  min={1}
+                  max={10}
+                  step={0.5}
+                  color="purple"
+                  onChange={setBetaPrior}
+                />
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  2. Thu Thập Dữ Liệu Mới
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  Tung đồng xu để cập nhật thêm bằng chứng thực tế (Likelihood):
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <ClayButton variant="primary" size="md" onClick={() => handleFlip(1)} className="flex-1">
+                    Tung 1 Lần
+                  </ClayButton>
+                  <ClayButton variant="secondary" size="md" onClick={() => handleFlip(10)} className="flex-1">
+                    Tung 10 Lần
+                  </ClayButton>
+                </div>
+                <div className="flex gap-2">
+                  <ClayButton variant="outline" size="sm" onClick={() => handleFlip(50)} className="flex-1">
+                    Tung 50 Lần
+                  </ClayButton>
+                  <ClayButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => { setHeadsK(0); setTrialsN(0); }}
+                    className="flex-1"
+                  >
+                    Xóa Dữ Liệu
+                  </ClayButton>
+                </div>
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-2 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  3. Ước Lượng Hậu Nghiệm (MAP)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Điểm có xác suất hậu nghiệm lớn nhất:
+                </p>
+              </div>
+
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Ước lượng MAP:</span>
+                  <span className="font-bold text-rose-600">{fmt(thetaMap, 3)}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Kỳ vọng Hậu nghiệm E[θ|D]:</span>
+                  <span className="font-bold text-sky-600">{fmt(postMean, 3)}</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500">Tổng mẫu thực tế:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">{trialsN} lần</span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="So Sánh Prior vs Likelihood vs Posterior Beta(α, β)"
               formula="\text{Posterior} \propto \theta^k (1-\theta)^{n-k} \times \theta^{\alpha-1} (1-\theta)^{\beta-1}"
@@ -252,101 +351,7 @@ export const BayesianInference: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* Bottom Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  1. Niềm Tin Tiên Nghiệm (Prior)
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Điều chỉnh niềm tin ban đầu của bạn về xác suất ngửa θ:
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <ClaySlider
-                  label="Alpha Tiên nghiệm (Số ngửa giả định)"
-                  value={alphaPrior}
-                  min={1}
-                  max={10}
-                  step={0.5}
-                  color="purple"
-                  onChange={setAlphaPrior}
-                />
-                <ClaySlider
-                  label="Beta Tiên nghiệm (Số sấp giả định)"
-                  value={betaPrior}
-                  min={1}
-                  max={10}
-                  step={0.5}
-                  color="purple"
-                  onChange={setBetaPrior}
-                />
-              </div>
-            </ClayCard>
-
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  2. Thu Thập Dữ Liệu Mới
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                  Tung đồng xu để cập nhật thêm bằng chứng thực tế (Likelihood):
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex gap-2">
-                  <ClayButton variant="primary" size="md" onClick={() => handleFlip(1)} className="flex-1">
-                    Tung 1 Lần
-                  </ClayButton>
-                  <ClayButton variant="secondary" size="md" onClick={() => handleFlip(10)} className="flex-1">
-                    Tung 10 Lần
-                  </ClayButton>
-                </div>
-                <div className="flex gap-2">
-                  <ClayButton variant="outline" size="sm" onClick={() => handleFlip(50)} className="flex-1">
-                    Tung 50 Lần
-                  </ClayButton>
-                  <ClayButton
-                    variant="outline"
-                    size="sm"
-                    onClick={() => { setHeadsK(0); setTrialsN(0); }}
-                    className="flex-1"
-                  >
-                    Xóa Dữ Liệu
-                  </ClayButton>
-                </div>
-              </div>
-            </ClayCard>
-
-            <ClayCard className="p-5 space-y-2 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  3. Ước Lượng Hậu Nghiệm (MAP)
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Điểm có xác suất hậu nghiệm lớn nhất:
-                </p>
-              </div>
-
-              <div className="space-y-2 text-xs font-mono">
-                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Ước lượng MAP:</span>
-                  <span className="font-bold text-rose-600">{fmt(thetaMap, 3)}</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Kỳ vọng Hậu nghiệm E[θ|D]:</span>
-                  <span className="font-bold text-sky-600">{fmt(postMean, 3)}</span>
-                </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-slate-500">Tổng mẫu thực tế:</span>
-                  <span className="font-bold text-slate-800 dark:text-slate-200">{trialsN} lần</span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -370,7 +375,109 @@ export const BayesianInference: React.FC = () => {
       {activeTab === 'sensor-fusion' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  1. Cảm Biến 1
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Giá trị đọc và sai số đo của cảm biến 1:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <ClaySlider
+                  label="Vị trí đọc x1"
+                  value={sensor1X}
+                  min={-3}
+                  max={4}
+                  step={0.5}
+                  color="orange"
+                  onChange={setSensor1X}
+                />
+                <ClaySlider
+                  label="Sai số sigma1"
+                  value={sensor1Sigma}
+                  min={0.5}
+                  max={3}
+                  step={0.1}
+                  color="orange"
+                  onChange={setSensor1Sigma}
+                />
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  2. Cảm Biến 2
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Giá trị đọc và sai số đo của cảm biến 2:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <ClaySlider
+                  label="Vị trí đọc x2"
+                  value={sensor2X}
+                  min={-3}
+                  max={4}
+                  step={0.5}
+                  color="emerald"
+                  onChange={setSensor2X}
+                />
+                <ClaySlider
+                  label="Sai số sigma2"
+                  value={sensor2Sigma}
+                  min={0.5}
+                  max={3}
+                  step={0.1}
+                  color="emerald"
+                  onChange={setSensor2Sigma}
+                />
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  3. Niềm Tin Tiên Nghiệm (Prior)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Dự đoán trước đó về vị trí vật thể:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <ClaySlider
+                  label="Tâm tiên nghiệm mu0"
+                  value={priorMu}
+                  min={-3}
+                  max={3}
+                  step={0.5}
+                  color="purple"
+                  onChange={setPriorMu}
+                />
+                <ClaySlider
+                  label="Độ bất định sigma0"
+                  value={priorSigma}
+                  min={0.5}
+                  max={4}
+                  step={0.2}
+                  color="purple"
+                  onChange={setPriorSigma}
+                />
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Hợp Nhất Đa Cảm Biến Gauss (Gaussian Sensor Fusion)"
               formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}"
@@ -479,104 +586,7 @@ export const BayesianInference: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* Bottom Controls */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  1. Cảm Biến 1
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Giá trị đọc và sai số đo của cảm biến 1:
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <ClaySlider
-                  label="Vị trí đọc x1"
-                  value={sensor1X}
-                  min={-3}
-                  max={4}
-                  step={0.5}
-                  color="orange"
-                  onChange={setSensor1X}
-                />
-                <ClaySlider
-                  label="Sai số sigma1"
-                  value={sensor1Sigma}
-                  min={0.5}
-                  max={3}
-                  step={0.1}
-                  color="orange"
-                  onChange={setSensor1Sigma}
-                />
-              </div>
-            </ClayCard>
-
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  2. Cảm Biến 2
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Giá trị đọc và sai số đo của cảm biến 2:
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <ClaySlider
-                  label="Vị trí đọc x2"
-                  value={sensor2X}
-                  min={-3}
-                  max={4}
-                  step={0.5}
-                  color="emerald"
-                  onChange={setSensor2X}
-                />
-                <ClaySlider
-                  label="Sai số sigma2"
-                  value={sensor2Sigma}
-                  min={0.5}
-                  max={3}
-                  step={0.1}
-                  color="emerald"
-                  onChange={setSensor2Sigma}
-                />
-              </div>
-            </ClayCard>
-
-            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
-              <div>
-                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
-                  3. Niềm Tin Tiên Nghiệm (Prior)
-                </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                  Dự đoán trước đó về vị trí vật thể:
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                <ClaySlider
-                  label="Tâm tiên nghiệm mu0"
-                  value={priorMu}
-                  min={-3}
-                  max={3}
-                  step={0.5}
-                  color="purple"
-                  onChange={setPriorMu}
-                />
-                <ClaySlider
-                  label="Độ bất định sigma0"
-                  value={priorSigma}
-                  min={0.5}
-                  max={4}
-                  step={0.2}
-                  color="purple"
-                  onChange={setPriorSigma}
-                />
-              </div>
-            </ClayCard>
+            </div>
           </div>
 
           <LabBriefing
@@ -600,7 +610,74 @@ export const BayesianInference: React.FC = () => {
       {activeTab === 'credible' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Mức Độ Tin Cậy HPD
+                </h4>
+                <ClaySlider
+                  label="Mức độ tin cậy HPD (1 - α)"
+                  value={credLevel}
+                  min={0.8}
+                  max={0.99}
+                  step={0.01}
+                  color="blue"
+                  formatValue={(v) => `${fmt(v * 100, 0)}%`}
+                  onChange={setCredLevel}
+                />
+                <div className="mt-3 flex gap-2">
+                  {[0.8, 0.9, 0.95, 0.99].map((lvl) => (
+                    <button
+                      key={lvl}
+                      onClick={() => setCredLevel(lvl)}
+                      className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
+                    >
+                      {Math.round(lvl * 100)}%
+                    </button>
+                  ))}
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="purple" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Ý Nghĩa Khoảng Tin Cậy Bayes
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Trong trường phái Bayes, tham số theta là <strong>biến ngẫu nhiên</strong>. Ta có thể phát biểu trực tiếp:
+                </p>
+                <div className="mt-2.5 p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 font-bold text-sky-700 dark:text-sky-300 text-xs text-center">
+                  <MathView math="P(L \le \theta \le U \mid \text{Data}) = 1 - \alpha" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Thông Tin Vùng Tin Cậy
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Mức tin cậy:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{fmt(credLevel * 100, 0)}%</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Phân bố hậu nghiệm:</span>
+                    <span className="font-mono font-bold text-sky-600">Beta({fmt(alphaPost, 1)}, {fmt(betaPost, 1)})</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Kỳ vọng E[theta|Data]:</span>
+                    <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                      {fmt(postMean, 3)}
+                    </span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Khoảng Tin Cậy Hậu Nghiệm Mật Độ Cao (HPD Credible Interval)"
               formula={`P(L \\le \\theta \\le U \\mid \\text{Data}) = ${fmt(credLevel * 100, 0)}\\%`}
@@ -671,23 +748,9 @@ export const BayesianInference: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Mức độ tin cậy HPD (1 - α)"
-                  value={credLevel}
-                  min={0.8}
-                  max={0.99}
-                  step={0.01}
-                  color="blue"
-                  formatValue={(v) => `${fmt(v * 100, 0)}%`}
-                  onChange={setCredLevel}
-                />
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Khoảng tin cậy Bayes (Credible Interval) khác gì về mặt bản chất so với Khoảng tin cậy Tần suất (Confidence Interval)? Tại sao Bayes cho phép ta nói thẳng: 'Xác suất tham số nằm trong khoảng này là 95%'?"
@@ -710,7 +773,89 @@ export const BayesianInference: React.FC = () => {
       {activeTab === 'baserate' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="blue" className="p-5">
+                <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                  Thông Số Y Tế Dân Số
+                </h4>
+                <div className="space-y-3">
+                  <ClaySlider
+                    label="Tỷ lệ bệnh (Base Rate)"
+                    sublabel="Số ca / 10,000 dân"
+                    value={prevalencePer10k}
+                    min={1}
+                    max={100}
+                    step={1}
+                    color="blue"
+                    onChange={setPrevalencePer10k}
+                  />
+                  <ClaySlider
+                    label="Độ nhạy (Sensitivity)"
+                    sublabel="P(+|Bệnh)"
+                    value={sensitivityPct}
+                    min={90}
+                    max={100}
+                    step={1}
+                    color="emerald"
+                    formatValue={(v) => `${v}%`}
+                    onChange={setSensitivityPct}
+                  />
+                  <ClaySlider
+                    label="Độ đặc hiệu (Specificity)"
+                    sublabel="P(-|Khỏe)"
+                    value={specificityPct}
+                    min={85}
+                    max={99}
+                    step={1}
+                    color="purple"
+                    formatValue={(v) => `${v}%`}
+                    onChange={setSpecificityPct}
+                  />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="amber" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Ảo Giác Tỷ Lệ Nền
+                </h4>
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed font-medium">
+                  Khi bệnh hiếm, nhóm khỏe mạnh chiếm đa số tuyệt đối. 1-2% sai sót trên nhóm khỏe sẽ lấn át hoàn toàn số người bệnh thật.
+                </p>
+                <div className="mt-2.5 p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 font-bold text-sky-700 dark:text-sky-300 text-xs text-center">
+                  <MathView math="P(D|+) = \frac{P(+|D)P(D)}{P(+|D)P(D) + P(+|D^c)P(D^c)}" />
+                </div>
+              </ClayCard>
+
+              <ClayCard glowColor="emerald" className="p-5">
+                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                  Phân Tích Dân Số (10,000)
+                </h4>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Mắc bệnh thật:</span>
+                    <span className="font-mono font-bold text-rose-600">{prevalencePer10k} người</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Khỏe mạnh:</span>
+                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{10000 - prevalencePer10k} người</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                    <span className="text-slate-500">Dương tính thật TP:</span>
+                    <span className="font-mono font-bold text-emerald-600">{Math.round(prevalencePer10k * (sensitivityPct / 100))}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-1">
+                    <span className="text-slate-500">Dương tính giả FP:</span>
+                    <span className="font-mono font-bold text-amber-600">{Math.round((10000 - prevalencePer10k) * (1 - specificityPct / 100))}</span>
+                  </div>
+                </div>
+              </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Phân Tích 10,000 Người & Ảo Giác Tỷ Lệ Nền (Base Rate Fallacy)"
               formula="P(\text{Bệnh} \mid +) = \frac{\text{Dương tính thật}}{\text{Dương tính thật} + \text{Dương tính giả}}"
@@ -786,47 +931,9 @@ export const BayesianInference: React.FC = () => {
                 </span>
               </div>
             </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-2xl mx-auto space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <ClaySlider
-                    label="Tỷ lệ bệnh (Base Rate)"
-                    sublabel="Số ca / 10,000 dân"
-                    value={prevalencePer10k}
-                    min={1}
-                    max={100}
-                    step={1}
-                    color="blue"
-                    onChange={setPrevalencePer10k}
-                  />
-                  <ClaySlider
-                    label="Độ nhạy (Sensitivity)"
-                    sublabel="P(+|Bệnh)"
-                    value={sensitivityPct}
-                    min={90}
-                    max={100}
-                    step={1}
-                    color="emerald"
-                    formatValue={(v) => `${v}%`}
-                    onChange={setSensitivityPct}
-                  />
-                  <ClaySlider
-                    label="Độ đặc hiệu (Specificity)"
-                    sublabel="P(-|Khỏe)"
-                    value={specificityPct}
-                    min={85}
-                    max={99}
-                    step={1}
-                    color="purple"
-                    formatValue={(v) => `${v}%`}
-                    onChange={setSpecificityPct}
-                  />
-                </div>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Một xét nghiệm y tế chẩn đoán có độ chính xác lên tới 99% (độ nhạy 99%, độ đặc hiệu 95%). Một người nhận kết quả DƯƠNG TÍNH (+). Tại sao xác suất người đó thực sự mắc bệnh lại chỉ có khoảng 16%, thậm chí dưới 10%?"

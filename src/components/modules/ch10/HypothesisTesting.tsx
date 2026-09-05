@@ -117,7 +117,100 @@ export const HypothesisTesting: React.FC = () => {
       {activeTab === 'tradeoff' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Cột 1: Ngưỡng & Cỡ mẫu */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Ngưỡng Bác Bỏ & Cỡ Mẫu
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Dịch chuyển ngưỡng x_c để thấy sự bù trừ giữa α và β:
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <ClaySlider
+                      label="Vị trí ngưỡng bác bỏ x_c"
+                      value={threshold}
+                      min={0.2}
+                      max={2.3}
+                      step={0.05}
+                      color="rose"
+                      formatValue={(v) => `x_c = ${fmt(v, 2)}`}
+                      onChange={setThreshold}
+                    />
+                    <ClaySlider
+                      label="Cỡ mẫu n"
+                      value={sampleN}
+                      min={4}
+                      max={64}
+                      step={4}
+                      color="blue"
+                      formatValue={(v) => `n = ${v}`}
+                      onChange={setSampleN}
+                    />
+                  </div>
+                </ClayCard>
+
+                {/* Cột 2: Hiệu ứng khác biệt */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      2. Độ Lệch Hiệu Ứng
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Khoảng cách giữa hai kỳ vọng đối nghịch |μ₁ - μ₀|:
+                    </p>
+                  </div>
+                  <ClaySlider
+                    label="Kỳ vọng đối thuyết mu1"
+                    value={mu1}
+                    min={1.0}
+                    max={3.5}
+                    step={0.1}
+                    color="emerald"
+                    formatValue={(v) => `μ₁ = ${fmt(v, 1)}`}
+                    onChange={setMu1}
+                  />
+                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
+                    <span className="font-bold text-slate-800 dark:text-slate-200">Quy tắc vàng:</span>
+                    <p className="text-slate-600 dark:text-slate-400 mt-0.5">
+                      Cách duy nhất để <strong>giảm đồng thời cả α và β</strong> là <strong>tăng cỡ mẫu n</strong> (chuông co hẹp lại)!
+                    </p>
+                  </div>
+                </ClayCard>
+
+                {/* Cột 3: Bảng ma trận sai lầm */}
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Bảng Ma Trận Sai Lầm
+                  </h3>
+                  <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                    <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800">
+                      <div className="text-[10px] text-emerald-800 dark:text-emerald-300 font-sans font-bold">Chấp nhận H₀ đúng:</div>
+                      <div className="text-base font-black text-emerald-600">{fmt((1 - alpha) * 100, 1)}%</div>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800">
+                      <div className="text-[10px] text-rose-800 dark:text-rose-300 font-sans font-bold">Sai lầm Loại I (α):</div>
+                      <div className="text-base font-black text-rose-600">{fmt(alpha * 100, 1)}%</div>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800">
+                      <div className="text-[10px] text-amber-800 dark:text-amber-300 font-sans font-bold">Sai lầm Loại II (β):</div>
+                      <div className="text-base font-black text-amber-600">{fmt(beta * 100, 1)}%</div>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-800">
+                      <div className="text-[10px] text-sky-800 dark:text-sky-300 font-sans font-bold">Công lực (Power):</div>
+                      <div className="text-base font-black text-sky-600">{fmt(power * 100, 1)}%</div>
+                    </div>
+                  </div>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Phân Bố H₀ vs H₁ & Đánh Đổi Sai Lầm Loại I - II"
               formula="\text{Power} = 1 - \beta = P(\text{Bác bỏ } H_0 \mid H_1 \text{ đúng})"
@@ -253,99 +346,9 @@ export const HypothesisTesting: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Cột 1: Ngưỡng & Cỡ mẫu */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Ngưỡng Bác Bỏ & Cỡ Mẫu
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Dịch chuyển ngưỡng x_c để thấy sự bù trừ giữa α và β:
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <ClaySlider
-                      label="Vị trí ngưỡng bác bỏ x_c"
-                      value={threshold}
-                      min={0.2}
-                      max={2.3}
-                      step={0.05}
-                      color="rose"
-                      formatValue={(v) => `x_c = ${fmt(v, 2)}`}
-                      onChange={setThreshold}
-                    />
-                    <ClaySlider
-                      label="Cỡ mẫu n"
-                      value={sampleN}
-                      min={4}
-                      max={64}
-                      step={4}
-                      color="blue"
-                      formatValue={(v) => `n = ${v}`}
-                      onChange={setSampleN}
-                    />
-                  </div>
-                </ClayCard>
-
-                {/* Cột 2: Hiệu ứng khác biệt */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      2. Độ Lệch Hiệu Ứng
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Khoảng cách giữa hai kỳ vọng đối nghịch |μ₁ - μ₀|:
-                    </p>
-                  </div>
-                  <ClaySlider
-                    label="Kỳ vọng đối thuyết mu1"
-                    value={mu1}
-                    min={1.0}
-                    max={3.5}
-                    step={0.1}
-                    color="emerald"
-                    formatValue={(v) => `μ₁ = ${fmt(v, 1)}`}
-                    onChange={setMu1}
-                  />
-                  <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs">
-                    <span className="font-bold text-slate-800 dark:text-slate-200">Quy tắc vàng:</span>
-                    <p className="text-slate-600 dark:text-slate-400 mt-0.5">
-                      Cách duy nhất để <strong>giảm đồng thời cả α và β</strong> là <strong>tăng cỡ mẫu n</strong> (chuông co hẹp lại)!
-                    </p>
-                  </div>
-                </ClayCard>
-
-                {/* Cột 3: Bảng ma trận sai lầm */}
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Bảng Ma Trận Sai Lầm
-                  </h3>
-                  <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                    <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-800">
-                      <div className="text-[10px] text-emerald-800 dark:text-emerald-300 font-sans font-bold">Chấp nhận H₀ đúng:</div>
-                      <div className="text-base font-black text-emerald-600">{fmt((1 - alpha) * 100, 1)}%</div>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800">
-                      <div className="text-[10px] text-rose-800 dark:text-rose-300 font-sans font-bold">Sai lầm Loại I (α):</div>
-                      <div className="text-base font-black text-rose-600">{fmt(alpha * 100, 1)}%</div>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800">
-                      <div className="text-[10px] text-amber-800 dark:text-amber-300 font-sans font-bold">Sai lầm Loại II (β):</div>
-                      <div className="text-base font-black text-amber-600">{fmt(beta * 100, 1)}%</div>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-800">
-                      <div className="text-[10px] text-sky-800 dark:text-sky-300 font-sans font-bold">Công lực (Power):</div>
-                      <div className="text-base font-black text-sky-600">{fmt(power * 100, 1)}%</div>
-                    </div>
-                  </div>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Trong kiểm định giả thuyết, tại sao ta không thể giảm cả Sai lầm loại I (kết tội oan người vô tội) và Sai lầm loại II (bỏ lọt kẻ có tội) về 0 cùng một lúc? Làm sao để tăng Lực kiểm định (Power)?"
@@ -368,7 +371,105 @@ export const HypothesisTesting: React.FC = () => {
       {activeTab === 'pvalue' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Cột 1: Loại đuôi */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Hướng Kiểm Định
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                      Chọn kiểm định 1 phía (trái/phải) hoặc 2 phía:
+                    </p>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1.5">
+                    <button
+                      onClick={() => setTailType('right')}
+                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                        tailType === 'right' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      }`}
+                    >
+                      Phải (&gt;)
+                    </button>
+                    <button
+                      onClick={() => setTailType('left')}
+                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                        tailType === 'left' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      }`}
+                    >
+                      Trái (&lt;)
+                    </button>
+                    <button
+                      onClick={() => setTailType('two')}
+                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
+                        tailType === 'two' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      }`}
+                    >
+                      2 Phía (≠)
+                    </button>
+                  </div>
+                </ClayCard>
+
+                {/* Cột 2: Thống kê mẫu Z & Alpha */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      2. Thống Kê Z & Mức Ý Nghĩa α
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Di chuyển giá trị Z quan sát từ mẫu:
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <ClaySlider
+                      label="Thống kê mẫu quan sát Z"
+                      value={sampleZ}
+                      min={-3.5}
+                      max={3.5}
+                      step={0.05}
+                      color="blue"
+                      formatValue={(v) => `Z = ${fmt(v, 2)}`}
+                      onChange={setSampleZ}
+                    />
+                    <ClaySlider
+                      label="Mức ý nghĩa alpha"
+                      value={sigAlpha * 100}
+                      min={1}
+                      max={10}
+                      step={1}
+                      color="rose"
+                      formatValue={(v) => `${v}%`}
+                      onChange={(v) => setSigAlpha(v / 100)}
+                    />
+                  </div>
+                </ClayCard>
+
+                {/* Cột 3: Kết luận kiểm định */}
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Kết Luận Thống Kê
+                  </h3>
+                  <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
+                    rejectH0 ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                  }`}>
+                    <div className="font-heading font-black text-sm">
+                      {rejectH0 ? 'BÁC BỎ H₀ (Reject H₀)' : 'CHƯA ĐỦ CƠ SỞ BÁC BỎ H₀'}
+                    </div>
+                    <div className="text-xs font-mono mt-1">
+                      p-value = {fmt(pValue, 4)} {rejectH0 ? '≤' : '>'} α = {fmt(sigAlpha, 2)}
+                    </div>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    <MathView math="p\text{-value}" /> là xác suất thu được kết quả cực đoan như hoặc hơn quan sát thực tế nếu <MathView math="H_0" /> đúng. <MathView math="p\text{-value}" /> càng nhỏ chứng cứ chống lại <MathView math="H_0" /> càng mạnh.
+                  </p>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Diện Tích Quét p-value Trên Phân Bố Chuẩn Tắc N(0, 1)"
               formula="\text{p-value} \le \alpha \implies \text{Bác bỏ } H_0"
@@ -532,104 +633,9 @@ export const HypothesisTesting: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Cột 1: Loại đuôi */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Hướng Kiểm Định
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
-                      Chọn kiểm định 1 phía (trái/phải) hoặc 2 phía:
-                    </p>
-                  </div>
-                  <div className="grid grid-cols-3 gap-1.5">
-                    <button
-                      onClick={() => setTailType('right')}
-                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                        tailType === 'right' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      Phải (&gt;)
-                    </button>
-                    <button
-                      onClick={() => setTailType('left')}
-                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                        tailType === 'left' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      Trái (&lt;)
-                    </button>
-                    <button
-                      onClick={() => setTailType('two')}
-                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                        tailType === 'two' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                      }`}
-                    >
-                      2 Phía (≠)
-                    </button>
-                  </div>
-                </ClayCard>
-
-                {/* Cột 2: Thống kê mẫu Z & Alpha */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      2. Thống Kê Z & Mức Ý Nghĩa α
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Di chuyển giá trị Z quan sát từ mẫu:
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <ClaySlider
-                      label="Thống kê mẫu quan sát Z"
-                      value={sampleZ}
-                      min={-3.5}
-                      max={3.5}
-                      step={0.05}
-                      color="blue"
-                      formatValue={(v) => `Z = ${fmt(v, 2)}`}
-                      onChange={setSampleZ}
-                    />
-                    <ClaySlider
-                      label="Mức ý nghĩa alpha"
-                      value={sigAlpha * 100}
-                      min={1}
-                      max={10}
-                      step={1}
-                      color="rose"
-                      formatValue={(v) => `${v}%`}
-                      onChange={(v) => setSigAlpha(v / 100)}
-                    />
-                  </div>
-                </ClayCard>
-
-                {/* Cột 3: Kết luận kiểm định */}
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Kết Luận Thống Kê
-                  </h3>
-                  <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
-                    rejectH0 ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
-                  }`}>
-                    <div className="font-heading font-black text-sm">
-                      {rejectH0 ? 'BÁC BỎ H₀ (Reject H₀)' : 'CHƯA ĐỦ CƠ SỞ BÁC BỎ H₀'}
-                    </div>
-                    <div className="text-xs font-mono mt-1">
-                      p-value = {fmt(pValue, 4)} {rejectH0 ? '≤' : '>'} α = {fmt(sigAlpha, 2)}
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    <MathView math="p\text{-value}" /> là xác suất thu được kết quả cực đoan như hoặc hơn quan sát thực tế nếu <MathView math="H_0" /> đúng. <MathView math="p\text{-value}" /> càng nhỏ chứng cứ chống lại <MathView math="H_0" /> càng mạnh.
-                  </p>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Trị số $p$ ($p\text{-value}$) thực chất là gì? Tại sao quy tắc quyết định luôn là: 'Nếu $p\text{-value} \le \alpha$ thì BÁC BỎ $H_0$'?"
@@ -652,7 +658,93 @@ export const HypothesisTesting: React.FC = () => {
       {activeTab === 'power' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Cột 1: Effect Size */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Kích Thước Hiệu Ứng (Cohen's d)
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Độ chênh lệch chuẩn hóa giữa 2 nhóm:
+                    </p>
+                  </div>
+                  <ClaySlider
+                    label="Effect Size d"
+                    sublabel="0.2 (Nhỏ) - 0.5 (Vừa) - 0.8 (Lớn)"
+                    value={effectSizeD}
+                    min={0.2}
+                    max={1.0}
+                    step={0.05}
+                    color="purple"
+                    formatValue={(v) => `d = ${fmt(v, 2)}`}
+                    onChange={setEffectSizeD}
+                  />
+                  <div className="text-xs text-slate-500">
+                    d càng lớn, đường cong Power dâng lên càng nhanh!
+                  </div>
+                </ClayCard>
+
+                {/* Cột 2: Cỡ mẫu n */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      2. Cỡ Mẫu Khảo Sát n
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Kéo n để di chuyển điểm quan sát:
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <ClaySlider
+                      label="Cỡ mẫu n"
+                      value={planN}
+                      min={5}
+                      max={120}
+                      step={5}
+                      color="emerald"
+                      formatValue={(v) => `n = ${v}`}
+                      onChange={setPlanN}
+                    />
+                    <ClaySlider
+                      label="Mức ý nghĩa alpha"
+                      value={powerAlpha * 100}
+                      min={1}
+                      max={10}
+                      step={1}
+                      color="rose"
+                      formatValue={(v) => `${v}%`}
+                      onChange={(v) => setPowerAlpha(v / 100)}
+                    />
+                  </div>
+                </ClayCard>
+
+                {/* Cột 3: Khuyến nghị cỡ mẫu */}
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Đánh Giá Lực Kiểm Định
+                  </h3>
+                  <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
+                    curPower >= 0.80 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200'
+                  }`}>
+                    <div className="font-heading font-black text-sm">
+                      {curPower >= 0.80 ? '✅ ĐẠT CHUẨN VÀNG (≥ 80%)' : '⚠️ THIẾU MẪU (< 80%)'}
+                    </div>
+                    <div className="text-xs font-mono mt-1">
+                      Power = {fmt(curPower * 100, 1)}% | Cần n ≥ {nRequired80}
+                    </div>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                    Nếu thử nghiệm thực tế với $n &lt; {nRequired80}$, bạn có nguy cơ cao bỏ lọt hiệu ứng thực sự do sai lầm loại II!
+                  </p>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title={`Đường Cong Lực Kiểm Định (Power Curve): Power = ${fmt(curPower * 100, 1)}% tại n = ${planN}`}
               formula="n \ge \left(\frac{Z_{\alpha/2} + Z_{\beta}}{d}\right)^2"
@@ -857,92 +949,9 @@ export const HypothesisTesting: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Cột 1: Effect Size */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Kích Thước Hiệu Ứng (Cohen's d)
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Độ chênh lệch chuẩn hóa giữa 2 nhóm:
-                    </p>
-                  </div>
-                  <ClaySlider
-                    label="Effect Size d"
-                    sublabel="0.2 (Nhỏ) - 0.5 (Vừa) - 0.8 (Lớn)"
-                    value={effectSizeD}
-                    min={0.2}
-                    max={1.0}
-                    step={0.05}
-                    color="purple"
-                    formatValue={(v) => `d = ${fmt(v, 2)}`}
-                    onChange={setEffectSizeD}
-                  />
-                  <div className="text-xs text-slate-500">
-                    d càng lớn, đường cong Power dâng lên càng nhanh!
-                  </div>
-                </ClayCard>
-
-                {/* Cột 2: Cỡ mẫu n */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      2. Cỡ Mẫu Khảo Sát n
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Kéo n để di chuyển điểm quan sát:
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <ClaySlider
-                      label="Cỡ mẫu n"
-                      value={planN}
-                      min={5}
-                      max={120}
-                      step={5}
-                      color="emerald"
-                      formatValue={(v) => `n = ${v}`}
-                      onChange={setPlanN}
-                    />
-                    <ClaySlider
-                      label="Mức ý nghĩa alpha"
-                      value={powerAlpha * 100}
-                      min={1}
-                      max={10}
-                      step={1}
-                      color="rose"
-                      formatValue={(v) => `${v}%`}
-                      onChange={(v) => setPowerAlpha(v / 100)}
-                    />
-                  </div>
-                </ClayCard>
-
-                {/* Cột 3: Khuyến nghị cỡ mẫu */}
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Đánh Giá Lực Kiểm Định
-                  </h3>
-                  <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
-                    curPower >= 0.80 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200'
-                  }`}>
-                    <div className="font-heading font-black text-sm">
-                      {curPower >= 0.80 ? '✅ ĐẠT CHUẨN VÀNG (≥ 80%)' : '⚠️ THIẾU MẪU (< 80%)'}
-                    </div>
-                    <div className="text-xs font-mono mt-1">
-                      Power = {fmt(curPower * 100, 1)}% | Cần n ≥ {nRequired80}
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Nếu thử nghiệm thực tế với $n &lt; {nRequired80}$, bạn có nguy cơ cao bỏ lọt hiệu ứng thực sự do sai lầm loại II!
-                  </p>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Một công ty công nghệ muốn thử nghiệm A/B tính năng mới. Họ cần lấy mẫu tối thiểu bao nhiêu người dùng $n$ để chắc chắn (với xác suất 80% trở lên) phát hiện ra sự cải tiến nếu tính năng đó thực sự hiệu quả?"

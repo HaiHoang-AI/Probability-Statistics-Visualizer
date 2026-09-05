@@ -77,8 +77,91 @@ export const Foundations: React.FC = () => {
 
       {activeSub === 'venn' ? (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Xác suất Từng Biến cố
+              </h4>
+              <ClaySlider
+                label="P(A)"
+                value={probA}
+                min={0.1}
+                max={0.9}
+                step={0.05}
+                color="orange"
+                onChange={setProbA}
+              />
+              <div className="mt-3">
+                <ClaySlider
+                  label="P(B)"
+                  value={probB}
+                  min={0.1}
+                  max={0.9}
+                  step={0.05}
+                  color="blue"
+                  onChange={setProbB}
+                />
+              </div>
+              <div className="mt-3">
+                <ClaySlider
+                  label="P(A giao B)"
+                  value={actualIntersect}
+                  min={0}
+                  max={Math.min(probA, probB)}
+                  step={0.05}
+                  color="emerald"
+                  onChange={setProbIntersect}
+                />
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Tiên đề & Công thức */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Tiên đề Kolmogorov & Công thức Cộng
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
+                Quy tắc bao hàm - loại trừ (Inclusion-Exclusion Principle):
+              </p>
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
+                <MathView math="P(A \cup B) = P(A) + P(B) - P(A \cap B)" />
+              </div>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
+                Nếu <MathView math="A \cap B = \emptyset" /> (2 biến cố xung khắc rời nhau), thì <MathView math="P(A \cup B) = P(A) + P(B)" />.
+              </p>
+            </ClayCard>
+
+            {/* Card 3: Phân rã 4 miền rời rạc */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                4 Phân vùng Độc lập trong Ω
+              </h4>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-amber-600 dark:text-amber-400 font-semibold">Chỉ riêng A:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(onlyA, 2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Giao A ∩ B:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(actualIntersect, 2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-sky-600 dark:text-sky-400 font-semibold">Chỉ riêng B:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(onlyB, 2)}</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-500 dark:text-slate-400 font-semibold">Bên ngoài (A ∪ B)ᶜ:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(outside, 2)}</span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Sơ đồ Venn Biến cố & Không gian Mẫu Toàn phần"
               formula="P(A \cup B) = P(A) + P(B) - P(A \cap B)"
@@ -198,93 +281,68 @@ export const Foundations: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Điều khiển P(A), P(B), P(AB) */}
-            <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Xác suất Từng Biến cố
-              </h4>
-              <ClaySlider
-                label="P(A)"
-                value={probA}
-                min={0.1}
-                max={0.9}
-                step={0.05}
-                color="orange"
-                onChange={setProbA}
-              />
-              <div className="mt-3">
-                <ClaySlider
-                  label="P(B)"
-                  value={probB}
-                  min={0.1}
-                  max={0.9}
-                  step={0.05}
-                  color="blue"
-                  onChange={setProbB}
-                />
-              </div>
-              <div className="mt-3">
-                <ClaySlider
-                  label="P(A giao B)"
-                  value={actualIntersect}
-                  min={0}
-                  max={Math.min(probA, probB)}
-                  step={0.05}
-                  color="emerald"
-                  onChange={setProbIntersect}
-                />
-              </div>
-            </ClayCard>
-
-            {/* Card 2: Tiên đề & Công thức */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Tiên đề Kolmogorov & Công thức Cộng
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
-                Quy tắc bao hàm - loại trừ (Inclusion-Exclusion Principle):
-              </p>
-              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
-                <MathView math="P(A \cup B) = P(A) + P(B) - P(A \cap B)" />
-              </div>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
-                Nếu <MathView math="A \cap B = \emptyset" /> (2 biến cố xung khắc rời nhau), thì <MathView math="P(A \cup B) = P(A) + P(B)" />.
-              </p>
-            </ClayCard>
-
-            {/* Card 3: Phân rã 4 miền rời rạc */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                4 Phân vùng Độc lập trong Ω
-              </h4>
-              <div className="space-y-2.5 text-sm sm:text-[15px]">
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-amber-600 dark:text-amber-400 font-semibold">Chỉ riêng A:</span>
-                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(onlyA, 2)}</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Giao A ∩ B:</span>
-                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(actualIntersect, 2)}</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-sky-600 dark:text-sky-400 font-semibold">Chỉ riêng B:</span>
-                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(onlyB, 2)}</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="text-slate-500 dark:text-slate-400 font-semibold">Bên ngoài (A ∪ B)ᶜ:</span>
-                  <span className="font-mono font-extrabold text-slate-900 dark:text-slate-100 text-sm sm:text-base">{fmt(outside, 2)}</span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
         </div>
       ) : (
         <div className="space-y-6">
-          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Biến cố Đang lọc
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
+                {diceFilter === 'all' && 'Không gian mẫu đầy đủ gồm 36 cặp kết quả đồng khả năng (Equally likely outcomes).'}
+                {diceFilter === 'sum8' && 'Tổng điểm 2 xúc xắc ≥ 8: Gồm các cặp tổng bằng 8, 9, 10, 11, 12.'}
+                {diceFilter === 'doubles' && 'Mặt đôi: Hai con xúc xắc xuất hiện số chấm bằng nhau: (1,1), (2,2), ..., (6,6).'}
+                {diceFilter === 'has6' && 'Có ít nhất một con xúc xắc đổ ra mặt 6 chấm.'}
+              </p>
+            </ClayCard>
+
+            {/* Card 2: Định nghĩa Cổ điển */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Định nghĩa Cổ điển Laplace
+              </h4>
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-2 font-medium">
+                Khi mọi biến cố sơ cấp có khả năng xuất hiện như nhau:
+              </p>
+              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
+                <MathView math="P(E) = \frac{\text{Số kết quả thuận lợi}}{\text{Tổng số kết quả sơ cấp}} = \frac{|E|}{|\Omega|}" />
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Thống kê Trực thời */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Kết quả Tính toán
+              </h4>
+              <div className="space-y-2.5 text-sm sm:text-[15px]">
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Số phần tử thuận lợi |E|:</span>
+                  <span className="font-mono font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">{countMatch} / 36</span>
+                </div>
+                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Xác suất P(E):</span>
+                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">
+                    {fmt(countMatch / 36, 4)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1.5">
+                  <span className="text-slate-600 dark:text-slate-400 font-medium">Tỷ lệ phần trăm:</span>
+                  <span className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-base sm:text-lg">
+                    {fmt((countMatch / 36) * 100, 1)}%
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Không gian Mẫu Rời rạc: Tung 2 Con Xúc xắc (36 Biến cố Sơ cấp)"
               formula="P(E) = \frac{|E|}{|\Omega|} = \frac{|E|}{36}"
@@ -351,59 +409,7 @@ export const Foundations: React.FC = () => {
               </div>
             </div>
           </ClayCard>
-
-          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {/* Card 1: Bộ lọc Biến cố */}
-            <ClayCard glowColor="amber" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Biến cố Đang lọc
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-3 font-medium">
-                {diceFilter === 'all' && 'Không gian mẫu đầy đủ gồm 36 cặp kết quả đồng khả năng (Equally likely outcomes).'}
-                {diceFilter === 'sum8' && 'Tổng điểm 2 xúc xắc ≥ 8: Gồm các cặp tổng bằng 8, 9, 10, 11, 12.'}
-                {diceFilter === 'doubles' && 'Mặt đôi: Hai con xúc xắc xuất hiện số chấm bằng nhau: (1,1), (2,2), ..., (6,6).'}
-                {diceFilter === 'has6' && 'Có ít nhất một con xúc xắc đổ ra mặt 6 chấm.'}
-              </p>
-            </ClayCard>
-
-            {/* Card 2: Định nghĩa Cổ điển */}
-            <ClayCard glowColor="blue" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Định nghĩa Cổ điển Laplace
-              </h4>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-2 font-medium">
-                Khi mọi biến cố sơ cấp có khả năng xuất hiện như nhau:
-              </p>
-              <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
-                <MathView math="P(E) = \frac{\text{Số kết quả thuận lợi}}{\text{Tổng số kết quả sơ cấp}} = \frac{|E|}{|\Omega|}" />
-              </div>
-            </ClayCard>
-
-            {/* Card 3: Thống kê Trực thời */}
-            <ClayCard glowColor="emerald" className="p-5">
-              <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                Kết quả Tính toán
-              </h4>
-              <div className="space-y-2.5 text-sm sm:text-[15px]">
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Số phần tử thuận lợi |E|:</span>
-                  <span className="font-mono font-extrabold text-slate-900 dark:text-white text-sm sm:text-base">{countMatch} / 36</span>
-                </div>
-                <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Xác suất P(E):</span>
-                  <span className="font-mono font-black text-sky-600 dark:text-sky-400 text-base sm:text-lg">
-                    {fmt(countMatch / 36, 4)}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-1.5">
-                  <span className="text-slate-600 dark:text-slate-400 font-medium">Tỷ lệ phần trăm:</span>
-                  <span className="font-mono font-black text-emerald-600 dark:text-emerald-400 text-base sm:text-lg">
-                    {fmt((countMatch / 36) * 100, 1)}%
-                  </span>
-                </div>
-              </div>
-            </ClayCard>
+            </div>
           </div>
         </div>
       )}

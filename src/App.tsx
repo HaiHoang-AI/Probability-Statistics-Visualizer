@@ -26,7 +26,7 @@ export const App: React.FC = () => {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
+      <main className="flex-1 w-full px-4 sm:px-8 xl:px-10 py-6 max-w-[1920px] mx-auto">
         {/* Back Button when viewing a specific module */}
         {currentChapter !== 'overview' && (
           <div className="mb-4">
@@ -58,7 +58,7 @@ export const App: React.FC = () => {
 
       {/* Footer */}
       <footer className="w-full border-t-2 border-slate-900/15 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-10 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 font-medium">
             <span>Probability & Statistics Visualizer — MAT1101 (VNU-UET)</span>
           </div>

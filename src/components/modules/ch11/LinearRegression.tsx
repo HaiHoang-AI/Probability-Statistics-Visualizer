@@ -215,7 +215,106 @@ export const LinearRegression: React.FC = () => {
       {activeTab === 'ols' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              {/* Cột 1: Sliders xoay đường thẳng */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Xoay Thử Đường Thẳng
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Điều chỉnh hệ số góc và hệ số chặn:
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    <ClaySlider
+                      label="Hệ số góc (Slope β₁)"
+                      value={manualSlope}
+                      min={-0.5}
+                      max={2.0}
+                      step={0.05}
+                      color="blue"
+                      formatValue={(v) => fmt(v, 2)}
+                      onChange={setManualSlope}
+                    />
+                    <ClaySlider
+                      label="Hệ số chặn (Intercept β₀)"
+                      value={manualIntercept}
+                      min={-2}
+                      max={5}
+                      step={0.1}
+                      color="purple"
+                      formatValue={(v) => fmt(v, 1)}
+                      onChange={setManualIntercept}
+                    />
+                  </div>
+                </ClayCard>
+
+                {/* Cột 2: Thao tác & Tối ưu hóa */}
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      2. Thao Tác Mô Phỏng
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                      Thử nghiệm độ nhạy OLS với điểm ngoại lai:
+                    </p>
+                  </div>
+                  <div className="space-y-2.5">
+                    <ClayButton
+                      variant="primary"
+                      size="md"
+                      className="w-full"
+                      onClick={handleAutoFit}
+                    >
+                      🎯 Khớp Nghiệm Tối Ưu OLS
+                    </ClayButton>
+                    <div className="grid grid-cols-2 gap-2">
+                      <ClayButton
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddOutlier}
+                      >
+                        + Ngoại lai
+                      </ClayButton>
+                      <ClayButton
+                        variant="outline"
+                        size="sm"
+                        onClick={handleReset}
+                      >
+                        Đặt lại
+                      </ClayButton>
+                    </div>
+                  </div>
+                </ClayCard>
+
+                {/* Cột 3: Chỉ số đo lường thực nghiệm */}
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Chỉ Số Kiểm Chứng OLS
+                  </h3>
+                  <div className="space-y-2 font-mono text-xs">
+                    <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex justify-between items-center">
+                      <span className="font-bold text-rose-800 dark:text-rose-300">Tổng RSS (Phần dư):</span>
+                      <span className="text-base font-black text-rose-600 dark:text-rose-400">{fmt(rss, 2)}</span>
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 flex justify-between items-center">
+                      <span className="font-bold text-sky-800 dark:text-sky-300">Hệ số xác định R²:</span>
+                      <span className="text-base font-black text-sky-600 dark:text-sky-400">{fmt(rSquared * 100, 1)}%</span>
+                    </div>
+                    <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex justify-between items-center">
+                      <span className="text-slate-600 dark:text-slate-400">Sai số RMSE:</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-200">{fmt(rmse, 2)}</span>
+                    </div>
+                  </div>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Mặt phẳng Toạ độ Desmos & Bình phương Phần dư OLS"
               formula={`y = ${fmt(manualSlope, 2)}x + ${fmt(manualIntercept, 2)}`}
@@ -416,105 +515,9 @@ export const LinearRegression: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Cột 1: Sliders xoay đường thẳng */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Xoay Thử Đường Thẳng
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Điều chỉnh hệ số góc và hệ số chặn:
-                    </p>
-                  </div>
-                  <div className="space-y-3">
-                    <ClaySlider
-                      label="Hệ số góc (Slope β₁)"
-                      value={manualSlope}
-                      min={-0.5}
-                      max={2.0}
-                      step={0.05}
-                      color="blue"
-                      formatValue={(v) => fmt(v, 2)}
-                      onChange={setManualSlope}
-                    />
-                    <ClaySlider
-                      label="Hệ số chặn (Intercept β₀)"
-                      value={manualIntercept}
-                      min={-2}
-                      max={5}
-                      step={0.1}
-                      color="purple"
-                      formatValue={(v) => fmt(v, 1)}
-                      onChange={setManualIntercept}
-                    />
-                  </div>
-                </ClayCard>
-
-                {/* Cột 2: Thao tác & Tối ưu hóa */}
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      2. Thao Tác Mô Phỏng
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
-                      Thử nghiệm độ nhạy OLS với điểm ngoại lai:
-                    </p>
-                  </div>
-                  <div className="space-y-2.5">
-                    <ClayButton
-                      variant="primary"
-                      size="md"
-                      className="w-full"
-                      onClick={handleAutoFit}
-                    >
-                      🎯 Khớp Nghiệm Tối Ưu OLS
-                    </ClayButton>
-                    <div className="grid grid-cols-2 gap-2">
-                      <ClayButton
-                        variant="outline"
-                        size="sm"
-                        onClick={handleAddOutlier}
-                      >
-                        + Ngoại lai
-                      </ClayButton>
-                      <ClayButton
-                        variant="outline"
-                        size="sm"
-                        onClick={handleReset}
-                      >
-                        Đặt lại
-                      </ClayButton>
-                    </div>
-                  </div>
-                </ClayCard>
-
-                {/* Cột 3: Chỉ số đo lường thực nghiệm */}
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Chỉ Số Kiểm Chứng OLS
-                  </h3>
-                  <div className="space-y-2 font-mono text-xs">
-                    <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 flex justify-between items-center">
-                      <span className="font-bold text-rose-800 dark:text-rose-300">Tổng RSS (Phần dư):</span>
-                      <span className="text-base font-black text-rose-600 dark:text-rose-400">{fmt(rss, 2)}</span>
-                    </div>
-                    <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 flex justify-between items-center">
-                      <span className="font-bold text-sky-800 dark:text-sky-300">Hệ số xác định R²:</span>
-                      <span className="text-base font-black text-sky-600 dark:text-sky-400">{fmt(rSquared * 100, 1)}%</span>
-                    </div>
-                    <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex justify-between items-center">
-                      <span className="text-slate-600 dark:text-slate-400">Sai số RMSE:</span>
-                      <span className="font-bold text-slate-800 dark:text-slate-200">{fmt(rmse, 2)}</span>
-                    </div>
-                  </div>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Tại sao phương pháp này lại có tên là 'Bình phương Cực tiểu Thông thường' (Ordinary Least Squares - OLS)? Các hình vuông màu xanh/đỏ trên đồ thị biểu diễn đại lượng vật lý gì?"
@@ -537,7 +540,76 @@ export const LinearRegression: React.FC = () => {
       {activeTab === 'r2' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Tinh Chỉnh Đường Hồi Quy
+                    </h3>
+                    <p className="text-xs text-slate-500 mb-2">Kéo để thấy sự co giãn giữa MSS và RSS:</p>
+                  </div>
+                  <div className="space-y-3">
+                    <ClaySlider
+                      label="Hệ số góc β₁"
+                      value={manualSlope}
+                      min={-0.5}
+                      max={2.0}
+                      step={0.05}
+                      color="blue"
+                      formatValue={(v) => fmt(v, 2)}
+                      onChange={setManualSlope}
+                    />
+                    <ClaySlider
+                      label="Hệ số chặn β₀"
+                      value={manualIntercept}
+                      min={-2}
+                      max={5}
+                      step={0.1}
+                      color="purple"
+                      formatValue={(v) => fmt(v, 1)}
+                      onChange={setManualIntercept}
+                    />
+                  </div>
+                </ClayCard>
+
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      2. Thao Tác OLS
+                    </h3>
+                    <p className="text-xs text-slate-500 mb-2">Đưa R² về giá trị cực đại có thể đạt:</p>
+                  </div>
+                  <ClayButton variant="primary" size="md" className="w-full" onClick={handleAutoFit}>
+                    🎯 Khớp OLS Tối Ưu (Max R²)
+                  </ClayButton>
+                </ClayCard>
+
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Bảng ANOVA Tổng Hợp
+                  </h3>
+                  <div className="space-y-1.5 font-mono text-xs">
+                    <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                      <span>Tổng TSS:</span>
+                      <span className="font-bold">{fmt(tss, 2)}</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800 text-sky-600">
+                      <span>Mô hình MSS:</span>
+                      <span className="font-bold">{fmt(mss, 2)}</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800 text-rose-600">
+                      <span>Phần dư RSS:</span>
+                      <span className="font-bold">{fmt(rss, 2)}</span>
+                    </div>
+                  </div>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Phân Rã Biến Thiên Toàn Phần: TSS = MSS + RSS"
               formula="R^2 = 1 - \frac{RSS}{TSS} = \frac{MSS}{TSS}"
@@ -688,75 +760,9 @@ export const LinearRegression: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Tinh Chỉnh Đường Hồi Quy
-                    </h3>
-                    <p className="text-xs text-slate-500 mb-2">Kéo để thấy sự co giãn giữa MSS và RSS:</p>
-                  </div>
-                  <div className="space-y-3">
-                    <ClaySlider
-                      label="Hệ số góc β₁"
-                      value={manualSlope}
-                      min={-0.5}
-                      max={2.0}
-                      step={0.05}
-                      color="blue"
-                      formatValue={(v) => fmt(v, 2)}
-                      onChange={setManualSlope}
-                    />
-                    <ClaySlider
-                      label="Hệ số chặn β₀"
-                      value={manualIntercept}
-                      min={-2}
-                      max={5}
-                      step={0.1}
-                      color="purple"
-                      formatValue={(v) => fmt(v, 1)}
-                      onChange={setManualIntercept}
-                    />
-                  </div>
-                </ClayCard>
-
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      2. Thao Tác OLS
-                    </h3>
-                    <p className="text-xs text-slate-500 mb-2">Đưa R² về giá trị cực đại có thể đạt:</p>
-                  </div>
-                  <ClayButton variant="primary" size="md" className="w-full" onClick={handleAutoFit}>
-                    🎯 Khớp OLS Tối Ưu (Max R²)
-                  </ClayButton>
-                </ClayCard>
-
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Bảng ANOVA Tổng Hợp
-                  </h3>
-                  <div className="space-y-1.5 font-mono text-xs">
-                    <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
-                      <span>Tổng TSS:</span>
-                      <span className="font-bold">{fmt(tss, 2)}</span>
-                    </div>
-                    <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800 text-sky-600">
-                      <span>Mô hình MSS:</span>
-                      <span className="font-bold">{fmt(mss, 2)}</span>
-                    </div>
-                    <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800 text-rose-600">
-                      <span>Phần dư RSS:</span>
-                      <span className="font-bold">{fmt(rss, 2)}</span>
-                    </div>
-                  </div>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Hệ số xác định $R^2$ (R-squared) đo lường điều gì? Tại sao người ta nói '$R^2 = 85\%$' nghĩa là mô hình giải thích được $85\%$ sự biến thiên của $Y$?"
@@ -779,7 +785,70 @@ export const LinearRegression: React.FC = () => {
       {activeTab === 'leverage' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Hoành Độ X (Cánh Tay Đòn)
+                    </h3>
+                    <p className="text-xs text-slate-500 mb-2">X càng xa x̄ ≈ 4.0, đòn bẩy càng lớn:</p>
+                  </div>
+                  <ClaySlider
+                    label="Hoành độ X của điểm ngoại lai"
+                    value={outlierX}
+                    min={3.5}
+                    max={9.5}
+                    step={0.2}
+                    color="rose"
+                    formatValue={(v) => `X = ${fmt(v, 1)}`}
+                    onChange={setOutlierX}
+                  />
+                </ClayCard>
+
+                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      2. Tung Độ Y (Sai Số Ngoại Lai)
+                    </h3>
+                    <p className="text-xs text-slate-500 mb-2">Kéo lệch khỏi đường xu thế:</p>
+                  </div>
+                  <ClaySlider
+                    label="Tung độ Y của điểm ngoại lai"
+                    value={outlierY}
+                    min={0.5}
+                    max={8.0}
+                    step={0.2}
+                    color="purple"
+                    formatValue={(v) => `Y = ${fmt(v, 1)}`}
+                    onChange={setOutlierY}
+                  />
+                </ClayCard>
+
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Đánh Giá Khoảng Cách Cook
+                  </h3>
+                  <div className={`p-3 rounded-xl border-2 ${
+                    leveragePoints.cookD > 0.5 ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-400 text-rose-800 dark:text-rose-200' : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 text-emerald-800 dark:text-emerald-200'
+                  }`}>
+                    <div className="font-heading font-black text-sm">
+                      {leveragePoints.cookD > 0.5 ? '⚠️ BẺ GÃY MÔ HÌNH (D > 0.5)' : '✅ ẢNH HƯỞNG NHẸ (D ≤ 0.5)'}
+                    </div>
+                    <div className="text-xs font-mono mt-1">
+                      D = {fmt(leveragePoints.cookD, 2)}
+                    </div>
+                  </div>
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
+                    Khi $D &gt; 0.5$ (hoặc $&gt; 4/n$), điểm ngoại lai có tính hủy diệt, làm sai lệch toàn bộ ước lượng tham số!
+                  </p>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title={`Khảo Sát Đòn Bẩy & Điểm Ngoại Lai: Cook's D = ${fmt(leveragePoints.cookD, 2)}`}
               formula={`\\hat{y} = ${fmt(leveragePoints.slope, 2)}x + ${fmt(leveragePoints.intercept, 2)}`}
@@ -962,69 +1031,9 @@ export const LinearRegression: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Hoành Độ X (Cánh Tay Đòn)
-                    </h3>
-                    <p className="text-xs text-slate-500 mb-2">X càng xa x̄ ≈ 4.0, đòn bẩy càng lớn:</p>
-                  </div>
-                  <ClaySlider
-                    label="Hoành độ X của điểm ngoại lai"
-                    value={outlierX}
-                    min={3.5}
-                    max={9.5}
-                    step={0.2}
-                    color="rose"
-                    formatValue={(v) => `X = ${fmt(v, 1)}`}
-                    onChange={setOutlierX}
-                  />
-                </ClayCard>
-
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      2. Tung Độ Y (Sai Số Ngoại Lai)
-                    </h3>
-                    <p className="text-xs text-slate-500 mb-2">Kéo lệch khỏi đường xu thế:</p>
-                  </div>
-                  <ClaySlider
-                    label="Tung độ Y của điểm ngoại lai"
-                    value={outlierY}
-                    min={0.5}
-                    max={8.0}
-                    step={0.2}
-                    color="purple"
-                    formatValue={(v) => `Y = ${fmt(v, 1)}`}
-                    onChange={setOutlierY}
-                  />
-                </ClayCard>
-
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Đánh Giá Khoảng Cách Cook
-                  </h3>
-                  <div className={`p-3 rounded-xl border-2 ${
-                    leveragePoints.cookD > 0.5 ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-400 text-rose-800 dark:text-rose-200' : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 text-emerald-800 dark:text-emerald-200'
-                  }`}>
-                    <div className="font-heading font-black text-sm">
-                      {leveragePoints.cookD > 0.5 ? '⚠️ BẺ GÃY MÔ HÌNH (D > 0.5)' : '✅ ẢNH HƯỞNG NHẸ (D ≤ 0.5)'}
-                    </div>
-                    <div className="text-xs font-mono mt-1">
-                      D = {fmt(leveragePoints.cookD, 2)}
-                    </div>
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-                    Khi $D &gt; 0.5$ (hoặc $&gt; 4/n$), điểm ngoại lai có tính hủy diệt, làm sai lệch toàn bộ ước lượng tham số!
-                  </p>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Một điểm ngoại lai (Outlier) có sức mạnh bẻ cong đường hồi quy đến mức nào? Khoảng cách Cook's Distance $D_i$ đo lường 'đòn bẩy' của điểm dị biệt ra sao?"
@@ -1047,7 +1056,103 @@ export const LinearRegression: React.FC = () => {
       {activeTab === 'residuals' && (
         <div className="space-y-6">
 
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <div className="flex flex-col lg:flex-row gap-6 items-start">
+            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
+            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
+              <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
+                      1. Chọn Dạng Phân Tán Phần Dư
+                    </h3>
+                    <p className="text-xs text-slate-500 mb-2">Thử nghiệm 3 tình huống thực tế:</p>
+                  </div>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => setDiagPattern('homoscedastic')}
+                      className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
+                        diagPattern === 'homoscedastic'
+                          ? 'bg-emerald-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
+                      }`}
+                    >
+                      <span>1. Chuẩn Tắc (Đồng phương sai)</span>
+                      <span>✅</span>
+                    </button>
+                    <button
+                      onClick={() => setDiagPattern('nonlinear')}
+                      className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
+                        diagPattern === 'nonlinear'
+                          ? 'bg-amber-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
+                      }`}
+                    >
+                      <span>2. Phi Tuyến (U-shape Parabola)</span>
+                      <span>⚠️</span>
+                    </button>
+                    <button
+                      onClick={() => setDiagPattern('heteroscedastic')}
+                      className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
+                        diagPattern === 'heteroscedastic'
+                          ? 'bg-rose-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
+                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
+                      }`}
+                    >
+                      <span>3. Loa Kèn (Heteroscedasticity)</span>
+                      <span>🚨</span>
+                    </button>
+                  </div>
+                </ClayCard>
+
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    2. Chẩn Đoán & Ý Nghĩa
+                  </h3>
+                  <div className="text-xs space-y-2 text-slate-600 dark:text-slate-300">
+                    {diagPattern === 'homoscedastic' && (
+                      <p>
+                        Các điểm phân bố ngẫu nhiên như <strong>đám mây sao chổi</strong> trong dải song song. Giả thiết Gauss-Markov thỏa mãn. Các ước lượng OLS là BLUE (Best Linear Unbiased Estimator).
+                      </p>
+                    )}
+                    {diagPattern === 'nonlinear' && (
+                      <p>
+                        Phần dư tạo đường cong hình chữ U rõ nét. Mô hình tuyến tính bậc 1 đã <strong>bỏ sót quan hệ bậc 2</strong> ($x^2$).
+                      </p>
+                    )}
+                    {diagPattern === 'heteroscedastic' && (
+                      <p>
+                        Phương sai phần dư phình to khi ŷ tăng (hình phễu loa kèn). Sai số chuẩn SE bị sai lệch $\implies$ kiểm định t-test và khoảng tin cậy không còn chuẩn xác.
+                      </p>
+                    )}
+                  </div>
+                </ClayCard>
+
+                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
+                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
+                    3. Đơn Thuốc Chữa Bệnh
+                  </h3>
+                  <div className="text-xs space-y-2">
+                    {diagPattern === 'homoscedastic' && (
+                      <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border border-emerald-300">
+                        Mô hình rất khỏe mạnh! Có thể tự tin dùng để dự báo và kiểm định giả thuyết.
+                      </div>
+                    )}
+                    {diagPattern === 'nonlinear' && (
+                      <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200 border border-amber-300">
+                        Thêm biến bậc hai $x^2$ hoặc dùng hồi quy đa thức (Polynomial Regression).
+                      </div>
+                    )}
+                    {diagPattern === 'heteroscedastic' && (
+                      <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200 border border-rose-300">
+                        Biến đổi logarit $\ln(Y)$ hoặc sử dụng phương pháp Bình phương Tối thiểu Tổng quát (WLS / Robust SE).
+                      </div>
+                    )}
+                  </div>
+                </ClayCard>
+            </div>
+
+            {/* RIGHT COLUMN: GRAPH STAGE */}
+            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
+              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
               title="Bắt Bệnh Mô Hình Qua Đồ Thị Phần Dư (Residual Diagnostics Plot)"
               formula="e_i = y_i - \hat{y}_i"
@@ -1190,102 +1295,9 @@ export const LinearRegression: React.FC = () => {
                 </div>
               </div>
             </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <ClayCard className="p-4 space-y-3 flex flex-col justify-between">
-                  <div>
-                    <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white mb-1">
-                      1. Chọn Dạng Phân Tán Phần Dư
-                    </h3>
-                    <p className="text-xs text-slate-500 mb-2">Thử nghiệm 3 tình huống thực tế:</p>
-                  </div>
-                  <div className="space-y-2">
-                    <button
-                      onClick={() => setDiagPattern('homoscedastic')}
-                      className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
-                        diagPattern === 'homoscedastic'
-                          ? 'bg-emerald-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
-                      }`}
-                    >
-                      <span>1. Chuẩn Tắc (Đồng phương sai)</span>
-                      <span>✅</span>
-                    </button>
-                    <button
-                      onClick={() => setDiagPattern('nonlinear')}
-                      className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
-                        diagPattern === 'nonlinear'
-                          ? 'bg-amber-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
-                      }`}
-                    >
-                      <span>2. Phi Tuyến (U-shape Parabola)</span>
-                      <span>⚠️</span>
-                    </button>
-                    <button
-                      onClick={() => setDiagPattern('heteroscedastic')}
-                      className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
-                        diagPattern === 'heteroscedastic'
-                          ? 'bg-rose-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
-                      }`}
-                    >
-                      <span>3. Loa Kèn (Heteroscedasticity)</span>
-                      <span>🚨</span>
-                    </button>
-                  </div>
-                </ClayCard>
-
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    2. Chẩn Đoán & Ý Nghĩa
-                  </h3>
-                  <div className="text-xs space-y-2 text-slate-600 dark:text-slate-300">
-                    {diagPattern === 'homoscedastic' && (
-                      <p>
-                        Các điểm phân bố ngẫu nhiên như <strong>đám mây sao chổi</strong> trong dải song song. Giả thiết Gauss-Markov thỏa mãn. Các ước lượng OLS là BLUE (Best Linear Unbiased Estimator).
-                      </p>
-                    )}
-                    {diagPattern === 'nonlinear' && (
-                      <p>
-                        Phần dư tạo đường cong hình chữ U rõ nét. Mô hình tuyến tính bậc 1 đã <strong>bỏ sót quan hệ bậc 2</strong> ($x^2$).
-                      </p>
-                    )}
-                    {diagPattern === 'heteroscedastic' && (
-                      <p>
-                        Phương sai phần dư phình to khi ŷ tăng (hình phễu loa kèn). Sai số chuẩn SE bị sai lệch $\implies$ kiểm định t-test và khoảng tin cậy không còn chuẩn xác.
-                      </p>
-                    )}
-                  </div>
-                </ClayCard>
-
-                <ClayCard className="p-4 space-y-2.5 flex flex-col justify-between">
-                  <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
-                    3. Đơn Thuốc Chữa Bệnh
-                  </h3>
-                  <div className="text-xs space-y-2">
-                    {diagPattern === 'homoscedastic' && (
-                      <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border border-emerald-300">
-                        Mô hình rất khỏe mạnh! Có thể tự tin dùng để dự báo và kiểm định giả thuyết.
-                      </div>
-                    )}
-                    {diagPattern === 'nonlinear' && (
-                      <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200 border border-amber-300">
-                        Thêm biến bậc hai $x^2$ hoặc dùng hồi quy đa thức (Polynomial Regression).
-                      </div>
-                    )}
-                    {diagPattern === 'heteroscedastic' && (
-                      <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200 border border-rose-300">
-                        Biến đổi logarit $\ln(Y)$ hoặc sử dụng phương pháp Bình phương Tối thiểu Tổng quát (WLS / Robust SE).
-                      </div>
-                    )}
-                  </div>
-                </ClayCard>
-              </div>
-            </div>
           </ClayCard>
+            </div>
+          </div>
 
           <LabBriefing
             question="Làm sao để biết mô hình hồi quy tuyến tính của ta có đạt chuẩn hay đã vi phạm các giả thiết Gauss-Markov? Đồ thị phần dư (Residual Plot) tiết lộ những căn bệnh gì của dữ liệu?"
