@@ -152,7 +152,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           <ClayButton
             variant="primary"
             size="lg"
-            onClick={() => onSelectChapter('ch8-limit-theorems')}
+            onClick={() => {
+              document.getElementById('priority-chapters-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             Bắt đầu học ngay (Bài 7 - 11)
           </ClayButton>
@@ -160,7 +162,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           <ClayButton
             variant="outline"
             size="lg"
-            onClick={() => onSelectChapter('ch1-foundations')}
+            onClick={() => {
+              document.getElementById('foundation-chapters-section')?.scrollIntoView({ behavior: 'smooth' });
+            }}
           >
             Phần cơ sở (Bài 1 - 6)
           </ClayButton>
@@ -239,7 +243,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
       </section>
 
       {/* CURRICULUM SECTION 1: PRIORITY CHAPTERS (Page 2 Card Grid) */}
-      <section className="space-y-4">
+      <section id="priority-chapters-section" className="space-y-4 scroll-mt-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b-2 border-slate-900/20 dark:border-slate-800 gap-1">
           <div>
             <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
@@ -322,7 +326,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
       </section>
 
       {/* CURRICULUM SECTION 2: FOUNDATION CHAPTERS */}
-      <section className="space-y-4 pt-2">
+      <section id="foundation-chapters-section" className="space-y-4 pt-2 scroll-mt-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b-2 border-slate-900/20 dark:border-slate-800 gap-1">
           <div>
             <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">

@@ -166,18 +166,6 @@ export const MomentGeneratingFunction: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'tangent' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Hàm sinh Moment M_X(s) = E[e^{sX}] là một công cụ biến đổi đại số cực mạnh. Làm thế nào mà chỉ cần đạo hàm hàm số này tại điểm gốc s = 0, ta lại thu được toàn bộ các moment kỳ vọng và phương sai?"
-            formula="M_X(s) = \mathbb{E}[e^{sX}] = 1 + s\mathbb{E}[X] + \frac{s^2}{2!}\mathbb{E}[X^2] + \dots \implies M'_X(0) = \mathbb{E}[X], \quad M''_X(0) = \mathbb{E}[X^2]"
-            mathExplanation="Khai triển chuỗi Taylor của hàm e^{sX} tại s = 0 biến các lũy thừa của s thành hệ số chứa các moment E[X^k]. Do đó: độ dốc tiếp tuyến tại 0 chính là Kỳ vọng E[X], và độ cong uốn parabol tại 0 chính là Moment bậc 2 E[X²]!"
-            howToInteract={[
-              "Chọn một trong 3 phân phối: Poisson(λ), Mũ Exp(λ), hoặc Chuẩn N(μ, 1).",
-              "Kéo slider tham số để xem đường cong M_X(s) đổi độ dốc tại điểm s = 0.",
-              "Bật/tắt checkbox 'Hiện tiếp tuyến' và 'Hiện parabol' để kiểm chứng xấp xỉ Taylor bậc 1 và bậc 2 quanh gốc tọa độ."
-            ]}
-            whatToObserve="Tại s = 0, M_X(0) LUÔN LUÔN BẰNG 1.00 với mọi phân phối (do e^0 = 1). Đường tiếp tuyến màu cam bám khít hàm số quanh lân cận s = 0 với độ dốc bằng đúng E[X]."
-            takeaway="Mẹo thi cử: Muốn tìm kỳ vọng và phương sai từ MGF: Tính đạo hàm M'(0) được E[X], tính đạo hàm cấp hai M''(0) được E[X²], rồi dùng Var(X) = E[X²] - (E[X])²!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -409,6 +397,19 @@ export const MomentGeneratingFunction: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Hàm sinh Moment M_X(s) = E[e^{sX}] là một công cụ biến đổi đại số cực mạnh. Làm thế nào mà chỉ cần đạo hàm hàm số này tại điểm gốc s = 0, ta lại thu được toàn bộ các moment kỳ vọng và phương sai?"
+            formula="M_X(s) = \mathbb{E}[e^{sX}] = 1 + s\mathbb{E}[X] + \frac{s^2}{2!}\mathbb{E}[X^2] + \dots \implies M'_X(0) = \mathbb{E}[X], \quad M''_X(0) = \mathbb{E}[X^2]"
+            mathExplanation="Khai triển chuỗi Taylor của hàm e^{sX} tại s = 0 biến các lũy thừa của s thành hệ số chứa các moment E[X^k]. Do đó: độ dốc tiếp tuyến tại 0 chính là Kỳ vọng E[X], và độ cong uốn parabol tại 0 chính là Moment bậc 2 E[X²]!"
+            howToInteract={[
+              "Chọn một trong 3 phân phối: Poisson(λ), Mũ Exp(λ), hoặc Chuẩn N(μ, 1).",
+              "Kéo slider tham số để xem đường cong M_X(s) đổi độ dốc tại điểm s = 0.",
+              "Bật/tắt checkbox 'Hiện tiếp tuyến' và 'Hiện parabol' để kiểm chứng xấp xỉ Taylor bậc 1 và bậc 2 quanh gốc tọa độ."
+            ]}
+            whatToObserve="Tại s = 0, M_X(0) LUÔN LUÔN BẰNG 1.00 với mọi phân phối (do e^0 = 1). Đường tiếp tuyến màu cam bám khít hàm số quanh lân cận s = 0 với độ dốc bằng đúng E[X]."
+            takeaway="Mẹo thi cử: Muốn tìm kỳ vọng và phương sai từ MGF: Tính đạo hàm M'(0) được E[X], tính đạo hàm cấp hai M''(0) được E[X²], rồi dùng Var(X) = E[X²] - (E[X])²!"
+          />
         </div>
       )}
 
@@ -417,18 +418,6 @@ export const MomentGeneratingFunction: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'product' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Khi cộng hai biến ngẫu nhiên độc lập Z = X + Y, tích phân tích chập rất khó tính. Tại sao MGF lại biến bài toán tích chập thành phép nhân đại số đơn giản?"
-            formula="M_{X+Y}(s) = \mathbb{E}[e^{s(X+Y)}] = \mathbb{E}[e^{sX} \cdot e^{sY}] = M_X(s) \cdot M_Y(s)"
-            mathExplanation="Do X và Y độc lập, kỳ vọng của tích bằng tích các kỳ vọng! Khi nhân 2 hàm MGF với nhau, các số mũ cộng lại. Nhìn vào dạng hàm MGF kết quả, ta nhận dạng được ngay phân phối của tổng mà không cần giải bất kỳ một tích phân nào!"
-            howToInteract={[
-              "Chọn loại phân phối: Tổng 2 biến Poisson hoặc Tổng 2 biến Gaussian.",
-              "Kéo slider tham số của X và Y.",
-              "Quan sát 3 đường cong M_X, M_Y và đường tích M_{X+Y} trên cùng hệ trục tọa độ Desmos."
-            ]}
-            whatToObserve="Đường cong tích M_{X+Y}(s) dâng lên rất nhanh vì là tích của 2 hàm tăng. Tham số của tổng chính là tổng các tham số: λ_Z = λ_X + λ_Y hoặc μ_Z = μ_X + μ_Y."
-            takeaway="Tổng các biến Poisson độc lập LÀ một biến Poisson. Tổng các biến Gauss độc lập LÀ một biến Gauss. Điều này được chứng minh dễ dàng nhất qua MGF!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -567,6 +556,19 @@ export const MomentGeneratingFunction: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Khi cộng hai biến ngẫu nhiên độc lập Z = X + Y, tích phân tích chập rất khó tính. Tại sao MGF lại biến bài toán tích chập thành phép nhân đại số đơn giản?"
+            formula="M_{X+Y}(s) = \mathbb{E}[e^{s(X+Y)}] = \mathbb{E}[e^{sX} \cdot e^{sY}] = M_X(s) \cdot M_Y(s)"
+            mathExplanation="Do X và Y độc lập, kỳ vọng của tích bằng tích các kỳ vọng! Khi nhân 2 hàm MGF với nhau, các số mũ cộng lại. Nhìn vào dạng hàm MGF kết quả, ta nhận dạng được ngay phân phối của tổng mà không cần giải bất kỳ một tích phân nào!"
+            howToInteract={[
+              "Chọn loại phân phối: Tổng 2 biến Poisson hoặc Tổng 2 biến Gaussian.",
+              "Kéo slider tham số của X và Y.",
+              "Quan sát 3 đường cong M_X, M_Y và đường tích M_{X+Y} trên cùng hệ trục tọa độ Desmos."
+            ]}
+            whatToObserve="Đường cong tích M_{X+Y}(s) dâng lên rất nhanh vì là tích của 2 hàm tăng. Tham số của tổng chính là tổng các tham số: λ_Z = λ_X + λ_Y hoặc μ_Z = μ_X + μ_Y."
+            takeaway="Tổng các biến Poisson độc lập LÀ một biến Poisson. Tổng các biến Gauss độc lập LÀ một biến Gauss. Điều này được chứng minh dễ dàng nhất qua MGF!"
+          />
         </div>
       )}
 
@@ -575,18 +577,6 @@ export const MomentGeneratingFunction: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'wald' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Một ngân hàng có N khách hàng ghé thăm trong ngày (N ngẫu nhiên ~ Poisson). Mỗi khách rút một số tiền X_i ngẫu nhiên. Tổng số tiền rút trong ngày S = X₁ + X₂ + ... + X_N có kỳ vọng và phương sai tính như thế nào khi cả số phần tử N lẫn giá trị X_i đều ngẫu nhiên?"
-            formula="\mathbb{E}[S] = \mathbb{E}[N]\mathbb{E}[X], \quad Var(S) = \mathbb{E}[N]Var(X) + (\mathbb{E}[X])^2 Var(N)"
-            mathExplanation="Đây là đẳng thức Wald kinh điển! Phương sai của tổng ngẫu nhiên gồm 2 nguồn: Sự bấp bênh từ giá trị của từng khách hàng E[N]Var(X) CỘNG VỚI sự bấp bênh từ số lượng khách hàng ghé thăm (E[X])^2 Var(N)."
-            howToInteract={[
-              "Kéo slider 'Kỳ vọng số khách E[N]' và 'Kỳ vọng số tiền mỗi khách E[X]'.",
-              "Bấm nút 'Chạy Mô Phỏng Monte Carlo 3,000 ngày' để xem phân phối mẫu.",
-              "So sánh số liệu thực nghiệm với công thức lý thuyết Wald."
-            ]}
-            whatToObserve="Sau 3,000 lần mô phỏng, trung bình thực tế E_emp và phương sai Var_emp hội tụ sát sàn sạt với giá trị tính từ công thức Wald!"
-            takeaway="Trong bài thi: Cứ gặp bài toán 'Tổng số ngẫu nhiên các biến ngẫu nhiên độc lập cùng phân phối (i.i.d)' $\implies$ áp dụng ngay Định lý Wald!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -726,6 +716,19 @@ export const MomentGeneratingFunction: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Một ngân hàng có N khách hàng ghé thăm trong ngày (N ngẫu nhiên ~ Poisson). Mỗi khách rút một số tiền X_i ngẫu nhiên. Tổng số tiền rút trong ngày S = X₁ + X₂ + ... + X_N có kỳ vọng và phương sai tính như thế nào khi cả số phần tử N lẫn giá trị X_i đều ngẫu nhiên?"
+            formula="\mathbb{E}[S] = \mathbb{E}[N]\mathbb{E}[X], \quad Var(S) = \mathbb{E}[N]Var(X) + (\mathbb{E}[X])^2 Var(N)"
+            mathExplanation="Đây là đẳng thức Wald kinh điển! Phương sai của tổng ngẫu nhiên gồm 2 nguồn: Sự bấp bênh từ giá trị của từng khách hàng E[N]Var(X) CỘNG VỚI sự bấp bênh từ số lượng khách hàng ghé thăm (E[X])^2 Var(N)."
+            howToInteract={[
+              "Kéo slider 'Kỳ vọng số khách E[N]' và 'Kỳ vọng số tiền mỗi khách E[X]'.",
+              "Bấm nút 'Chạy Mô Phỏng Monte Carlo 3,000 ngày' để xem phân phối mẫu.",
+              "So sánh số liệu thực nghiệm với công thức lý thuyết Wald."
+            ]}
+            whatToObserve="Sau 3,000 lần mô phỏng, trung bình thực tế E_emp và phương sai Var_emp hội tụ sát sàn sạt với giá trị tính từ công thức Wald!"
+            takeaway="Trong bài thi: Cứ gặp bài toán 'Tổng số ngẫu nhiên các biến ngẫu nhiên độc lập cùng phân phối (i.i.d)' $\implies$ áp dụng ngay Định lý Wald!"
+          />
         </div>
       )}
     </div>

@@ -214,18 +214,6 @@ export const LinearRegression: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'ols' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Tại sao phương pháp này lại có tên là 'Bình phương Cực tiểu Thông thường' (Ordinary Least Squares - OLS)? Các hình vuông màu xanh/đỏ trên đồ thị biểu diễn đại lượng vật lý gì?"
-            formula="\min_{\beta_0, \beta_1} \sum_{i=1}^n e_i^2 = \min_{\beta_0, \beta_1} \sum_{i=1}^n (y_i - (\beta_0 + \beta_1 x_i))^2"
-            mathExplanation="Sai số phần dư e_i là khoảng cách DỌC từ điểm dữ liệu thực tế đến đường thẳng dự báo. Khi ta vẽ hình vuông có cạnh bằng e_i, tổng diện tích của tất cả các hình vuông này chính là RSS! Đường OLS tối ưu là đường thẳng duy nhất làm cho TỔNG DIỆN TÍCH CÁC HÌNH VUÔNG ĐẠT CỰC TIỂU!"
-            howToInteract={[
-              "Kéo slider 'Hệ số góc (Slope β₁)' và 'Hệ số chặn (Intercept β₀)' để xoay và tịnh tiến đường thẳng.",
-              "Quan sát các hình vuông màu đỏ co giãn kích thước theo thời gian thực.",
-              "Bấm nút '🎯 Khớp Nghiệm Tối Ưu OLS' để xem đường thẳng tự động khóa vào vị trí cực tiểu hóa RSS."
-            ]}
-            whatToObserve="Khi bạn xoay đường thẳng trượt xa khỏi đám mây điểm, các hình vuông phình to khổng lồ (RSS tăng vọt). Chỉ khi khớp đúng nghiệm OLS, tổng diện tích mới co về mức nhỏ nhất có thể!"
-            takeaway="OLS chỉ cực tiểu hóa sai số theo phương DỌC (trục Y), chứ không phải khoảng cách vuông góc hình học tới đường thẳng!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -527,6 +515,19 @@ export const LinearRegression: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Tại sao phương pháp này lại có tên là 'Bình phương Cực tiểu Thông thường' (Ordinary Least Squares - OLS)? Các hình vuông màu xanh/đỏ trên đồ thị biểu diễn đại lượng vật lý gì?"
+            formula="\min_{\beta_0, \beta_1} \sum_{i=1}^n e_i^2 = \min_{\beta_0, \beta_1} \sum_{i=1}^n (y_i - (\beta_0 + \beta_1 x_i))^2"
+            mathExplanation="Sai số phần dư e_i là khoảng cách DỌC từ điểm dữ liệu thực tế đến đường thẳng dự báo. Khi ta vẽ hình vuông có cạnh bằng e_i, tổng diện tích của tất cả các hình vuông này chính là RSS! Đường OLS tối ưu là đường thẳng duy nhất làm cho TỔNG DIỆN TÍCH CÁC HÌNH VUÔNG ĐẠT CỰC TIỂU!"
+            howToInteract={[
+              "Kéo slider 'Hệ số góc (Slope β₁)' và 'Hệ số chặn (Intercept β₀)' để xoay và tịnh tiến đường thẳng.",
+              "Quan sát các hình vuông màu đỏ co giãn kích thước theo thời gian thực.",
+              "Bấm nút '🎯 Khớp Nghiệm Tối Ưu OLS' để xem đường thẳng tự động khóa vào vị trí cực tiểu hóa RSS."
+            ]}
+            whatToObserve="Khi bạn xoay đường thẳng trượt xa khỏi đám mây điểm, các hình vuông phình to khổng lồ (RSS tăng vọt). Chỉ khi khớp đúng nghiệm OLS, tổng diện tích mới co về mức nhỏ nhất có thể!"
+            takeaway="OLS chỉ cực tiểu hóa sai số theo phương DỌC (trục Y), chứ không phải khoảng cách vuông góc hình học tới đường thẳng!"
+          />
         </div>
       )}
 
@@ -535,18 +536,6 @@ export const LinearRegression: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'r2' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Hệ số xác định R² (R-squared) đo lường điều gì? Tại sao người ta nói 'R² = 85% nghĩa là mô hình giải thích được 85% sự biến thiên của Y'?"
-            formula="TSS = MSS + RSS \implies R^2 = \frac{MSS}{TSS} = 1 - \frac{RSS}{TSS} \in [0, 1]"
-            mathExplanation="TSS là tổng độ phân tán của Y quanh trung bình mẫu ȳ. Khi kẻ đường hồi quy OLS, một phần biến thiên được đường thẳng giải thích (MSS = Model Sum of Squares), phần còn lại là sai số ngẫu nhiên không giải thích được (RSS = Residual Sum of Squares)."
-            howToInteract={[
-              "Bấm nút '🎯 Tự động Fit OLS' để đưa mô hình về trạng thái tối ưu.",
-              "Kéo lệch hệ số góc β₁ và hệ số chặn β₀ ở thanh điều khiển để xem R² tụt dốc.",
-              "Nhìn hình học phân rã vector dọc trên đồ thị và thanh tỷ lệ TSS bên dưới."
-            ]}
-            whatToObserve="Khi đường thẳng khớp hoàn hảo qua các điểm, RSS = 0 $\implies$ R² = 1.0 (100%). Khi đường thẳng nằm ngang ở trung bình ȳ, R² = 0!"
-            takeaway="R² luôn nằm trong đoạn [0, 1] đối với mô hình OLS có hệ số chặn: Càng gần 1, mô hình càng giải thích tốt biến phụ thuộc Y!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -768,6 +757,19 @@ export const LinearRegression: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Hệ số xác định R² (R-squared) đo lường điều gì? Tại sao người ta nói 'R² = 85% nghĩa là mô hình giải thích được 85% sự biến thiên của Y'?"
+            formula="TSS = MSS + RSS \implies R^2 = \frac{MSS}{TSS} = 1 - \frac{RSS}{TSS} \in [0, 1]"
+            mathExplanation="TSS là tổng độ phân tán của Y quanh trung bình mẫu ȳ. Khi kẻ đường hồi quy OLS, một phần biến thiên được đường thẳng giải thích (MSS = Model Sum of Squares), phần còn lại là sai số ngẫu nhiên không giải thích được (RSS = Residual Sum of Squares)."
+            howToInteract={[
+              "Bấm nút '🎯 Tự động Fit OLS' để đưa mô hình về trạng thái tối ưu.",
+              "Kéo lệch hệ số góc β₁ và hệ số chặn β₀ ở thanh điều khiển để xem R² tụt dốc.",
+              "Nhìn hình học phân rã vector dọc trên đồ thị và thanh tỷ lệ TSS bên dưới."
+            ]}
+            whatToObserve="Khi đường thẳng khớp hoàn hảo qua các điểm, RSS = 0 $\implies$ R² = 1.0 (100%). Khi đường thẳng nằm ngang ở trung bình ȳ, R² = 0!"
+            takeaway="R² luôn nằm trong đoạn [0, 1] đối với mô hình OLS có hệ số chặn: Càng gần 1, mô hình càng giải thích tốt biến phụ thuộc Y!"
+          />
         </div>
       )}
 
@@ -776,18 +778,6 @@ export const LinearRegression: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'leverage' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Một điểm ngoại lai (Outlier) có sức mạnh bẻ cong đường hồi quy đến mức nào? Khoảng cách Cook's Distance đo lường 'đòn bẩy' của điểm dị biệt ra sao?"
-            formula="D_i = \frac{\sum_{j=1}^n (\hat{y}_j - \hat{y}_{j(i)})^2}{2 s^2} \approx \frac{e_i^2}{2 s^2} \cdot \frac{h_{ii}}{(1 - h_{ii})^2}"
-            mathExplanation="Điểm ngoại lai có 2 loại: Outlier theo trục Y (phần dư lớn) và Leverage theo trục X (nằm xa trung bình x̄). Khi một điểm VỪA nằm xa x̄ (cánh tay đòn dài) VỪA lệch khỏi đường hồi quy, nó sẽ như một chiếc cờ lê khổng lồ bẻ gãy hoàn toàn chiều dốc của OLS!"
-            howToInteract={[
-              "Kéo slider 'Hoành độ X (Cánh tay đòn)' từ 3.5 đến 9.5.",
-              "Kéo slider 'Tung độ Y của điểm ngoại lai' lên hoặc xuống.",
-              "Quan sát đường thẳng màu đỏ bị kéo gập xuống và chỉ số Cook's D nhảy vọt qua ngưỡng 0.5!"
-            ]}
-            whatToObserve="Khi x = 4.0 (ở giữa đám mây), dù bạn kéo y rất cao hay thấp, đường hồi quy hầu như không đổi độ dốc. Nhưng khi bạn kéo x ra mép xa (x = 9.0) và hạ thấp y, đường thẳng lập tức bị xoay gập từ đồng biến thành nghịch biến!"
-            takeaway="Bài học đắt giá trong khoa học dữ liệu: Phải luôn kiểm tra các điểm High Leverage (Khoảng cách Cook D > 0.5) trước khi đưa ra kết luận hồi quy!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -1035,6 +1025,19 @@ export const LinearRegression: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Một điểm ngoại lai (Outlier) có sức mạnh bẻ cong đường hồi quy đến mức nào? Khoảng cách Cook's Distance đo lường 'đòn bẩy' của điểm dị biệt ra sao?"
+            formula="D_i = \frac{\sum_{j=1}^n (\hat{y}_j - \hat{y}_{j(i)})^2}{2 s^2} \approx \frac{e_i^2}{2 s^2} \cdot \frac{h_{ii}}{(1 - h_{ii})^2}"
+            mathExplanation="Điểm ngoại lai có 2 loại: Outlier theo trục Y (phần dư lớn) và Leverage theo trục X (nằm xa trung bình x̄). Khi một điểm VỪA nằm xa x̄ (cánh tay đòn dài) VỪA lệch khỏi đường hồi quy, nó sẽ như một chiếc cờ lê khổng lồ bẻ gãy hoàn toàn chiều dốc của OLS!"
+            howToInteract={[
+              "Kéo slider 'Hoành độ X (Cánh tay đòn)' từ 3.5 đến 9.5.",
+              "Kéo slider 'Tung độ Y của điểm ngoại lai' lên hoặc xuống.",
+              "Quan sát đường thẳng màu đỏ bị kéo gập xuống và chỉ số Cook's D nhảy vọt qua ngưỡng 0.5!"
+            ]}
+            whatToObserve="Khi x = 4.0 (ở giữa đám mây), dù bạn kéo y rất cao hay thấp, đường hồi quy hầu như không đổi độ dốc. Nhưng khi bạn kéo x ra mép xa (x = 9.0) và hạ thấp y, đường thẳng lập tức bị xoay gập từ đồng biến thành nghịch biến!"
+            takeaway="Bài học đắt giá trong khoa học dữ liệu: Phải luôn kiểm tra các điểm High Leverage (Khoảng cách Cook D > 0.5) trước khi đưa ra kết luận hồi quy!"
+          />
         </div>
       )}
 
@@ -1043,17 +1046,6 @@ export const LinearRegression: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'residuals' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Làm sao để biết mô hình hồi quy tuyến tính của ta có đạt chuẩn hay đã vi phạm các giả thiết Gauss-Markov? Đồ thị phần dư (Residual Plot) tiết lộ những căn bệnh gì của dữ liệu?"
-            formula="e_i = y_i - \hat{y}_i \quad \text{vẽ theo } \hat{y}_i"
-            mathExplanation="Nếu mô hình tốt, các điểm phần dư e_i phải phân tán hoàn toàn NGẪU NHIÊN trong một dải ngang đồng đều quanh trục 0 (đồng phương sai Homoscedasticity). Nếu phần dư uốn hình chữ U (thiếu biến bậc 2) hoặc xòe hình loa kèn (phương sai thay đổi Heteroscedasticity), mô hình đã bị bệnh!"
-            howToInteract={[
-              "Chọn 1 trong 3 trạng thái: Chuẩn tắc (Tốt), Phi tuyến (Chữ U), hoặc Loa kèn (Heteroscedasticity).",
-              "Nhìn đồ thị phần dư e_i ở bên dưới để học cách 'bắt bệnh'."
-            ]}
-            whatToObserve="Ở mô hình Loa kèn: Càng về bên phải, các chấm phần dư càng xòe rộng ra. Điều này làm cho khoảng tin cậy và kiểm định t-test không còn đáng tin cậy nữa!"
-            takeaway="Kỹ năng làm bài thi và phân tích thực tế: Không bao giờ tin tưởng mù quáng vào R² cao mà phải luôn vẽ đồ thị phần dư để kiểm tra giả thiết đồng phương sai!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -1277,6 +1269,18 @@ export const LinearRegression: React.FC = () => {
                     {diagPattern === 'homoscedastic' && (
                       <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border border-emerald-300">
                         Mô hình rất khỏe mạnh! Có thể tự tin dùng để dự báo và kiểm định giả thuyết.
+
+          <LabBriefing
+            question="Làm sao để biết mô hình hồi quy tuyến tính của ta có đạt chuẩn hay đã vi phạm các giả thiết Gauss-Markov? Đồ thị phần dư (Residual Plot) tiết lộ những căn bệnh gì của dữ liệu?"
+            formula="e_i = y_i - \hat{y}_i \quad \text{vẽ theo } \hat{y}_i"
+            mathExplanation="Nếu mô hình tốt, các điểm phần dư e_i phải phân tán hoàn toàn NGẪU NHIÊN trong một dải ngang đồng đều quanh trục 0 (đồng phương sai Homoscedasticity). Nếu phần dư uốn hình chữ U (thiếu biến bậc 2) hoặc xòe hình loa kèn (phương sai thay đổi Heteroscedasticity), mô hình đã bị bệnh!"
+            howToInteract={[
+              "Chọn 1 trong 3 trạng thái: Chuẩn tắc (Tốt), Phi tuyến (Chữ U), hoặc Loa kèn (Heteroscedasticity).",
+              "Nhìn đồ thị phần dư e_i ở bên dưới để học cách 'bắt bệnh'."
+            ]}
+            whatToObserve="Ở mô hình Loa kèn: Càng về bên phải, các chấm phần dư càng xòe rộng ra. Điều này làm cho khoảng tin cậy và kiểm định t-test không còn đáng tin cậy nữa!"
+            takeaway="Kỹ năng làm bài thi và phân tích thực tế: Không bao giờ tin tưởng mù quáng vào R² cao mà phải luôn vẽ đồ thị phần dư để kiểm tra giả thiết đồng phương sai!"
+          />
                       </div>
                     )}
                     {diagPattern === 'nonlinear' && (

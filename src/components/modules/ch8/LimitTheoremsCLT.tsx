@@ -212,18 +212,6 @@ export const LimitTheoremsCLT: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'clt' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Dù biến ngẫu nhiên gốc có hình thù kỳ dị tới mức nào (2 đỉnh bimodal, lệch hẳn về một bên như Exponential, hay phân phối rời rạc xúc xắc), tại sao khi ta cộng trung bình nhiều biến lại thì kết quả LUÔN LUÔN biến thành quả chuông đối xứng Gauss?"
-            formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1) \quad \text{khi } n \to \infty"
-            mathExplanation="Đây là định lý vĩ đại nhất của thống kê học! Nó khẳng định rằng tổng của một lượng lớn các biến độc lập có phương sai hữu hạn sẽ triệt tiêu các đặc tính riêng lẻ kỳ quặc của từng biến và hội tụ về phân phối Chuẩn phổ quát."
-            howToInteract={[
-              "Chọn phân phối gốc: '2 Đỉnh (Bimodal)' hoặc 'Hàm mũ Exp(1)'.",
-              "Khi n = 1: Đồ thị thể hiện chính xác hình dáng méo mó của phân phối gốc.",
-              "Kéo slider cỡ mẫu n từ 1 lên 2, 5, 10, rồi 30 để chứng kiến phép màu xảy ra!"
-            ]}
-            whatToObserve="Chỉ cần n >= 15-20, hai ngọn núi của phân phối bimodal sụp đổ và dồn hết về giữa, khớp hoàn hảo 100% với đường cong quả chuông Gauss màu cam!"
-            takeaway="Trong các bài toán thực tế: Khi cỡ mẫu n >= 30, ta được phép dùng bảng phân phối chuẩn Z để tính xấp xỉ xác suất của trung bình mẫu!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -379,6 +367,19 @@ export const LimitTheoremsCLT: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Dù biến ngẫu nhiên gốc có hình thù kỳ dị tới mức nào (2 đỉnh bimodal, lệch hẳn về một bên như Exponential, hay phân phối rời rạc xúc xắc), tại sao khi ta cộng trung bình nhiều biến lại thì kết quả LUÔN LUÔN biến thành quả chuông đối xứng Gauss?"
+            formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1) \quad \text{khi } n \to \infty"
+            mathExplanation="Đây là định lý vĩ đại nhất của thống kê học! Nó khẳng định rằng tổng của một lượng lớn các biến độc lập có phương sai hữu hạn sẽ triệt tiêu các đặc tính riêng lẻ kỳ quặc của từng biến và hội tụ về phân phối Chuẩn phổ quát."
+            howToInteract={[
+              "Chọn phân phối gốc: '2 Đỉnh (Bimodal)' hoặc 'Hàm mũ Exp(1)'.",
+              "Khi n = 1: Đồ thị thể hiện chính xác hình dáng méo mó của phân phối gốc.",
+              "Kéo slider cỡ mẫu n từ 1 lên 2, 5, 10, rồi 30 để chứng kiến phép màu xảy ra!"
+            ]}
+            whatToObserve="Chỉ cần n >= 15-20, hai ngọn núi của phân phối bimodal sụp đổ và dồn hết về giữa, khớp hoàn hảo 100% với đường cong quả chuông Gauss màu cam!"
+            takeaway="Trong các bài toán thực tế: Khi cỡ mẫu n >= 30, ta được phép dùng bảng phân phối chuẩn Z để tính xấp xỉ xác suất của trung bình mẫu!"
+          />
         </div>
       )}
 
@@ -387,18 +388,6 @@ export const LimitTheoremsCLT: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'lln' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Nếu ta tung một đồng xu cân bằng 1,000 lần, làm sao chắc chắn rằng tỷ lệ ra mặt ngửa sẽ dần dần ổn định quanh 0.5? Bản chất của Luật số lớn là gì?"
-            formula="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0 \quad (\forall \epsilon > 0)"
-            mathExplanation="Khi số phép thử n tăng lên, phương sai của trung bình mẫu Var(X̄_n) = σ²/n tiến về 0. Điều này ép toàn bộ các quỹ đạo thực nghiệm phải lọt vào và nằm im trong đường ống dung sai [-ε, +ε] quanh tâm μ."
-            howToInteract={[
-              "Kéo slider 'Dung sai Epsilon' để mở rộng hoặc bóp hẹp đường ống màu xanh dương.",
-              "Bấm nút 'Sinh 15 Quỹ đạo Mới' để tái tạo các ván tung đồng xu khác nhau.",
-              "Xem tỷ lệ bao nhiêu phần trăm quỹ đạo nằm trọn trong ống khi bước chạy n tiến đến 400."
-            ]}
-            whatToObserve="Ở những bước đầu (n < 50), các đường đi giật cục rất mạnh và bay ra ngoài ống. Nhưng càng về cuối (n > 200), tất cả các đường đều ngoan ngoãn hội tụ phẳng lì vào tâm 0.5!"
-            takeaway="Luật số lớn đảm bảo các nhà cái sòng bạc hay công ty bảo hiểm luôn có lãi ổn định khi phục vụ số lượng người chơi đủ lớn!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -501,6 +490,19 @@ export const LimitTheoremsCLT: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Nếu ta tung một đồng xu cân bằng 1,000 lần, làm sao chắc chắn rằng tỷ lệ ra mặt ngửa sẽ dần dần ổn định quanh 0.5? Bản chất của Luật số lớn là gì?"
+            formula="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0 \quad (\forall \epsilon > 0)"
+            mathExplanation="Khi số phép thử n tăng lên, phương sai của trung bình mẫu Var(X̄_n) = σ²/n tiến về 0. Điều này ép toàn bộ các quỹ đạo thực nghiệm phải lọt vào và nằm im trong đường ống dung sai [-ε, +ε] quanh tâm μ."
+            howToInteract={[
+              "Kéo slider 'Dung sai Epsilon' để mở rộng hoặc bóp hẹp đường ống màu xanh dương.",
+              "Bấm nút 'Sinh 15 Quỹ đạo Mới' để tái tạo các ván tung đồng xu khác nhau.",
+              "Xem tỷ lệ bao nhiêu phần trăm quỹ đạo nằm trọn trong ống khi bước chạy n tiến đến 400."
+            ]}
+            whatToObserve="Ở những bước đầu (n < 50), các đường đi giật cục rất mạnh và bay ra ngoài ống. Nhưng càng về cuối (n > 200), tất cả các đường đều ngoan ngoãn hội tụ phẳng lì vào tâm 0.5!"
+            takeaway="Luật số lớn đảm bảo các nhà cái sòng bạc hay công ty bảo hiểm luôn có lãi ổn định khi phục vụ số lượng người chơi đủ lớn!"
+          />
         </div>
       )}
 
@@ -509,18 +511,6 @@ export const LimitTheoremsCLT: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'bounds' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Trong lý thuyết tính toán và máy học, ta rất hay cần chặn cận xác suất xảy ra biến cố cực đoan P(X >= a) khi không biết chính xác hàm phân phối. Tại sao cận Chernoff lại vượt trội hoàn toàn so với Markov và Chebyshev?"
-            formula="\text{Markov: } \frac{\mathbb{E}[X]}{a}, \quad \text{Chebyshev: } \frac{\sigma^2}{a^2}, \quad \text{Chernoff: } \inf_{s > 0} e^{-s a} M_X(s)"
-            mathExplanation="Markov chỉ dùng thông tin bậc 1 (kỳ vọng), cho cận giảm chậm theo O(1/a). Chebyshev dùng thông tin bậc 2 (phương sai), cho cận O(1/a²). Nhưng Chernoff tận dụng toàn bộ hàm sinh moment MGF (toàn bộ mọi bậc moment), cho cận giảm nhanh theo hàm mũ O(e^{-a²})!"
-            howToInteract={[
-              "Kéo slider 'Khoảng cách k (số độ lệch chuẩn)' từ 1.5 đến 4.0.",
-              "Xem diện tích đuôi xác suất thật màu xanh lá.",
-              "So sánh độ thắt chặt giữa cận Chebyshev (O(1/k²)) và cận Chernoff (O(e^{-k²/2}))."
-            ]}
-            whatToObserve="Khi k = 3 hoặc 4, Chebyshev chặn cận rất lỏng lẻo (chỉ biết xác suất <= 6.25%), trong khi Chernoff thắt chặt xuống dưới 0.05%, cực kỳ sát với xác suất thực tế!"
-            takeaway="Chernoff Bound là vũ khí số 1 trong chứng minh bảo mật mật mã và lý thuyết độ phức tạp tính toán (PAC Learning)!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -640,6 +630,19 @@ export const LimitTheoremsCLT: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Trong lý thuyết tính toán và máy học, ta rất hay cần chặn cận xác suất xảy ra biến cố cực đoan P(X >= a) khi không biết chính xác hàm phân phối. Tại sao cận Chernoff lại vượt trội hoàn toàn so với Markov và Chebyshev?"
+            formula="\text{Markov: } \frac{\mathbb{E}[X]}{a}, \quad \text{Chebyshev: } \frac{\sigma^2}{a^2}, \quad \text{Chernoff: } \inf_{s > 0} e^{-s a} M_X(s)"
+            mathExplanation="Markov chỉ dùng thông tin bậc 1 (kỳ vọng), cho cận giảm chậm theo O(1/a). Chebyshev dùng thông tin bậc 2 (phương sai), cho cận O(1/a²). Nhưng Chernoff tận dụng toàn bộ hàm sinh moment MGF (toàn bộ mọi bậc moment), cho cận giảm nhanh theo hàm mũ O(e^{-a²})!"
+            howToInteract={[
+              "Kéo slider 'Khoảng cách k (số độ lệch chuẩn)' từ 1.5 đến 4.0.",
+              "Xem diện tích đuôi xác suất thật màu xanh lá.",
+              "So sánh độ thắt chặt giữa cận Chebyshev (O(1/k²)) và cận Chernoff (O(e^{-k²/2}))."
+            ]}
+            whatToObserve="Khi k = 3 hoặc 4, Chebyshev chặn cận rất lỏng lẻo (chỉ biết xác suất <= 6.25%), trong khi Chernoff thắt chặt xuống dưới 0.05%, cực kỳ sát với xác suất thực tế!"
+            takeaway="Chernoff Bound là vũ khí số 1 trong chứng minh bảo mật mật mã và lý thuyết độ phức tạp tính toán (PAC Learning)!"
+          />
         </div>
       )}
 
@@ -648,18 +651,6 @@ export const LimitTheoremsCLT: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'cauchy' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Liệu định lý giới hạn trung tâm CLT có luôn luôn đúng cho mọi biến ngẫu nhiên không? Khi nào thì việc lấy trung bình mẫu KHÔNG THỂ triệt tiêu được rủi ro?"
-            formula="X \sim \text{Cauchy}(0, 1) \implies \mathbb{E}[|X|] = \infty, \quad \bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i \sim \text{Cauchy}(0, 1)"
-            mathExplanation="Phân phối Cauchy có đuôi cực dày (Fat Tails) khiến tích phân kỳ vọng và phương sai phân kỳ ra vô hạn. Kỳ lạ thay: Trung bình mẫu của n biến Cauchy độc lập vẫn tuân theo đúng phân phối Cauchy ban đầu! Việc lấy thêm dữ liệu hoàn toàn vô dụng để giảm phương sai!"
-            howToInteract={[
-              "Kéo slider 'Cỡ mẫu n' từ 1 đến 50.",
-              "Xem hai đường chạy trung bình mẫu: Đường xanh dương (Gaussian) vs Đường đỏ (Cauchy).",
-              "Bấm nút 'Lấy 150 Mẫu Mới' để quan sát các cú sốc cực đoan (Black Swan)."
-            ]}
-            whatToObserve="Trong khi đường Gaussian co cụm phẳng lì quanh trục 0, đường Cauchy liên tục bị những cú giật vọt lên hàng chục đơn vị do xuất hiện các ngoại lai cực đoan!"
-            takeaway="Trong tài chính và quản trị rủi ro: Nếu dữ liệu có hiện tượng đuôi dày (Fat Tails - phân phối Pareto/Cauchy), không được áp dụng CLT mù quáng kẻo dẫn tới sụp đổ danh mục!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -766,6 +757,19 @@ export const LimitTheoremsCLT: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Liệu định lý giới hạn trung tâm CLT có luôn luôn đúng cho mọi biến ngẫu nhiên không? Khi nào thì việc lấy trung bình mẫu KHÔNG THỂ triệt tiêu được rủi ro?"
+            formula="X \sim \text{Cauchy}(0, 1) \implies \mathbb{E}[|X|] = \infty, \quad \bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i \sim \text{Cauchy}(0, 1)"
+            mathExplanation="Phân phối Cauchy có đuôi cực dày (Fat Tails) khiến tích phân kỳ vọng và phương sai phân kỳ ra vô hạn. Kỳ lạ thay: Trung bình mẫu của n biến Cauchy độc lập vẫn tuân theo đúng phân phối Cauchy ban đầu! Việc lấy thêm dữ liệu hoàn toàn vô dụng để giảm phương sai!"
+            howToInteract={[
+              "Kéo slider 'Cỡ mẫu n' từ 1 đến 50.",
+              "Xem hai đường chạy trung bình mẫu: Đường xanh dương (Gaussian) vs Đường đỏ (Cauchy).",
+              "Bấm nút 'Lấy 150 Mẫu Mới' để quan sát các cú sốc cực đoan (Black Swan)."
+            ]}
+            whatToObserve="Trong khi đường Gaussian co cụm phẳng lì quanh trục 0, đường Cauchy liên tục bị những cú giật vọt lên hàng chục đơn vị do xuất hiện các ngoại lai cực đoan!"
+            takeaway="Trong tài chính và quản trị rủi ro: Nếu dữ liệu có hiện tượng đuôi dày (Fat Tails - phân phối Pareto/Cauchy), không được áp dụng CLT mù quáng kẻo dẫn tới sụp đổ danh mục!"
+          />
         </div>
       )}
     </div>

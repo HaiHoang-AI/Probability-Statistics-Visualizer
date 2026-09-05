@@ -157,18 +157,6 @@ export const ClassicalEstimation: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'ci' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Độ tin cậy 95% có phải là 'xác suất để giá trị trung bình thực mu rơi vào khoảng là 95%' hay không? Tại sao giảng viên luôn trừ điểm nếu ta phát biểu như vậy?"
-            formula="\bar{X} \pm Z_{\alpha/2} \frac{\sigma}{\sqrt{n}} \implies P\left( \bar{X} - 1.96\frac{\sigma}{\sqrt{n}} \le \mu \le \bar{X} + 1.96\frac{\sigma}{\sqrt{n}} \right) = 0.95"
-            mathExplanation="Trong trường phái Tần suất (Frequentist), tham số thực mu là một HẰNG SỐ CỐ ĐỊNH (vạch dọc màu xanh ở giữa). Chính 100 cái khoảng màu xanh/đỏ mới là BIẾN ĐỘNG NGẪU NHIÊN theo từng mẫu! Khoảng nào tóm được mu thì màu xanh, khoảng nào trượt ra ngoài thì màu đỏ."
-            howToInteract={[
-              "Bấm nút 'Lấy lại 100 mẫu ngẫu nhiên' nhiều lần liên tiếp.",
-              "Kéo slider 'Mức tin cậy' từ 80% lên 99%.",
-              "Quan sát độ rộng của các thanh ngang co giãn và tỷ lệ bao phủ thực tế."
-            ]}
-            whatToObserve="Khi bạn chọn 95%, trung bình cứ 100 khoảng được tạo ra thì có khoảng 95 thanh màu xanh tóm được vạch mu, và khoảng 5 thanh màu đỏ bị trượt ra ngoài!"
-            takeaway="Cách phát biểu chuẩn mực đi thi: 'Nếu lặp lại quá trình lấy mẫu nhiều lần độc lập trong cùng điều kiện, có 95% số khoảng được tạo ra sẽ bao trùm giá trị tham số thực mu'!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -306,6 +294,19 @@ export const ClassicalEstimation: React.FC = () => {
               </p>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Độ tin cậy 95% có phải là 'xác suất để giá trị trung bình thực mu rơi vào khoảng là 95%' hay không? Tại sao giảng viên luôn trừ điểm nếu ta phát biểu như vậy?"
+            formula="\bar{X} \pm Z_{\alpha/2} \frac{\sigma}{\sqrt{n}} \implies P\left( \bar{X} - 1.96\frac{\sigma}{\sqrt{n}} \le \mu \le \bar{X} + 1.96\frac{\sigma}{\sqrt{n}} \right) = 0.95"
+            mathExplanation="Trong trường phái Tần suất (Frequentist), tham số thực mu là một HẰNG SỐ CỐ ĐỊNH (vạch dọc màu xanh ở giữa). Chính 100 cái khoảng màu xanh/đỏ mới là BIẾN ĐỘNG NGẪU NHIÊN theo từng mẫu! Khoảng nào tóm được mu thì màu xanh, khoảng nào trượt ra ngoài thì màu đỏ."
+            howToInteract={[
+              "Bấm nút 'Lấy lại 100 mẫu ngẫu nhiên' nhiều lần liên tiếp.",
+              "Kéo slider 'Mức tin cậy' từ 80% lên 99%.",
+              "Quan sát độ rộng của các thanh ngang co giãn và tỷ lệ bao phủ thực tế."
+            ]}
+            whatToObserve="Khi bạn chọn 95%, trung bình cứ 100 khoảng được tạo ra thì có khoảng 95 thanh màu xanh tóm được vạch mu, và khoảng 5 thanh màu đỏ bị trượt ra ngoài!"
+            takeaway="Cách phát biểu chuẩn mực đi thi: 'Nếu lặp lại quá trình lấy mẫu nhiều lần độc lập trong cùng điều kiện, có 95% số khoảng được tạo ra sẽ bao trùm giá trị tham số thực mu'!"
+          />
         </div>
       )}
 
@@ -314,18 +315,6 @@ export const ClassicalEstimation: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'student' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Khi cỡ mẫu n nhỏ (ví dụ n < 30) và chưa biết phương sai tổng thể σ², tại sao bắt buộc phải dùng phân phối Student t thay cho phân phối Chuẩn Gauss?"
-            formula="T = \frac{\bar{X} - \mu}{S / \sqrt{n}} \sim t(\nu = n - 1), \quad t(\nu) \xrightarrow{\nu \to \infty} \mathcal{N}(0, 1)"
-            mathExplanation="Khi thay độ lệch chuẩn lý thuyết σ bằng độ lệch chuẩn mẫu S, ta đưa thêm một nguồn bất định ngẫu nhiên mới vào mẫu số. Điều này làm cho phân phối của T có ĐUÔI DÀY HƠN phân phối chuẩn Gauss để bù đắp rủi ro của việc ước lượng non."
-            howToInteract={[
-              "Kéo slider 'Bậc tự do nu' từ 1 đến 35.",
-              "Quan sát đuôi của phân phối Student t (màu tím) dày hơn nhiều so với phân phối Chuẩn Gauss (màu xanh dương).",
-              "Khi kéo nu >= 30: Quan sát đường Student xẹp dần và trùng khít hoàn hảo với đường Gauss!"
-            ]}
-            whatToObserve="Tại ν = 1 (Phân phối Cauchy), đuôi cực dày. Tại ν = 30, sự khác biệt giữa Student và Gauss gần như bằng 0, giải thích vì sao quy tắc ngón tay cái thường chọn mốc n = 30!"
-            takeaway="Trong bài thi: Nếu không cho σ mà chỉ cho độ lệch chuẩn mẫu s, cỡ mẫu n < 30 $\implies$ BẮT BUỘC dùng bảng Student t với bậc tự do ν = n - 1!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -405,6 +394,19 @@ export const ClassicalEstimation: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Khi cỡ mẫu n nhỏ (ví dụ n < 30) và chưa biết phương sai tổng thể σ², tại sao bắt buộc phải dùng phân phối Student t thay cho phân phối Chuẩn Gauss?"
+            formula="T = \frac{\bar{X} - \mu}{S / \sqrt{n}} \sim t(\nu = n - 1), \quad t(\nu) \xrightarrow{\nu \to \infty} \mathcal{N}(0, 1)"
+            mathExplanation="Khi thay độ lệch chuẩn lý thuyết σ bằng độ lệch chuẩn mẫu S, ta đưa thêm một nguồn bất định ngẫu nhiên mới vào mẫu số. Điều này làm cho phân phối của T có ĐUÔI DÀY HƠN phân phối chuẩn Gauss để bù đắp rủi ro của việc ước lượng non."
+            howToInteract={[
+              "Kéo slider 'Bậc tự do nu' từ 1 đến 35.",
+              "Quan sát đuôi của phân phối Student t (màu tím) dày hơn nhiều so với phân phối Chuẩn Gauss (màu xanh dương).",
+              "Khi kéo nu >= 30: Quan sát đường Student xẹp dần và trùng khít hoàn hảo với đường Gauss!"
+            ]}
+            whatToObserve="Tại ν = 1 (Phân phối Cauchy), đuôi cực dày. Tại ν = 30, sự khác biệt giữa Student và Gauss gần như bằng 0, giải thích vì sao quy tắc ngón tay cái thường chọn mốc n = 30!"
+            takeaway="Trong bài thi: Nếu không cho σ mà chỉ cho độ lệch chuẩn mẫu s, cỡ mẫu n < 30 $\implies$ BẮT BUỘC dùng bảng Student t với bậc tự do ν = n - 1!"
+          />
         </div>
       )}
 
@@ -413,18 +415,6 @@ export const ClassicalEstimation: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'bessel' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Tại sao trong công thức tính phương sai mẫu S², ta bắt buộc phải chia cho n - 1 (Hiệu chỉnh Bessel) thay vì chia cho n như trực giác tự nhiên?"
-            formula="S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2 \implies \mathbb{E}[S^2] = \sigma^2, \quad \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2"
-            mathExplanation="Vì trung bình mẫu X̄ được tính từ chính các điểm dữ liệu, các điểm dữ liệu luôn có xu hướng nằm gần X̄ hơn là nằm gần trung bình thực μ! Việc chia cho n sẽ luôn luôn đánh giá thấp (ước lượng non) phương sai thực tế một tỷ lệ (n-1)/n. Chia cho n-1 sẽ triệt tiêu hoàn toàn độ chệch này!"
-            howToInteract={[
-              "Kéo slider 'Cỡ mẫu nhỏ n' từ 2 đến 12.",
-              "Xem đồ thị so sánh 2 cột phương sai mẫu sau 2,500 lần lấy mẫu Monte Carlo.",
-              "Quan sát độ lệch: Cột chia cho n luôn bị hụt dưới vạch phương sai chân lý σ² = 4.00, trong khi cột chia cho n-1 đạt chuẩn không chệch 100%!"
-            ]}
-            whatToObserve="Khi n = 2 hoặc 3, công thức chia cho n ước lượng non tới 33-50% phương sai thật! Khi n tăng lên 30, sai số này nhỏ dần, nhưng về mặt giải tích chỉ có chia n-1 mới là ước lượng không chệch (Unbiased Estimator)!"
-            takeaway="Bessel correction giải thích triệt để vì sao máy tính Casio luôn có 2 phím tính phương sai: sx (chia n-1 cho mẫu) và σx (chia n cho toàn thể)!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -537,6 +527,19 @@ export const ClassicalEstimation: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Tại sao trong công thức tính phương sai mẫu S², ta bắt buộc phải chia cho n - 1 (Hiệu chỉnh Bessel) thay vì chia cho n như trực giác tự nhiên?"
+            formula="S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2 \implies \mathbb{E}[S^2] = \sigma^2, \quad \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2"
+            mathExplanation="Vì trung bình mẫu X̄ được tính từ chính các điểm dữ liệu, các điểm dữ liệu luôn có xu hướng nằm gần X̄ hơn là nằm gần trung bình thực μ! Việc chia cho n sẽ luôn luôn đánh giá thấp (ước lượng non) phương sai thực tế một tỷ lệ (n-1)/n. Chia cho n-1 sẽ triệt tiêu hoàn toàn độ chệch này!"
+            howToInteract={[
+              "Kéo slider 'Cỡ mẫu nhỏ n' từ 2 đến 12.",
+              "Xem đồ thị so sánh 2 cột phương sai mẫu sau 2,500 lần lấy mẫu Monte Carlo.",
+              "Quan sát độ lệch: Cột chia cho n luôn bị hụt dưới vạch phương sai chân lý σ² = 4.00, trong khi cột chia cho n-1 đạt chuẩn không chệch 100%!"
+            ]}
+            whatToObserve="Khi n = 2 hoặc 3, công thức chia cho n ước lượng non tới 33-50% phương sai thật! Khi n tăng lên 30, sai số này nhỏ dần, nhưng về mặt giải tích chỉ có chia n-1 mới là ước lượng không chệch (Unbiased Estimator)!"
+            takeaway="Bessel correction giải thích triệt để vì sao máy tính Casio luôn có 2 phím tính phương sai: sx (chia n-1 cho mẫu) và σx (chia n cho toàn thể)!"
+          />
         </div>
       )}
 
@@ -545,18 +548,6 @@ export const ClassicalEstimation: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'mle' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Khi ta thu được một tập dữ liệu mẫu, làm thế nào để tìm ra giá trị tham số mu có khả năng cao nhất đã sinh ra bộ dữ liệu đó? Nguyên lý Hợp lý Cực đại (MLE) hoạt động ra sao?"
-            formula="L(\mu) = \prod_{i=1}^n f(x_i \mid \mu), \quad \ln L(\mu) = -\frac{n}{2}\ln(2\pi\sigma^2) - \sum_{i=1}^n \frac{(x_i - \mu)^2}{2\sigma^2}"
-            mathExplanation="Hàm hợp lý L(mu) đo lường 'mức độ hợp lý' của giả thuyết mu đối với dữ liệu quan sát được. Để tìm điểm cực đại, ta lấy log rồi đạo hàm triệt tiêu: Đỉnh cực đại của đường cong Likelihood chính là nghiệm MLE mu_hat!"
-            howToInteract={[
-              "Quan sát các điểm dữ liệu trên trục số.",
-              "Đường cong Likelihood dâng lên và đạt đỉnh cực đại duy nhất tại giá trị trung bình mẫu.",
-              "Bấm 'Thêm điểm dữ liệu' hoặc 'Xóa điểm' để xem đỉnh MLE dịch chuyển."
-            ]}
-            whatToObserve="Đỉnh của quả chuông hàm hợp lý luôn nằm chính xác tại điểm trung bình cộng của các mẫu dữ liệu!"
-            takeaway="Đối với phân phối Chuẩn: Ước lượng hợp lý cực đại MLE của kỳ vọng mu chính là trung bình mẫu x̄!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -666,6 +657,19 @@ export const ClassicalEstimation: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Khi ta thu được một tập dữ liệu mẫu, làm thế nào để tìm ra giá trị tham số mu có khả năng cao nhất đã sinh ra bộ dữ liệu đó? Nguyên lý Hợp lý Cực đại (MLE) hoạt động ra sao?"
+            formula="L(\mu) = \prod_{i=1}^n f(x_i \mid \mu), \quad \ln L(\mu) = -\frac{n}{2}\ln(2\pi\sigma^2) - \sum_{i=1}^n \frac{(x_i - \mu)^2}{2\sigma^2}"
+            mathExplanation="Hàm hợp lý L(mu) đo lường 'mức độ hợp lý' của giả thuyết mu đối với dữ liệu quan sát được. Để tìm điểm cực đại, ta lấy log rồi đạo hàm triệt tiêu: Đỉnh cực đại của đường cong Likelihood chính là nghiệm MLE mu_hat!"
+            howToInteract={[
+              "Quan sát các điểm dữ liệu trên trục số.",
+              "Đường cong Likelihood dâng lên và đạt đỉnh cực đại duy nhất tại giá trị trung bình mẫu.",
+              "Bấm 'Thêm điểm dữ liệu' hoặc 'Xóa điểm' để xem đỉnh MLE dịch chuyển."
+            ]}
+            whatToObserve="Đỉnh của quả chuông hàm hợp lý luôn nằm chính xác tại điểm trung bình cộng của các mẫu dữ liệu!"
+            takeaway="Đối với phân phối Chuẩn: Ước lượng hợp lý cực đại MLE của kỳ vọng mu chính là trung bình mẫu x̄!"
+          />
         </div>
       )}
     </div>

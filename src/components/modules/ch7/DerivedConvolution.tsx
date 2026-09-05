@@ -146,19 +146,6 @@ export const DerivedConvolution: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'convolution' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Nếu ta có 2 biến ngẫu nhiên độc lập X và Y (ví dụ thời gian chờ ở 2 chặng xe bus), làm thế nào để tìm hàm phân phối xác suất của tổng thời gian Z = X + Y?"
-            formula="f_Z(z) = (f_X * f_Y)(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z - x) \, dx"
-            mathExplanation="Tích chập là phép toán 'lật ngược' hàm f_Y, sau đó trượt nó qua f_X một khoảng z. Giá trị mật độ f_Z(z) tại mỗi điểm chính là diện tích phần giao nhau giữa hai hàm tại vị trí trượt đó."
-            howToInteract={[
-              "Bấm nút 'Chạy Quét Animation' hoặc kéo thanh trượt 'Giá trị z' từ 0.0 đến 2.0.",
-              "Quan sát khối màu cam f_Y(z-x) trượt ngang qua khối màu xanh f_X(x).",
-              "Nhìn diện tích phần giao nhau màu vàng (Miền Tích) thay đổi theo z.",
-              "Nhìn đường cong màu xanh lá f_Z(z) vẽ dần hình tam giác cân khi z chạy từ 0 đến 2."
-            ]}
-            whatToObserve="Khi z = 1.0 (ở chính giữa), khối trượt trùng khít hoàn toàn với khối cố định, diện tích giao đạt cực đại 1.0. Đồ thị mật độ kết quả chuyển hóa từ 2 hình phẳng thành 1 hình tam giác cân hoàn hảo!"
-            takeaway="Tổng của 2 biến phân phối Đều (Uniform) độc lập KHÔNG CÒN LÀ hình chữ nhật nữa, mà biến thành phân phối Tam giác (Triangular). Đây là bước mở đầu trực quan của Định lý Giới hạn Trung tâm (CLT)!"
-          />
 
           {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT TRÊN Ô GRID) */}
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
@@ -443,6 +430,20 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Nếu ta có 2 biến ngẫu nhiên độc lập X và Y (ví dụ thời gian chờ ở 2 chặng xe bus), làm thế nào để tìm hàm phân phối xác suất của tổng thời gian Z = X + Y?"
+            formula="f_Z(z) = (f_X * f_Y)(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z - x) \, dx"
+            mathExplanation="Tích chập là phép toán 'lật ngược' hàm f_Y, sau đó trượt nó qua f_X một khoảng z. Giá trị mật độ f_Z(z) tại mỗi điểm chính là diện tích phần giao nhau giữa hai hàm tại vị trí trượt đó."
+            howToInteract={[
+              "Bấm nút 'Chạy Quét Animation' hoặc kéo thanh trượt 'Giá trị z' từ 0.0 đến 2.0.",
+              "Quan sát khối màu cam f_Y(z-x) trượt ngang qua khối màu xanh f_X(x).",
+              "Nhìn diện tích phần giao nhau màu vàng (Miền Tích) thay đổi theo z.",
+              "Nhìn đường cong màu xanh lá f_Z(z) vẽ dần hình tam giác cân khi z chạy từ 0 đến 2."
+            ]}
+            whatToObserve="Khi z = 1.0 (ở chính giữa), khối trượt trùng khít hoàn toàn với khối cố định, diện tích giao đạt cực đại 1.0. Đồ thị mật độ kết quả chuyển hóa từ 2 hình phẳng thành 1 hình tam giác cân hoàn hảo!"
+            takeaway="Tổng của 2 biến phân phối Đều (Uniform) độc lập KHÔNG CÒN LÀ hình chữ nhật nữa, mà biến thành phân phối Tam giác (Triangular). Đây là bước mở đầu trực quan của Định lý Giới hạn Trung tâm (CLT)!"
+          />
         </div>
       )}
 
@@ -451,18 +452,6 @@ export const DerivedConvolution: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'correlation' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Hai biến có hệ số tương quan tuyến tính ρ = 0 thì có chắc chắn độc lập với nhau không? Làm thế nào để phân biệt giữa 'không tương quan' và 'độc lập hoàn toàn'?"
-            formula="\rho(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}, \quad \text{Cov}(X, Y) = \mathbb{E}[(X - \mu_X)(Y - \mu_Y)]"
-            mathExplanation="Hệ số tương quan Pearson ρ chỉ đo lường mức độ liên hệ TUYẾN TÍNH (đường thẳng). Nếu quan hệ giữa X và Y là đường cong đối xứng (như parabol Y = X²), thì Cov(X,Y) = 0 dù Y hoàn toàn bị quyết định bởi X!"
-            howToInteract={[
-              "Kéo thanh trượt 'Hệ số tương quan rho' từ -1.0 đến +1.0 để xem đám mây 250 điểm dữ liệu co cụm lại.",
-              "Bấm nút 'Mô hình Phi tuyến Parabol (Y = X²)' để kích hoạt bẫy kinh điển.",
-              "Quan sát đám mây điểm uốn cong thành hình chữ U hoàn hảo nhưng hệ số tương quan vẫn bằng 0.00!"
-            ]}
-            whatToObserve="Khi ρ = ±1, tất cả các điểm nằm khít trên một đường thẳng. Khi bấm Parabol, biết X ta lập tức tính được Y chính xác 100%, vậy mà ρ vẫn bằng 0!"
-            takeaway="Độc lập $\implies$ Không tương quan ($\rho = 0$). Nhưng chiều ngược lại: Không tương quan ($\rho = 0$) CHƯA CHẮC độc lập (trừ trường hợp phân phối Chuẩn nhiều chiều Bivariate Normal)!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -667,6 +656,19 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Hai biến có hệ số tương quan tuyến tính ρ = 0 thì có chắc chắn độc lập với nhau không? Làm thế nào để phân biệt giữa 'không tương quan' và 'độc lập hoàn toàn'?"
+            formula="\rho(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}, \quad \text{Cov}(X, Y) = \mathbb{E}[(X - \mu_X)(Y - \mu_Y)]"
+            mathExplanation="Hệ số tương quan Pearson ρ chỉ đo lường mức độ liên hệ TUYẾN TÍNH (đường thẳng). Nếu quan hệ giữa X và Y là đường cong đối xứng (như parabol Y = X²), thì Cov(X,Y) = 0 dù Y hoàn toàn bị quyết định bởi X!"
+            howToInteract={[
+              "Kéo thanh trượt 'Hệ số tương quan rho' từ -1.0 đến +1.0 để xem đám mây 250 điểm dữ liệu co cụm lại.",
+              "Bấm nút 'Mô hình Phi tuyến Parabol (Y = X²)' để kích hoạt bẫy kinh điển.",
+              "Quan sát đám mây điểm uốn cong thành hình chữ U hoàn hảo nhưng hệ số tương quan vẫn bằng 0.00!"
+            ]}
+            whatToObserve="Khi ρ = ±1, tất cả các điểm nằm khít trên một đường thẳng. Khi bấm Parabol, biết X ta lập tức tính được Y chính xác 100%, vậy mà ρ vẫn bằng 0!"
+            takeaway="Độc lập $\implies$ Không tương quan ($\rho = 0$). Nhưng chiều ngược lại: Không tương quan ($\rho = 0$) CHƯA CHẮC độc lập (trừ trường hợp phân phối Chuẩn nhiều chiều Bivariate Normal)!"
+          />
         </div>
       )}
 
@@ -675,18 +677,6 @@ export const DerivedConvolution: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'totalvar' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Nếu ta biết thông tin về một biến phụ Y (ví dụ biết sinh viên thuộc khoa nào), làm thế nào thông tin đó giúp phân rã và giải thích sự biến thiên của biến chính X (điểm thi)?"
-            formula="\text{Var}(X) = \text{Var}(\mathbb{E}[X|Y]) + \mathbb{E}[\text{Var}(X|Y)]"
-            mathExplanation="Tổng phương sai Var(X) luôn tách làm 2 phần: (1) Phương sai giữa các nhóm Var(E[X|Y]) do các tâm nhóm cách xa nhau (phần giải thích được nhờ Y), và (2) Phương sai nội bộ từng nhóm E[Var(X|Y)] do nhiễu ngẫu nhiên."
-            howToInteract={[
-              "Kéo slider 'Khoảng cách giữa các nhóm': Quan sát 3 quả chuông tách xa nhau ra.",
-              "Kéo slider 'Độ phân tán nội bộ nhóm': Quan sát các quả chuông phình to hay xẹp lại.",
-              "Nhìn thanh xếp chồng phía dưới: Tỷ lệ phần trăm giữa phương sai giải thích được (xanh) và chưa giải thích được (xám)."
-            ]}
-            whatToObserve="Khi khoảng cách giữa các nhóm rất lớn so với độ lệch nội bộ, phần trăm giải thích được vọt lên trên 80-90%! Đây chính là nền tảng toán học của mô hình ANOVA và Hồi quy sau này."
-            takeaway="Mẹo thi cử: Nhớ quy tắc Eve's Law: EVVE — 'E of Var plus Var of E' (Kỳ vọng của phương sai cộng Phương sai của kỳ vọng)!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -854,6 +844,19 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Nếu ta biết thông tin về một biến phụ Y (ví dụ biết sinh viên thuộc khoa nào), làm thế nào thông tin đó giúp phân rã và giải thích sự biến thiên của biến chính X (điểm thi)?"
+            formula="\text{Var}(X) = \text{Var}(\mathbb{E}[X|Y]) + \mathbb{E}[\text{Var}(X|Y)]"
+            mathExplanation="Tổng phương sai Var(X) luôn tách làm 2 phần: (1) Phương sai giữa các nhóm Var(E[X|Y]) do các tâm nhóm cách xa nhau (phần giải thích được nhờ Y), và (2) Phương sai nội bộ từng nhóm E[Var(X|Y)] do nhiễu ngẫu nhiên."
+            howToInteract={[
+              "Kéo slider 'Khoảng cách giữa các nhóm': Quan sát 3 quả chuông tách xa nhau ra.",
+              "Kéo slider 'Độ phân tán nội bộ nhóm': Quan sát các quả chuông phình to hay xẹp lại.",
+              "Nhìn thanh xếp chồng phía dưới: Tỷ lệ phần trăm giữa phương sai giải thích được (xanh) và chưa giải thích được (xám)."
+            ]}
+            whatToObserve="Khi khoảng cách giữa các nhóm rất lớn so với độ lệch nội bộ, phần trăm giải thích được vọt lên trên 80-90%! Đây chính là nền tảng toán học của mô hình ANOVA và Hồi quy sau này."
+            takeaway="Mẹo thi cử: Nhớ quy tắc Eve's Law: EVVE — 'E of Var plus Var of E' (Kỳ vọng của phương sai cộng Phương sai của kỳ vọng)!"
+          />
         </div>
       )}
 
@@ -862,18 +865,6 @@ export const DerivedConvolution: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'transform' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Nếu X có hàm mật độ f_X(x) và Y = g(X) (như Y = X²), tại sao ta không thể chỉ đơn giản thay x vào f_X(g(x)), mà bắt buộc phải chia cho đạo hàm |g'(x)|?"
-            formula="f_Y(y) = f_X(x) \cdot \left| \frac{dx}{dy} \right| = \frac{f_X(g^{-1}(y))}{|g'(g^{-1}(y))|}"
-            mathExplanation="Xác suất là DIỆN TÍCH. Khi hàm g biến đổi không gian, một đoạn nhỏ dx bị kéo giãn hoặc nén lại thành dy = |g'(x)|dx. Để tổng diện tích xác suất bảo toàn P(X in dx) = P(Y in dy), mật độ chiều cao f_Y bắt buộc phải tỷ lệ nghịch với độ giãn nở |g'(x)|!"
-            howToInteract={[
-              "Chọn một trong 3 dạng hàm biến đổi: Y = X² (Parabol), Y = 2X+1 (Tuyến tính), hoặc Y = e^X (Hàm mũ).",
-              "Kéo slider 'Điểm khảo sát x' để quan sát tiếp tuyến và độ dốc |g'(x)|.",
-              "Quan sát đồ thị bên phải: Chú ý giá trị mật độ f_Y(y) tương ứng."
-            ]}
-            whatToObserve="Khi hàm g dốc đứng (|g'(x)| lớn), một đoạn x hẹp bị kéo giãn thành đoạn y rất rộng, làm cho mật độ f_Y(y) bị dàn mỏng xẹp xuống. Ngược lại, chỗ nào g phẳng, mật độ vọt lên rất cao!"
-            takeaway="Quy tắc thi cử: Luôn nhớ nhân thêm trị tuyệt đối đạo hàm nghịch đảo |dx/dy| (Jacobian 1 chiều), không bao giờ được quên mẫu số |g'(x)|!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -1152,6 +1143,19 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Nếu X có hàm mật độ f_X(x) và Y = g(X) (như Y = X²), tại sao ta không thể chỉ đơn giản thay x vào f_X(g(x)), mà bắt buộc phải chia cho đạo hàm |g'(x)|?"
+            formula="f_Y(y) = f_X(x) \cdot \left| \frac{dx}{dy} \right| = \frac{f_X(g^{-1}(y))}{|g'(g^{-1}(y))|}"
+            mathExplanation="Xác suất là DIỆN TÍCH. Khi hàm g biến đổi không gian, một đoạn nhỏ dx bị kéo giãn hoặc nén lại thành dy = |g'(x)|dx. Để tổng diện tích xác suất bảo toàn P(X in dx) = P(Y in dy), mật độ chiều cao f_Y bắt buộc phải tỷ lệ nghịch với độ giãn nở |g'(x)|!"
+            howToInteract={[
+              "Chọn một trong 3 dạng hàm biến đổi: Y = X² (Parabol), Y = 2X+1 (Tuyến tính), hoặc Y = e^X (Hàm mũ).",
+              "Kéo slider 'Điểm khảo sát x' để quan sát tiếp tuyến và độ dốc |g'(x)|.",
+              "Quan sát đồ thị bên phải: Chú ý giá trị mật độ f_Y(y) tương ứng."
+            ]}
+            whatToObserve="Khi hàm g dốc đứng (|g'(x)| lớn), một đoạn x hẹp bị kéo giãn thành đoạn y rất rộng, làm cho mật độ f_Y(y) bị dàn mỏng xẹp xuống. Ngược lại, chỗ nào g phẳng, mật độ vọt lên rất cao!"
+            takeaway="Quy tắc thi cử: Luôn nhớ nhân thêm trị tuyệt đối đạo hàm nghịch đảo |dx/dy| (Jacobian 1 chiều), không bao giờ được quên mẫu số |g'(x)|!"
+          />
         </div>
       )}
 
@@ -1160,18 +1164,6 @@ export const DerivedConvolution: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'extremes' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Một hệ thống máy tính gồm n linh kiện độc lập. Hệ thống chỉ chạy được nếu TẤT CẢ linh kiện cùng chạy (hệ nối tiếp - Min), hoặc chỉ cần ÍT NHẤT 1 linh kiện chạy (hệ song song dự phòng - Max). Tuổi thọ của hệ thống thay đổi thế nào khi ta tăng số linh kiện n?"
-            formula="F_{\max}(w) = [F_X(w)]^n, \quad F_{\min}(v) = 1 - [1 - F_X(v)]^n"
-            mathExplanation="Để Max < w thì TẤT CẢ n linh kiện phải cùng < w (xác suất nhân n lần: [F(w)]^n). Ngược lại, để Min > v thì TẤT CẢ n linh kiện phải cùng sống sót qua thời điểm v (xác suất [1 - F(v)]^n)."
-            howToInteract={[
-              "Chuyển đổi giữa chế độ 'Hệ Song Song (Max)' và 'Hệ Nối Tiếp (Min)'.",
-              "Kéo slider số linh kiện n từ 1 đến 15.",
-              "Xem đường cong hàm mật độ f(t) di chuyển dạt sang phải (Max) hay co cụm sang trái (Min)."
-            ]}
-            whatToObserve="Khi tăng n trong hệ song song (Max), đường cong bị đẩy mạnh về bên phải (tuổi thọ trung bình tăng vọt nhờ có linh kiện dự phòng). Còn hệ nối tiếp (Min) chỉ cần 1 linh kiện chết là sập cả hệ thống, nên đồ thị co rúm về sát 0!"
-            takeaway="Quy tắc thi cử: Bài toán 'Linh kiện hỏng đầu tiên' $\implies$ tìm phân phối của $\min$. Bài toán 'Thời điểm linh kiện cuối cùng ngừng hoạt động' $\implies$ tìm phân phối của $\max$!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -1346,6 +1338,19 @@ export const DerivedConvolution: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Một hệ thống máy tính gồm n linh kiện độc lập. Hệ thống chỉ chạy được nếu TẤT CẢ linh kiện cùng chạy (hệ nối tiếp - Min), hoặc chỉ cần ÍT NHẤT 1 linh kiện chạy (hệ song song dự phòng - Max). Tuổi thọ của hệ thống thay đổi thế nào khi ta tăng số linh kiện n?"
+            formula="F_{\max}(w) = [F_X(w)]^n, \quad F_{\min}(v) = 1 - [1 - F_X(v)]^n"
+            mathExplanation="Để Max < w thì TẤT CẢ n linh kiện phải cùng < w (xác suất nhân n lần: [F(w)]^n). Ngược lại, để Min > v thì TẤT CẢ n linh kiện phải cùng sống sót qua thời điểm v (xác suất [1 - F(v)]^n)."
+            howToInteract={[
+              "Chuyển đổi giữa chế độ 'Hệ Song Song (Max)' và 'Hệ Nối Tiếp (Min)'.",
+              "Kéo slider số linh kiện n từ 1 đến 15.",
+              "Xem đường cong hàm mật độ f(t) di chuyển dạt sang phải (Max) hay co cụm sang trái (Min)."
+            ]}
+            whatToObserve="Khi tăng n trong hệ song song (Max), đường cong bị đẩy mạnh về bên phải (tuổi thọ trung bình tăng vọt nhờ có linh kiện dự phòng). Còn hệ nối tiếp (Min) chỉ cần 1 linh kiện chết là sập cả hệ thống, nên đồ thị co rúm về sát 0!"
+            takeaway="Quy tắc thi cử: Bài toán 'Linh kiện hỏng đầu tiên' $\implies$ tìm phân phối của $\min$. Bài toán 'Thời điểm linh kiện cuối cùng ngừng hoạt động' $\implies$ tìm phân phối của $\max$!"
+          />
         </div>
       )}
     </div>

@@ -146,18 +146,6 @@ export const BayesianInference: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'beta-binomial' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Làm sao ta có thể kết hợp niềm tin ban đầu của chuyên gia (Prior) với dữ liệu quan sát thực nghiệm mới thu thập (Likelihood) để liên tục cập nhật xác suất thành công θ một cách khoa học?"
-            formula="P(\theta \mid \text{data}) = \frac{P(\text{data} \mid \theta) P(\theta)}{P(\text{data})} \propto \theta^{\alpha + k - 1} (1 - \theta)^{\beta + (n-k) - 1}"
-            mathExplanation="Khi chọn Prior là phân phối liên hợp Beta(α, β) và dữ liệu là Nhị thức (k lần ngửa trong n lần tung), phân phối Hậu nghiệm Posterior vẫn là một hàm Beta với các tham số đơn giản là cộng dồn: α_mới = α + k và β_mới = β + (n - k)!"
-            howToInteract={[
-              "Bấm nút 'Tung 1 đồng xu' hoặc 'Tung 10 đồng xu' để thu thập thêm dữ liệu.",
-              "Kéo slider Prior α và β để thay đổi niềm tin chủ quan ban đầu.",
-              "Xem đường cong Posterior màu xanh dương co hẹp và dịch chuyển đỉnh MAP về phía tần suất thực nghiệm k/n."
-            ]}
-            whatToObserve="Khi số lần tung n còn ít, Posterior bị giằng co giữa Prior và Likelihood. Nhưng khi n rất lớn (ví dụ n > 50), dữ liệu áp đảo hoàn toàn, gạt bỏ Prior ban đầu và ép đỉnh nhọn đúng tại θ thật!"
-            takeaway="Điểm cực trị MAP (Maximum A Posteriori): θ_MAP = (α + k - 1) / (α + β + n - 2). Khi α = β = 1 (Prior phẳng), MAP trùng khít hoàn hảo với nghiệm MLE tần suất!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -360,6 +348,19 @@ export const BayesianInference: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Làm sao ta có thể kết hợp niềm tin ban đầu của chuyên gia (Prior) với dữ liệu quan sát thực nghiệm mới thu thập (Likelihood) để liên tục cập nhật xác suất thành công θ một cách khoa học?"
+            formula="P(\theta \mid \text{data}) = \frac{P(\text{data} \mid \theta) P(\theta)}{P(\text{data})} \propto \theta^{\alpha + k - 1} (1 - \theta)^{\beta + (n-k) - 1}"
+            mathExplanation="Khi chọn Prior là phân phối liên hợp Beta(α, β) và dữ liệu là Nhị thức (k lần ngửa trong n lần tung), phân phối Hậu nghiệm Posterior vẫn là một hàm Beta với các tham số đơn giản là cộng dồn: α_mới = α + k và β_mới = β + (n - k)!"
+            howToInteract={[
+              "Bấm nút 'Tung 1 đồng xu' hoặc 'Tung 10 đồng xu' để thu thập thêm dữ liệu.",
+              "Kéo slider Prior α và β để thay đổi niềm tin chủ quan ban đầu.",
+              "Xem đường cong Posterior màu xanh dương co hẹp và dịch chuyển đỉnh MAP về phía tần suất thực nghiệm k/n."
+            ]}
+            whatToObserve="Khi số lần tung n còn ít, Posterior bị giằng co giữa Prior và Likelihood. Nhưng khi n rất lớn (ví dụ n > 50), dữ liệu áp đảo hoàn toàn, gạt bỏ Prior ban đầu và ép đỉnh nhọn đúng tại θ thật!"
+            takeaway="Điểm cực trị MAP (Maximum A Posteriori): θ_MAP = (α + k - 1) / (α + β + n - 2). Khi α = β = 1 (Prior phẳng), MAP trùng khít hoàn hảo với nghiệm MLE tần suất!"
+          />
         </div>
       )}
 
@@ -368,18 +369,6 @@ export const BayesianInference: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'sensor-fusion' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Một robot xe tự hành nhận tín hiệu GPS (sai số lớn) và cảm biến Lidar (sai số nhỏ). Làm thế nào nguyên lý Bayes kết hợp hai cảm biến này với vị trí dự đoán trước đó để đưa ra vị trí chính xác hơn bất kỳ cảm biến đơn lẻ nào?"
-            formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}, \quad \mu_{\text{post}} = \sigma_{\text{post}}^2 \left(\frac{\mu_0}{\sigma_0^2} + \frac{x_1}{\sigma_1^2} + \frac{x_2}{\sigma_2^2}\right)"
-            mathExplanation="Độ chính xác (Precision = 1/σ²) của phân phối Gauss cộng dồn lại theo nguyên lý Bayes! Cảm biến nào có độ lệch chuẩn nhỏ (đáng tin cậy) sẽ nhận được trọng số cực lớn trong giá trị trung bình kết hợp."
-            howToInteract={[
-              "Kéo slider 'Vị trí đọc x1, x2' để thay đổi số đo của từng cảm biến.",
-              "Kéo slider 'Sai số sigma1, sigma2' để mô phỏng cảm biến xịn hay dỏm.",
-              "Nhìn quả chuông kết hợp màu xanh dương: Độ lệch chuẩn σ_post LUÔN LUÔN NHỎ HƠN độ lệch chuẩn của từng cảm biến đơn lẻ!"
-            ]}
-            whatToObserve="Quả chuông kết hợp (Fused) luôn cao hơn và nhọn hơn tất cả các cảm biến thành phần. Dù cả 2 cảm biến đều có sai số, kết hợp chúng lại giúp robot định vị cực kỳ chuẩn xác!"
-            takeaway="Đây chính là bước Cập nhật Đo lường (Measurement Update) cốt lõi của Bộ lọc Kalman (Kalman Filter) dùng trong tên lửa và xe tự hành Tesla!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -589,6 +578,19 @@ export const BayesianInference: React.FC = () => {
               </div>
             </ClayCard>
           </div>
+
+          <LabBriefing
+            question="Một robot xe tự hành nhận tín hiệu GPS (sai số lớn) và cảm biến Lidar (sai số nhỏ). Làm thế nào nguyên lý Bayes kết hợp hai cảm biến này với vị trí dự đoán trước đó để đưa ra vị trí chính xác hơn bất kỳ cảm biến đơn lẻ nào?"
+            formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}, \quad \mu_{\text{post}} = \sigma_{\text{post}}^2 \left(\frac{\mu_0}{\sigma_0^2} + \frac{x_1}{\sigma_1^2} + \frac{x_2}{\sigma_2^2}\right)"
+            mathExplanation="Độ chính xác (Precision = 1/σ²) của phân phối Gauss cộng dồn lại theo nguyên lý Bayes! Cảm biến nào có độ lệch chuẩn nhỏ (đáng tin cậy) sẽ nhận được trọng số cực lớn trong giá trị trung bình kết hợp."
+            howToInteract={[
+              "Kéo slider 'Vị trí đọc x1, x2' để thay đổi số đo của từng cảm biến.",
+              "Kéo slider 'Sai số sigma1, sigma2' để mô phỏng cảm biến xịn hay dỏm.",
+              "Nhìn quả chuông kết hợp màu xanh dương: Độ lệch chuẩn σ_post LUÔN LUÔN NHỎ HƠN độ lệch chuẩn của từng cảm biến đơn lẻ!"
+            ]}
+            whatToObserve="Quả chuông kết hợp (Fused) luôn cao hơn và nhọn hơn tất cả các cảm biến thành phần. Dù cả 2 cảm biến đều có sai số, kết hợp chúng lại giúp robot định vị cực kỳ chuẩn xác!"
+            takeaway="Đây chính là bước Cập nhật Đo lường (Measurement Update) cốt lõi của Bộ lọc Kalman (Kalman Filter) dùng trong tên lửa và xe tự hành Tesla!"
+          />
         </div>
       )}
 
@@ -597,18 +599,6 @@ export const BayesianInference: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'credible' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Khoảng tin cậy Bayes (Credible Interval) khác gì về mặt bản chất so với Khoảng tin cậy Tần suất (Confidence Interval)? Tại sao Bayes cho phép ta nói thẳng: 'Xác suất tham số nằm trong khoảng này là 95%'?"
-            formula="P(L \le \theta \le U \mid \text{data}) = \int_L^U P(\theta \mid \text{data}) \, d\theta = 1 - \alpha"
-            mathExplanation="Trong trường phái Bayes, tham số θ là một biến ngẫu nhiên có hàm phân phối xác suất Posterior! Do đó, ta hoàn toàn có thể tính tích phân diện tích trực tiếp dưới đường cong Posterior để thu được khoảng tin cậy có mật độ cao nhất (HPD - Highest Posterior Density)."
-            howToInteract={[
-              "Kéo slider 'Mức độ tin cậy' (ví dụ 80%, 90%, 95%, 99%).",
-              "Quan sát hai vạch biên L và U cùng vùng diện tích tích phân màu xanh dương co giãn trực tiếp trên đường cong Posterior.",
-              "Xem giá trị cận dưới L và cận trên U thay đổi theo thời gian thực."
-            ]}
-            whatToObserve="Vùng Credible Interval luôn tự động bao phủ vùng mật độ cao nhất quanh đỉnh MAP. Khi tăng mức tin cậy từ 90% lên 99%, khoảng phải nới rộng ra hai bên để ôm trọn 99% diện tích xác suất."
-            takeaway="Phân biệt sống còn: Tần suất coi tham số cố định, khoảng là ngẫu nhiên. Bayes coi tham số là ngẫu nhiên, cho phép phát biểu xác suất trực tiếp trên tham số!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -698,6 +688,19 @@ export const BayesianInference: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Khoảng tin cậy Bayes (Credible Interval) khác gì về mặt bản chất so với Khoảng tin cậy Tần suất (Confidence Interval)? Tại sao Bayes cho phép ta nói thẳng: 'Xác suất tham số nằm trong khoảng này là 95%'?"
+            formula="P(L \le \theta \le U \mid \text{data}) = \int_L^U P(\theta \mid \text{data}) \, d\theta = 1 - \alpha"
+            mathExplanation="Trong trường phái Bayes, tham số θ là một biến ngẫu nhiên có hàm phân phối xác suất Posterior! Do đó, ta hoàn toàn có thể tính tích phân diện tích trực tiếp dưới đường cong Posterior để thu được khoảng tin cậy có mật độ cao nhất (HPD - Highest Posterior Density)."
+            howToInteract={[
+              "Kéo slider 'Mức độ tin cậy' (ví dụ 80%, 90%, 95%, 99%).",
+              "Quan sát hai vạch biên L và U cùng vùng diện tích tích phân màu xanh dương co giãn trực tiếp trên đường cong Posterior.",
+              "Xem giá trị cận dưới L và cận trên U thay đổi theo thời gian thực."
+            ]}
+            whatToObserve="Vùng Credible Interval luôn tự động bao phủ vùng mật độ cao nhất quanh đỉnh MAP. Khi tăng mức tin cậy từ 90% lên 99%, khoảng phải nới rộng ra hai bên để ôm trọn 99% diện tích xác suất."
+            takeaway="Phân biệt sống còn: Tần suất coi tham số cố định, khoảng là ngẫu nhiên. Bayes coi tham số là ngẫu nhiên, cho phép phát biểu xác suất trực tiếp trên tham số!"
+          />
         </div>
       )}
 
@@ -706,18 +709,6 @@ export const BayesianInference: React.FC = () => {
          ========================================================================= */}
       {activeTab === 'baserate' && (
         <div className="space-y-6">
-          <LabBriefing
-            question="Một xét nghiệm y tế chẩn đoán có độ chính xác lên tới 99% (độ nhạy 99%, độ đặc hiệu 95%). Một người nhận kết quả DƯƠNG TÍNH (+). Tại sao xác suất người đó thực sự mắc bệnh lại chỉ có khoảng 16%, thậm chí dưới 10%?"
-            formula="P(\text{Bệnh} \mid +) = \frac{P(+ \mid \text{Bệnh}) P(\text{Bệnh})}{P(+ \mid \text{Bệnh})P(\text{Bệnh}) + P(+ \mid \text{Khỏe})P(\text{Khỏe})}"
-            mathExplanation="Khi một căn bệnh rất hiếm (tỷ lệ nền Base Rate chỉ 1/1000 người), số người khỏe mạnh trong cộng đồng áp đảo tuyệt đối (999 người). Dù tỷ lệ báo động nhầm (dương tính giả) chỉ là 5%, nhưng 5% của 999 người khỏe vẫn ra tới ~50 ca dương tính giả, đè bẹp hoàn toàn 1 ca dương tính thật duy nhất!"
-            howToInteract={[
-              "Kéo slider 'Tỷ lệ mắc bệnh trong cộng đồng' từ 1 đến 100 ca trên 10,000 dân.",
-              "Kéo slider 'Độ nhạy (Sensitivity)' và 'Độ đặc hiệu (Specificity)' của bộ kit test.",
-              "Nhìn biểu đồ diện tích ma trận 10,000 người để so sánh số ca Dương tính Thật (xanh) vs Dương tính Giả (đỏ)."
-            ]}
-            whatToObserve="Kéo tỷ lệ nền xuống 5 ca/10,000 dân: Khối màu đỏ (dương tính giả) phình to gấp 10 lần khối màu xanh (dương tính thật)! Dẫn tới giá trị dự đoán dương tính PPV rơi xuống dưới 10%!"
-            takeaway="Bẫy kinh điển: Không bao giờ được đánh đồng độ chính xác của xét nghiệm P(+|Bệnh) với xác suất mắc bệnh khi có kết quả P(Bệnh|+)! Tỷ lệ nền là yếu tố quyết định!"
-          />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
@@ -836,6 +827,19 @@ export const BayesianInference: React.FC = () => {
               </div>
             </div>
           </ClayCard>
+
+          <LabBriefing
+            question="Một xét nghiệm y tế chẩn đoán có độ chính xác lên tới 99% (độ nhạy 99%, độ đặc hiệu 95%). Một người nhận kết quả DƯƠNG TÍNH (+). Tại sao xác suất người đó thực sự mắc bệnh lại chỉ có khoảng 16%, thậm chí dưới 10%?"
+            formula="P(\text{Bệnh} \mid +) = \frac{P(+ \mid \text{Bệnh}) P(\text{Bệnh})}{P(+ \mid \text{Bệnh})P(\text{Bệnh}) + P(+ \mid \text{Khỏe})P(\text{Khỏe})}"
+            mathExplanation="Khi một căn bệnh rất hiếm (tỷ lệ nền Base Rate chỉ 1/1000 người), số người khỏe mạnh trong cộng đồng áp đảo tuyệt đối (999 người). Dù tỷ lệ báo động nhầm (dương tính giả) chỉ là 5%, nhưng 5% của 999 người khỏe vẫn ra tới ~50 ca dương tính giả, đè bẹp hoàn toàn 1 ca dương tính thật duy nhất!"
+            howToInteract={[
+              "Kéo slider 'Tỷ lệ mắc bệnh trong cộng đồng' từ 1 đến 100 ca trên 10,000 dân.",
+              "Kéo slider 'Độ nhạy (Sensitivity)' và 'Độ đặc hiệu (Specificity)' của bộ kit test.",
+              "Nhìn biểu đồ diện tích ma trận 10,000 người để so sánh số ca Dương tính Thật (xanh) vs Dương tính Giả (đỏ)."
+            ]}
+            whatToObserve="Kéo tỷ lệ nền xuống 5 ca/10,000 dân: Khối màu đỏ (dương tính giả) phình to gấp 10 lần khối màu xanh (dương tính thật)! Dẫn tới giá trị dự đoán dương tính PPV rơi xuống dưới 10%!"
+            takeaway="Bẫy kinh điển: Không bao giờ được đánh đồng độ chính xác của xét nghiệm P(+|Bệnh) với xác suất mắc bệnh khi có kết quả P(Bệnh|+)! Tỷ lệ nền là yếu tố quyết định!"
+          />
         </div>
       )}
     </div>
