@@ -4,6 +4,7 @@ import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, betaPdf, normalPdf } from '../../../utils/math';
+import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 
 export const BayesianInference: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'beta-binomial' | 'sensor-fusion'>('beta-binomial');
@@ -29,7 +30,6 @@ export const BayesianInference: React.FC = () => {
     for (let x = 0.01; x <= 0.99; x += 0.01) {
       const priorVal = betaPdf(x, alphaPrior, betaPrior);
       const postVal = betaPdf(x, alphaPost, betaPost);
-      // Normalized likelihood for visual comparison
       const rawLikelihood = Math.pow(x, headsK) * Math.pow(1 - x, trialsN - headsK);
       pts.push({ x, prior: priorVal, post: postVal, rawLikelihood });
     }
@@ -40,17 +40,16 @@ export const BayesianInference: React.FC = () => {
 
     return pts.map((p) => ({
       x: p.x,
-      priorNorm: (p.prior / Math.max(maxPost, maxPrior)) * 160,
-      postNorm: (p.post / maxPost) * 160,
-      likeNorm: (p.rawLikelihood / maxLike) * 120,
+      priorNorm: (p.prior / Math.max(maxPost, maxPrior)) * 260,
+      postNorm: (p.post / maxPost) * 260,
+      likeNorm: (p.rawLikelihood / maxLike) * 200,
     }));
   }, [alphaPrior, betaPrior, alphaPost, betaPost, headsK, trialsN]);
 
-  // Flip coin helper
   const handleFlip = (count = 1) => {
     let newHeads = 0;
     for (let i = 0; i < count; i++) {
-      if (Math.random() < 0.7) newHeads++; // Coin with true p = 0.7
+      if (Math.random() < 0.7) newHeads++;
     }
     setHeadsK((k) => k + newHeads);
     setTrialsN((n) => n + count);
@@ -112,15 +111,154 @@ export const BayesianInference: React.FC = () => {
 
       {/* TAB 1: BETA-BINOMIAL */}
       {activeTab === 'beta-binomial' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Controls */}
-          <div className="space-y-4">
-            <ClayCard glowColor="purple">
-              <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                Niềm tin Ban đầu (Prior Beta)
-              </h3>
+        <div className="space-y-6">
+          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA */}
+          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title="So Sánh Prior vs Likelihood vs Posterior Beta(α, β)"
+              formula="\text{Posterior} \propto \theta^k (1-\theta)^{n-k} \times \theta^{\alpha-1} (1-\theta)^{\beta-1}"
+              badge={`Quan sát: ${headsK}/${trialsN} Ngửa`}
+              onReset={() => {
+                setHeadsK(0);
+                setTrialsN(0);
+                setAlphaPrior(2);
+                setBetaPrior(2);
+              }}
+            />
 
-              <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                {/* Horizontal axis line */}
+                <line x1="60" y1="310" x2="740" y2="310" stroke="#0F172A" strokeWidth="2.5" />
+
+                {/* Ticks 0.0 to 1.0 */}
+                {[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0].map((t) => {
+                  const px = 60 + t * 680;
+                  return (
+                    <g key={`beta-tick-${t}`}>
+                      <line x1={px} y1="310" x2={px} y2="316" stroke="#0F172A" strokeWidth="1.5" />
+                      <text x={px} y="332" textAnchor="middle" className="text-xs font-mono font-bold fill-slate-600">
+                        {t.toFixed(1)}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Prior Curve (Dashed Purple) */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.priorNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="2.5"
+                  strokeDasharray="6 3"
+                />
+
+                {/* Likelihood Curve (Orange) */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.likeNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#F59E0B"
+                  strokeWidth="2.5"
+                  strokeDasharray="4 2"
+                />
+
+                {/* Posterior Curve (Thick Ocean Blue) */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.postNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#0284C7"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                {/* MAP Marker (Red line) */}
+                {thetaMap >= 0 && thetaMap <= 1 && (
+                  <g>
+                    <line
+                      x1={60 + thetaMap * 680}
+                      y1="40"
+                      x2={60 + thetaMap * 680}
+                      y2="310"
+                      stroke="#EF4444"
+                      strokeWidth="2.2"
+                    />
+                    <circle cx={60 + thetaMap * 680} cy="40" r="5" fill="#EF4444" />
+                    <text
+                      x={60 + thetaMap * 680}
+                      y="26"
+                      fill="#EF4444"
+                      fontSize="12"
+                      textAnchor="middle"
+                      fontWeight="black"
+                      className="font-mono"
+                    >
+                      MAP = {fmt(thetaMap, 3)}
+                    </text>
+                  </g>
+                )}
+
+                {/* LMS Marker (Cyan line) */}
+                {thetaLms >= 0 && thetaLms <= 1 && (
+                  <g>
+                    <line
+                      x1={60 + thetaLms * 680}
+                      y1="70"
+                      x2={60 + thetaLms * 680}
+                      y2="310"
+                      stroke="#06B6D4"
+                      strokeWidth="2.2"
+                      strokeDasharray="4 2"
+                    />
+                    <circle cx={60 + thetaLms * 680} cy="70" r="5" fill="#06B6D4" />
+                    <text
+                      x={60 + thetaLms * 680}
+                      y="58"
+                      fill="#06B6D4"
+                      fontSize="12"
+                      textAnchor="middle"
+                      fontWeight="black"
+                      className="font-mono"
+                    >
+                      LMS = {fmt(thetaLms, 3)}
+                    </text>
+                  </g>
+                )}
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="w-5 h-0.5 bg-indigo-500 border-dashed"></span> Prior Beta({fmt(alphaPrior, 1)}, {fmt(betaPrior, 1)})
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-amber-600 dark:text-amber-400">
+                    <span className="w-5 h-0.5 bg-amber-500 border-dashed"></span> Likelihood L(θ)
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="w-5 h-1 bg-sky-600 rounded-full"></span> Posterior Beta({fmt(alphaPost, 1)}, {fmt(betaPost, 1)})
+                  </span>
+                </div>
+                <div className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Tần suất thực nghiệm k/n = {fmt(sampleFreq, 3)}
+                </div>
+              </div>
+            </div>
+          </ClayCard>
+
+          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM DOCK) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Cột 1: Niềm tin Tiên nghiệm */}
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  1. Niềm Tin Tiên Nghiệm (Prior)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Điều chỉnh tham số giả định ban đầu α, β:
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
                 <ClaySlider
                   label="alpha"
                   value={alphaPrior}
@@ -140,182 +278,67 @@ export const BayesianInference: React.FC = () => {
                   onChange={setBetaPrior}
                 />
               </div>
+            </ClayCard>
 
-              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
-                <h4 className="font-heading font-bold text-sm text-slate-800 dark:text-slate-200">
-                  Dữ liệu Quan sát (k lần Ngửa / n lần Tung)
-                </h4>
+            {/* Cột 2: Quan sát thực nghiệm */}
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  2. Thử Nghiệm Tung Đồng Xu
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Thu thập thêm bằng chứng dữ liệu để cập nhật:
+                </p>
+              </div>
 
-                <div className="flex gap-2">
-                  <ClayButton
-                    variant="purple"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => handleFlip(1)}
-                  >
-                    Tung +1 lần
-                  </ClayButton>
-                  <ClayButton
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => handleFlip(10)}
-                  >
-                    Tung +10 lần
-                  </ClayButton>
-                  <ClayButton
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setHeadsK(0);
-                      setTrialsN(0);
-                    }}
-                  >
-                    Reset
-                  </ClayButton>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800 text-xs space-y-1 font-mono">
-                  <div className="text-purple-700 dark:text-purple-300 font-bold">
-                    Số lần ngửa: {headsK} / {trialsN} (Tần suất = {fmt(sampleFreq, 2)})
-                  </div>
-                  <div className="text-slate-600 dark:text-slate-400">
-                    Posterior: Beta({fmt(alphaPost, 1)}, {fmt(betaPost, 1)})
-                  </div>
-                  <div className="text-rose-600 dark:text-rose-400 font-bold">
-                    Đỉnh MAP θ_hat = {fmt(thetaMap, 3)}
-                  </div>
-                  <div className="text-blue-600 dark:text-blue-400 font-bold">
-                    Kỳ vọng LMS θ_hat = {fmt(thetaLms, 3)}
-                  </div>
-                </div>
+              <div className="grid grid-cols-3 gap-2">
+                <ClayButton
+                  variant="primary"
+                  size="sm"
+                  onClick={() => handleFlip(1)}
+                >
+                  +1 Lần
+                </ClayButton>
+                <ClayButton
+                  variant="primary"
+                  size="sm"
+                  onClick={() => handleFlip(10)}
+                >
+                  +10 Lần
+                </ClayButton>
+                <ClayButton
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setHeadsK(0);
+                    setTrialsN(0);
+                  }}
+                >
+                  Đặt lại
+                </ClayButton>
               </div>
             </ClayCard>
-          </div>
 
-          {/* Visualization */}
-          <div className="lg:col-span-2">
-            <ClayCard glowColor="purple" className="p-6">
-              <h4 className="font-heading font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
-                <span>So sánh Prior vs Likelihood vs Posterior Beta(α, β)</span>
-                <span className="text-xs px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-mono font-bold">
-                  {trialsN} Lần Quan Sát
-                </span>
-              </h4>
+            {/* Cột 3: Ước lượng Điểm MAP vs LMS */}
+            <ClayCard className="p-5 space-y-2.5 flex flex-col justify-between">
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
+                3. Ước Lượng Điểm Bayes
+              </h3>
 
-              <div className="w-full h-80 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 p-4 flex flex-col justify-between">
-                <svg viewBox="0 0 500 200" className="w-full h-full">
-                  {/* Axis */}
-                  <line x1="30" y1="180" x2="470" y2="180" stroke="#475569" strokeWidth="2" />
-                  <text x="30" y="195" fill="#94A3B8" fontSize="10" textAnchor="middle">0.0</text>
-                  <text x="250" y="195" fill="#94A3B8" fontSize="10" textAnchor="middle">0.5</text>
-                  <text x="470" y="195" fill="#94A3B8" fontSize="10" textAnchor="middle">1.0</text>
-
-                  {/* Prior Curve (Dashed Sky Blue) */}
-                  <polyline
-                    points={curvePoints
-                      .map((p) => `${30 + p.x * 440},${180 - p.priorNorm}`)
-                      .join(' ')}
-                    fill="none"
-                    stroke="#38BDF8"
-                    strokeWidth="2"
-                    strokeDasharray="4 3"
-                  />
-
-                  {/* Likelihood Curve (Orange) */}
-                  <polyline
-                    points={curvePoints
-                      .map((p) => `${30 + p.x * 440},${180 - p.likeNorm}`)
-                      .join(' ')}
-                    fill="none"
-                    stroke="#F97316"
-                    strokeWidth="1.5"
-                    strokeDasharray="2 2"
-                  />
-
-                  {/* Posterior Curve (Solid Purple Thick) */}
-                  <polyline
-                    points={curvePoints
-                      .map((p) => `${30 + p.x * 440},${180 - p.postNorm}`)
-                      .join(' ')}
-                    fill="none"
-                    stroke="#A855F7"
-                    strokeWidth="3.5"
-                  />
-
-                  {/* MAP Marker (Red line) */}
-                  {thetaMap >= 0 && thetaMap <= 1 && (
-                    <g>
-                      <line
-                        x1={30 + thetaMap * 440}
-                        y1="20"
-                        x2={30 + thetaMap * 440}
-                        y2="180"
-                        stroke="#EF4444"
-                        strokeWidth="2"
-                      />
-                      <circle cx={30 + thetaMap * 440} cy="20" r="4" fill="#EF4444" />
-                      <text
-                        x={30 + thetaMap * 440}
-                        y="12"
-                        fill="#EF4444"
-                        fontSize="10"
-                        textAnchor="middle"
-                        fontWeight="bold"
-                      >
-                        MAP
-                      </text>
-                    </g>
-                  )}
-
-                  {/* LMS Marker (Blue line) */}
-                  {thetaLms >= 0 && thetaLms <= 1 && (
-                    <g>
-                      <line
-                        x1={30 + thetaLms * 440}
-                        y1="40"
-                        x2={30 + thetaLms * 440}
-                        y2="180"
-                        stroke="#3B82F6"
-                        strokeWidth="2"
-                        strokeDasharray="3 2"
-                      />
-                      <text
-                        x={30 + thetaLms * 440}
-                        y="35"
-                        fill="#3B82F6"
-                        fontSize="10"
-                        textAnchor="middle"
-                        fontWeight="bold"
-                      >
-                        LMS
-                      </text>
-                    </g>
-                  )}
-                </svg>
-
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 text-xs">
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1 text-sky-400">
-                      <span className="w-3 h-0.5 bg-sky-400 border-dashed"></span> Prior
-                    </span>
-                    <span className="flex items-center gap-1 text-orange-400">
-                      <span className="w-3 h-0.5 bg-orange-400 border-dashed"></span> Likelihood
-                    </span>
-                    <span className="flex items-center gap-1 text-purple-400 font-bold">
-                      <span className="w-3 h-1 bg-purple-500 rounded-sm"></span> Posterior
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-red-400 font-mono text-[11px]">
-                      MAP = {fmt(thetaMap, 2)}
-                    </span>
-                    <span className="text-blue-400 font-mono text-[11px]">
-                      LMS = {fmt(thetaLms, 2)}
-                    </span>
-                  </div>
+              <div className="space-y-2 font-mono text-xs">
+                <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 flex justify-between items-center">
+                  <span className="font-bold text-rose-800 dark:text-rose-300">Đỉnh MAP (Mode):</span>
+                  <span className="text-base font-black text-rose-600">{fmt(thetaMap, 3)}</span>
+                </div>
+                <div className="p-2.5 rounded-xl bg-cyan-50 dark:bg-cyan-950/40 border border-cyan-300 dark:border-cyan-800 flex justify-between items-center">
+                  <span className="font-bold text-cyan-800 dark:text-cyan-300">Kỳ vọng LMS (Mean):</span>
+                  <span className="text-base font-black text-cyan-600">{fmt(thetaLms, 3)}</span>
                 </div>
               </div>
+
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                Khi dữ liệu n tăng lớn, ảnh hưởng của Prior mờ dần và Posterior co cụm chặt chẽ quanh tần suất mẫu k/n.
+              </p>
             </ClayCard>
           </div>
         </div>
@@ -323,25 +346,142 @@ export const BayesianInference: React.FC = () => {
 
       {/* TAB 2: SENSOR FUSION */}
       {activeTab === 'sensor-fusion' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="space-y-4">
-            <ClayCard glowColor="purple">
-              <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white mb-2">
-                Cấu hình Cảm biến
-              </h3>
+        <div className="space-y-6">
+          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA */}
+          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title="Hợp Nhất Đa Cảm Biến Gauss (Gaussian Sensor Fusion)"
+              formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}"
+              badge={`μ_post = ${fmt(postMu, 2)} | σ_post = ${fmt(postStd, 2)}`}
+            />
+
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="-5 0 10 1.2" className="w-full h-auto select-none">
+                <line x1="-5" y1="1.15" x2="5" y2="1.15" stroke="#0F172A" strokeWidth="0.015" />
+
+                {/* Prior Gauss (Purple dashed) */}
+                <path
+                  d={Array.from({ length: 100 }, (_, i) => {
+                    const x = -5 + (i / 100) * 10;
+                    const y = 1.15 - normalPdf(x, priorMu, priorSigma);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.05 0.03"
+                />
+
+                {/* Sensor 1 Gauss (Orange dashed) */}
+                <path
+                  d={Array.from({ length: 100 }, (_, i) => {
+                    const x = -5 + (i / 100) * 10;
+                    const y = 1.15 - normalPdf(x, sensor1X, sensor1Sigma);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#F97316"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.05 0.03"
+                />
+
+                {/* Sensor 2 Gauss (Emerald dashed) */}
+                <path
+                  d={Array.from({ length: 100 }, (_, i) => {
+                    const x = -5 + (i / 100) * 10;
+                    const y = 1.15 - normalPdf(x, sensor2X, sensor2Sigma);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.05 0.03"
+                />
+
+                {/* Fused Posterior (Thick Ocean Blue) */}
+                <path
+                  d={Array.from({ length: 140 }, (_, i) => {
+                    const x = -5 + (i / 140) * 10;
+                    const y = 1.15 - normalPdf(x, postMu, postStd);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="rgba(2, 132, 199, 0.2)"
+                  stroke="#0284C7"
+                  strokeWidth="0.035"
+                  strokeLinecap="round"
+                />
+
+                {/* Peak marker for fused estimate */}
+                <line
+                  x1={postMu}
+                  y1="0.1"
+                  x2={postMu}
+                  y2="1.15"
+                  stroke="#0284C7"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.04 0.02"
+                />
+                <circle cx={postMu} cy="0.1" r="0.04" fill="#0284C7" />
+                <text
+                  x={postMu}
+                  y="0.06"
+                  fill="#0284C7"
+                  fontSize="0.13"
+                  textAnchor="middle"
+                  fontWeight="black"
+                  className="font-mono"
+                >
+                  μ_post = {fmt(postMu, 2)}
+                </text>
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="w-5 h-0.5 bg-indigo-500 border-dashed"></span> Prior
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-orange-600 dark:text-orange-400">
+                    <span className="w-5 h-0.5 bg-orange-500 border-dashed"></span> Cảm biến 1
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="w-5 h-0.5 bg-emerald-500 border-dashed"></span> Cảm biến 2
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="w-5 h-1 bg-sky-600 rounded-full"></span> Hợp nhất Hậu nghiệm (Fused)
+                  </span>
+                </div>
+                <div className="font-mono text-xs font-bold text-sky-600 dark:text-sky-400">
+                  Độ lệch chuẩn: σ_post = {fmt(postStd, 3)}
+                </div>
+              </div>
+            </div>
+          </ClayCard>
+
+          {/* 2. BẢNG THÔNG SỐ Ở DƯỚI (BOTTOM DOCK) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  1. Cảm Biến 1
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Giá trị đọc và sai số đo của cảm biến 1:
+                </p>
+              </div>
 
               <div className="space-y-3">
                 <ClaySlider
-                  label="Ước lượng gốc (Prior mu)"
-                  value={priorMu}
+                  label="Vị trí đọc x1"
+                  value={sensor1X}
                   min={-3}
-                  max={3}
+                  max={4}
                   step={0.5}
-                  color="purple"
-                  onChange={setPriorMu}
+                  color="orange"
+                  onChange={setSensor1X}
                 />
                 <ClaySlider
-                  label="Sai số Cảm biến 1 (sigma1)"
+                  label="Sai số sigma1"
                   value={sensor1Sigma}
                   min={0.5}
                   max={3}
@@ -349,8 +489,31 @@ export const BayesianInference: React.FC = () => {
                   color="orange"
                   onChange={setSensor1Sigma}
                 />
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  2. Cảm Biến 2
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Giá trị đọc và sai số đo của cảm biến 2:
+                </p>
+              </div>
+
+              <div className="space-y-3">
                 <ClaySlider
-                  label="Sai số Cảm biến 2 (sigma2)"
+                  label="Vị trí đọc x2"
+                  value={sensor2X}
+                  min={-3}
+                  max={4}
+                  step={0.5}
+                  color="emerald"
+                  onChange={setSensor2X}
+                />
+                <ClaySlider
+                  label="Sai số sigma2"
                   value={sensor2Sigma}
                   min={0.3}
                   max={2}
@@ -359,98 +522,17 @@ export const BayesianInference: React.FC = () => {
                   onChange={setSensor2Sigma}
                 />
               </div>
-
-              <div className="mt-4 p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs space-y-1 font-mono">
-                <div className="text-indigo-900 dark:text-indigo-200 font-bold">
-                  Hợp nhất Hậu nghiệm N(m, v):
-                </div>
-                <div className="text-indigo-700 dark:text-indigo-300">
-                  Vị trí trung bình m = {fmt(postMu, 2)}
-                </div>
-                <div className="text-indigo-700 dark:text-indigo-300">
-                  Độ lệch chuẩn sigma_post = {fmt(postStd, 2)}
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 font-sans">
-                  Phương sai hậu nghiệm <MathView math="v = 1/\sum (1/\sigma_i^2)" /> luôn <strong>nhỏ hơn</strong> mọi cảm biến riêng lẻ!
-                </p>
-              </div>
             </ClayCard>
-          </div>
 
-          <div className="lg:col-span-2">
-            <ClayCard glowColor="purple" className="p-6">
-              <h4 className="font-heading font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
-                <span>Hình chuông Cảm biến riêng lẻ vs Chuông Hậu nghiệm Co hẹp</span>
-                <span className="text-xs px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-mono font-bold">
-                  σ_post = {fmt(postStd, 2)}
-                </span>
-              </h4>
-
-              <div className="w-full h-80 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 p-4 flex flex-col justify-between">
-                <svg viewBox="-5 0 10 1" className="w-full h-full">
-                  <line x1="-5" y1="0.95" x2="5" y2="0.95" stroke="#475569" strokeWidth="0.01" />
-
-                  {/* Prior Bell Curve */}
-                  <path
-                    d={Array.from({ length: 100 }, (_, i) => {
-                      const x = -5 + (i / 100) * 10;
-                      const y = 0.95 - normalPdf(x, priorMu, priorSigma) * 0.8;
-                      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                    }).join(' ')}
-                    fill="none"
-                    stroke="#94A3B8"
-                    strokeWidth="0.02"
-                    strokeDasharray="0.04 0.02"
-                  />
-
-                  {/* Sensor 1 Bell Curve */}
-                  <path
-                    d={Array.from({ length: 100 }, (_, i) => {
-                      const x = -5 + (i / 100) * 10;
-                      const y = 0.95 - normalPdf(x, sensor1X, sensor1Sigma) * 0.8;
-                      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                    }).join(' ')}
-                    fill="none"
-                    stroke="#F97316"
-                    strokeWidth="0.02"
-                  />
-
-                  {/* Sensor 2 Bell Curve */}
-                  <path
-                    d={Array.from({ length: 100 }, (_, i) => {
-                      const x = -5 + (i / 100) * 10;
-                      const y = 0.95 - normalPdf(x, sensor2X, sensor2Sigma) * 0.8;
-                      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                    }).join(' ')}
-                    fill="none"
-                    stroke="#10B981"
-                    strokeWidth="0.02"
-                  />
-
-                  {/* Posterior Bell Curve (Very Tall & Narrow!) */}
-                  <path
-                    d={Array.from({ length: 100 }, (_, i) => {
-                      const x = -5 + (i / 100) * 10;
-                      const y = 0.95 - Math.min(0.9, normalPdf(x, postMu, postStd) * 0.8);
-                      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                    }).join(' ')}
-                    fill="rgba(168, 85, 247, 0.25)"
-                    stroke="#A855F7"
-                    strokeWidth="0.035"
-                  />
-                </svg>
-
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-800 text-xs">
-                  <div className="flex items-center gap-3">
-                    <span className="text-slate-400">Prior</span>
-                    <span className="text-orange-400">Cảm biến 1</span>
-                    <span className="text-emerald-400">Cảm biến 2</span>
-                    <span className="text-purple-400 font-bold">Hậu nghiệm Hợp nhất</span>
-                  </div>
-                  <span className="text-purple-300 font-mono">
-                    Độ chính xác tăng: 1/v = {fmt(totalPrec, 2)}
-                  </span>
-                </div>
+            <ClayCard className="p-5 space-y-2.5 flex flex-col justify-between">
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white">
+                3. Hiệu Quả Hợp Nhất
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                Độ chính xác hậu nghiệm bằng tổng các độ chính xác (Precision = 1/σ²). Do đó, phương sai hậu nghiệm <strong>luôn nhỏ hơn</strong> phương sai của bất kỳ cảm biến nào đứng riêng lẻ!
+              </p>
+              <div className="font-mono text-xs font-bold text-sky-600 dark:text-sky-400 pt-1">
+                Precision: {fmt(totalPrec, 2)} &gt; Max({fmt(prec1, 2)}, {fmt(prec2, 2)})
               </div>
             </ClayCard>
           </div>

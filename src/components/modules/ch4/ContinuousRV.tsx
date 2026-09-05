@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, normalPdf, normalCdf } from '../../../utils/math';
+import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 
 export const ContinuousRV: React.FC = () => {
   const [activeSub, setActiveSub] = useState<'normal' | 'buffon'>('normal');
@@ -25,15 +26,15 @@ export const ContinuousRV: React.FC = () => {
   const dropNeedles = (count = 50) => {
     const newNeedles: Array<{ x: number; y: number; angle: number; crosses: boolean }> = [];
     let newCrosses = 0;
-    const lineDistance = 40;
-    const needleLength = 30;
+    const lineDistance = 50;
+    const needleLength = 35;
 
     for (let i = 0; i < count; i++) {
-      const x = Math.random() * 300;
-      const y = Math.random() * 160;
+      const x = Math.random() * 700 + 50;
+      const y = Math.random() * 260 + 30;
       const angle = Math.random() * Math.PI;
 
-      // Distance from center to nearest line
+      // Distance from center to nearest line (lines at y = 50, 100, 150, 200, 250)
       const d = y % lineDistance;
       const distToLine = Math.min(d, lineDistance - d);
       const halfProjection = (needleLength / 2) * Math.sin(angle);
@@ -45,70 +46,213 @@ export const ContinuousRV: React.FC = () => {
 
     setTotalNeedles((t) => t + count);
     setCrossNeedles((c) => c + newCrosses);
-    setNeedles((prev) => [...prev.slice(-150), ...newNeedles]);
+    setNeedles((prev) => [...prev.slice(-250), ...newNeedles]);
   };
 
-  const estimatedPi = crossNeedles > 0 ? (2 * 30 * totalNeedles) / (40 * crossNeedles) : 0;
+  const estimatedPi = crossNeedles > 0 ? (2 * 35 * totalNeedles) / (50 * crossNeedles) : 0;
+  const piError = estimatedPi > 0 ? Math.abs(estimatedPi - Math.PI) : 0;
+
+  // SVG coordinates for Normal Distribution
+  const mapNormX = (x: number) => 400 + x * 65;
+  const mapNormY = (y: number) => 330 - y * 560;
 
   return (
     <div className="space-y-6">
+      {/* Chapter Subtitle & Header */}
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 5 & 6 — Biến ngẫu nhiên Liên tục
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Phân bố Chuẩn Gauss <MathView math="\mathcal{N}(\mu, \sigma^2)" /> & Kim Buffon
+            Phân bố Chuẩn Gauss <MathView math="\mathcal{N}(\mu, \sigma^2)" /> & Cây Kim Buffon
           </h2>
         </div>
 
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSub('normal')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeSub === 'normal'
                 ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            Chuẩn Gauss
+            1. Phân bố Chuẩn Gauss
           </button>
           <button
             onClick={() => setActiveSub('buffon')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeSub === 'buffon'
                 ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            Cây kim Buffon
+            2. Cây kim Buffon (Monte Carlo)
           </button>
         </div>
       </div>
 
       {activeSub === 'normal' ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <ClayCard glowColor="blue">
-            <h3 className="font-heading font-bold text-lg mb-3">Tham số Chuẩn N(μ, σ²)</h3>
-            <ClaySlider
-              label="Kỳ vọng mu"
-              value={mu}
-              min={-3}
-              max={3}
-              step={0.2}
-              color="blue"
-              onChange={setMu}
+        <div className="space-y-6">
+          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title="Đồ thị Hàm Mật Độ PDF Chuẩn Gauss & Diện Tích Tích Phân"
+              formula={`P(${fmt(rangeX1, 1)} \\le X \\le ${fmt(rangeX2, 1)}) = ${fmt(pArea * 100, 2)}\\%`}
+              badge={`μ = ${fmt(mu, 1)}, σ = ${fmt(sigma, 1)}`}
+              onReset={() => {
+                setMu(0);
+                setSigma(1.0);
+                setRangeX1(-1.0);
+                setRangeX2(1.0);
+              }}
             />
-            <ClaySlider
-              label="Độ lệch chuẩn sigma"
-              value={sigma}
-              min={0.4}
-              max={2.5}
-              step={0.1}
-              color="blue"
-              onChange={setSigma}
-            />
-            <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 380" className="w-full h-auto select-none">
+                <defs>
+                  <marker id="arrow-norm-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+                  </marker>
+                  <marker id="arrow-norm-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+                  </marker>
+                </defs>
+
+                {/* Desmos Cartesian Axes */}
+                <line x1="60" y1="330" x2="740" y2="330" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-norm-x)" />
+                <line x1="400" y1="360" x2="400" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-norm-y)" />
+                <text x="750" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
+                <text x="400" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
+
+                {/* X-axis Ticks */}
+                {[-4, -3, -2, -1, 1, 2, 3, 4].map((val) => (
+                  <g key={val}>
+                    <line x1={mapNormX(val)} y1="326" x2={mapNormX(val)} y2="334" stroke="#64748B" strokeWidth="1.5" />
+                    <text x={mapNormX(val)} y="350" fill="#64748B" fontSize="11" textAnchor="middle" fontWeight="bold" fontFamily="monospace">
+                      {val}
+                    </text>
+                  </g>
+                ))}
+
+                {/* Shaded Area between rangeX1 and rangeX2 */}
+                {(() => {
+                  const pts = [];
+                  const step = 0.05;
+                  for (let x = rangeX1; x <= rangeX2 + 0.001; x += step) {
+                    pts.push(`${mapNormX(x)},${mapNormY(normalPdf(x, mu, sigma))}`);
+                  }
+                  return (
+                    <g>
+                      <path
+                        d={`M ${mapNormX(rangeX1)},330 L ${pts.join(' L ')} L ${mapNormX(rangeX2)},330 Z`}
+                        fill="rgba(2, 132, 199, 0.35)"
+                        stroke="#0284C7"
+                        strokeWidth="1.5"
+                      />
+                      {/* Bounding Lines */}
+                      <line
+                        x1={mapNormX(rangeX1)}
+                        y1="330"
+                        x2={mapNormX(rangeX1)}
+                        y2={mapNormY(normalPdf(rangeX1, mu, sigma))}
+                        stroke="#0284C7"
+                        strokeWidth="2"
+                        strokeDasharray="4 2"
+                      />
+                      <line
+                        x1={mapNormX(rangeX2)}
+                        y1="330"
+                        x2={mapNormX(rangeX2)}
+                        y2={mapNormY(normalPdf(rangeX2, mu, sigma))}
+                        stroke="#0284C7"
+                        strokeWidth="2"
+                        strokeDasharray="4 2"
+                      />
+                    </g>
+                  );
+                })()}
+
+                {/* Full Normal Curve */}
+                <path
+                  d={Array.from({ length: 160 }, (_, i) => {
+                    const x = -5 + (i / 160) * 10;
+                    const y = normalPdf(x, mu, sigma);
+                    return `${i === 0 ? 'M' : 'L'} ${mapNormX(x)} ${mapNormY(y)}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#0284C7"
+                  strokeWidth="3.5"
+                />
+
+                {/* Mean line mu */}
+                <line
+                  x1={mapNormX(mu)}
+                  y1="50"
+                  x2={mapNormX(mu)}
+                  y2="330"
+                  stroke="#EF4444"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                />
+                <circle cx={mapNormX(mu)} cy={mapNormY(normalPdf(mu, mu, sigma))} r="6" fill="#EF4444" stroke="#FFFFFF" strokeWidth="2" />
+                <text x={mapNormX(mu)} y="42" fill="#EF4444" fontSize="12" fontWeight="black" textAnchor="middle" fontFamily="monospace">
+                  μ = {fmt(mu, 1)}
+                </text>
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
+                    <span className="w-3 h-3 bg-sky-500 rounded-sm"></span> Diện tích P({fmt(rangeX1, 1)} ≤ X ≤ {fmt(rangeX2, 1)}) = {fmt(pArea * 100, 2)}%
+                  </span>
+                  <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-bold">
+                    <span className="w-3.5 h-0.5 bg-red-500 border-dashed"></span> Đỉnh đối xứng μ = {fmt(mu, 1)}
+                  </span>
+                </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold text-xs">
+                  Quy tắc: 1σ ≈ 68.27% | 2σ ≈ 95.45% | 3σ ≈ 99.73%
+                </span>
+              </div>
+            </div>
+          </ClayCard>
+
+          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Card 1: Tham số phân bố */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Tham số Gauss N(μ, σ²)
+              </h4>
+              <ClaySlider
+                label="Kỳ vọng mu"
+                value={mu}
+                min={-3}
+                max={3}
+                step={0.2}
+                color="blue"
+                onChange={setMu}
+              />
+              <div className="mt-2">
+                <ClaySlider
+                  label="Độ lệch chuẩn sigma"
+                  value={sigma}
+                  min={0.4}
+                  max={2.5}
+                  step={0.1}
+                  color="blue"
+                  onChange={setSigma}
+                />
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Khoảng tích phân */}
+            <ClayCard glowColor="orange" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Khoảng Tích phân [X₁, X₂]
+              </h4>
               <ClaySlider
                 label="Cận dưới X1"
                 value={rangeX1}
@@ -118,66 +262,41 @@ export const ContinuousRV: React.FC = () => {
                 color="orange"
                 onChange={setRangeX1}
               />
-              <ClaySlider
-                label="Cận trên X2"
-                value={rangeX2}
-                min={rangeX1 + 0.2}
-                max={4}
-                step={0.1}
-                color="orange"
-                onChange={setRangeX2}
-              />
-            </div>
-
-            <div className="mt-4 p-3 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 text-xs font-mono">
-              <div className="text-teal-800 dark:text-teal-200 font-bold text-sm">
-                P({fmt(rangeX1, 1)} ≤ X ≤ {fmt(rangeX2, 1)}) = {fmt(pArea * 100, 2)}%
+              <div className="mt-2">
+                <ClaySlider
+                  label="Cận trên X2"
+                  value={rangeX2}
+                  min={rangeX1 + 0.2}
+                  max={4}
+                  step={0.1}
+                  color="orange"
+                  onChange={setRangeX2}
+                />
               </div>
-              <div className="text-slate-500 font-sans mt-1">
-                Quy tắc thực nghiệm: 1-sigma ≈ 68.26%, 2-sigma ≈ 95.44%, 3-sigma ≈ 99.74%.
-              </div>
-            </div>
-          </ClayCard>
+            </ClayCard>
 
-          <div className="lg:col-span-2">
-            <ClayCard glowColor="blue" className="p-6">
-              <h4 className="font-heading font-bold mb-4">
-                Hàm Mật độ Xác suất (PDF) & Diện tích Tích phân
+            {/* Card 3: Thống kê & Công thức */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Xác suất Tích phân
               </h4>
-
-              <div className="w-full h-72 bg-slate-900 rounded-2xl border border-slate-800 p-4 flex flex-col justify-between">
-                <svg viewBox="-5 0 10 1" className="w-full h-full">
-                  <line x1="-5" y1="0.95" x2="5" y2="0.95" stroke="#475569" strokeWidth="0.01" />
-
-                  {/* Shaded Area between rangeX1 and rangeX2 */}
-                  <path
-                    d={(() => {
-                      const pts = [];
-                      for (let x = rangeX1; x <= rangeX2; x += 0.05) {
-                        pts.push(`${x},${0.95 - normalPdf(x, mu, sigma) * 0.9}`);
-                      }
-                      return `M ${rangeX1},0.95 L ${pts.join(' L ')} L ${rangeX2},0.95 Z`;
-                    })()}
-                    fill="rgba(59, 130, 246, 0.4)"
-                  />
-
-                  {/* Normal Curve */}
-                  <path
-                    d={Array.from({ length: 120 }, (_, i) => {
-                      const x = -5 + (i / 120) * 10;
-                      const y = 0.95 - normalPdf(x, mu, sigma) * 0.9;
-                      return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-                    }).join(' ')}
-                    fill="none"
-                    stroke="#38BDF8"
-                    strokeWidth="0.025"
-                  />
-                </svg>
-
-                <div className="flex justify-between pt-2 border-t border-slate-800 text-xs text-slate-400">
-                  <span className="text-blue-400 font-bold">Vùng diện tích = {fmt(pArea * 100, 2)}%</span>
-                  <span className="font-mono">
-                    <MathView math="f(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}" />
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Diện tích tích phân:</span>
+                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                    {fmt(pArea * 100, 2)}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Điểm uốn (Inflection):</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                    {fmt(mu - sigma, 1)} và {fmt(mu + sigma, 1)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Đỉnh mật độ cực đại:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                    {fmt(1 / (sigma * Math.sqrt(2 * Math.PI)), 3)}
                   </span>
                 </div>
               </div>
@@ -185,86 +304,142 @@ export const ContinuousRV: React.FC = () => {
           </div>
         </div>
       ) : (
-        <ClayCard glowColor="blue" className="p-6">
-          <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
-            <div>
-              <h4 className="font-heading font-bold text-lg">
-                Thả Kim Buffon Ước lượng Số Pi (Monte Carlo)
-              </h4>
-              <p className="text-xs text-slate-500">
-                Công thức lý thuyết: <MathView math="P = \frac{2\ell}{\pi d} \implies \pi \approx \frac{2\ell \cdot N_{tổng}}{d \cdot N_{cắt}}" />
-              </p>
-            </div>
+        <div className="space-y-6">
+          {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title="Mô phỏng Thả Cây kim Buffon & Ước lượng Monte Carlo số Pi"
+              formula="\pi \approx \frac{2\ell \cdot N_{\text{tổng}}}{d \cdot N_{\text{cắt}}}"
+              badge={`π ≈ ${fmt(estimatedPi, 4)}`}
+              onReset={() => {
+                setTotalNeedles(0);
+                setCrossNeedles(0);
+                setNeedles([]);
+              }}
+              extraActions={
+                <div className="flex gap-2">
+                  <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(50)} className="py-1 px-3 text-xs">
+                    + Thả 50 Kim
+                  </ClayButton>
+                  <ClayButton variant="outline" size="sm" onClick={() => dropNeedles(500)} className="py-1 px-3 text-xs">
+                    + Thả 500 Kim
+                  </ClayButton>
+                </div>
+              }
+            />
 
-            <div className="flex gap-2">
-              <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(50)}>
-                + Thả 50 Cây kim
-              </ClayButton>
-              <ClayButton variant="outline" size="sm" onClick={() => dropNeedles(500)}>
-                + Thả 500 Cây kim
-              </ClayButton>
-              <ClayButton
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setTotalNeedles(0);
-                  setCrossNeedles(0);
-                  setNeedles([]);
-                }}
-              >
-                Đặt lại
-              </ClayButton>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="md:col-span-2 h-64 bg-slate-900 rounded-2xl border border-slate-800 relative overflow-hidden">
-              <svg viewBox="0 0 300 160" className="w-full h-full">
-                {/* Parallel lines at y = 40, 80, 120 */}
-                <line x1="0" y1="40" x2="300" y2="40" stroke="#475569" strokeWidth="1.5" strokeDasharray="3 3" />
-                <line x1="0" y1="80" x2="300" y2="80" stroke="#475569" strokeWidth="1.5" strokeDasharray="3 3" />
-                <line x1="0" y1="120" x2="300" y2="120" stroke="#475569" strokeWidth="1.5" strokeDasharray="3 3" />
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 320" className="w-full h-auto select-none">
+                {/* Parallel lines at distance d = 50 */}
+                {[50, 100, 150, 200, 250].map((yVal) => (
+                  <g key={yVal}>
+                    <line x1="30" y1={yVal} x2="770" y2={yVal} stroke="#64748B" strokeWidth="2" strokeDasharray="5 3" />
+                    <text x="15" y={yVal + 4} fill="#64748B" fontSize="10" fontFamily="monospace">d</text>
+                  </g>
+                ))}
 
                 {/* Needles */}
                 {needles.map((nd, idx) => {
-                  const dx = (30 / 2) * Math.cos(nd.angle);
-                  const dy = (30 / 2) * Math.sin(nd.angle);
+                  const dx = (35 / 2) * Math.cos(nd.angle);
+                  const dy = (35 / 2) * Math.sin(nd.angle);
                   return (
-                    <line
-                      key={idx}
-                      x1={nd.x - dx}
-                      y1={nd.y - dy}
-                      x2={nd.x + dx}
-                      y2={nd.y + dy}
-                      stroke={nd.crosses ? '#EF4444' : '#10B981'}
-                      strokeWidth="2"
-                    />
+                    <g key={idx}>
+                      <line
+                        x1={nd.x - dx}
+                        y1={nd.y - dy}
+                        x2={nd.x + dx}
+                        y2={nd.y + dy}
+                        stroke={nd.crosses ? '#EF4444' : '#10B981'}
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                      />
+                      {/* Red dot at crossing */}
+                      {nd.crosses && (
+                        <circle cx={nd.x} cy={nd.y} r="3.5" fill="#EF4444" stroke="#FFFFFF" strokeWidth="1" />
+                      )}
+                    </g>
                   );
                 })}
               </svg>
-            </div>
 
-            <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/40 border border-teal-200 flex flex-col justify-between text-center font-mono">
-              <div>
-                <span className="text-xs text-slate-500 font-sans block mb-1">
-                  Ước lượng Số Pi Hiện tại:
-                </span>
-                <span className="text-4xl font-black text-teal-600 dark:text-teal-400">
-                  {fmt(estimatedPi, 4)}
-                </span>
-                <span className="text-xs text-slate-400 font-sans block mt-1">
-                  Giá trị thực: π ≈ 3.14159
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="w-3 h-0.5 bg-emerald-500"></span> Kim không cắt: {totalNeedles - crossNeedles}
+                  </span>
+                  <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-bold">
+                    <span className="w-3 h-0.5 bg-red-500"></span> Kim cắt vạch ngang: {crossNeedles}
+                  </span>
+                </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  Tổng kim: {totalNeedles} | Tỷ lệ cắt: {totalNeedles > 0 ? fmt((crossNeedles / totalNeedles) * 100, 2) : 0}%
                 </span>
               </div>
-
-              <div className="text-xs text-slate-600 dark:text-slate-300 space-y-1 pt-3 border-t border-teal-200">
-                <div>Tổng số kim: {totalNeedles}</div>
-                <div className="text-red-500 font-bold">Cắt đường kẻ: {crossNeedles}</div>
-              </div>
             </div>
+          </ClayCard>
+
+          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Card 1: Thao tác */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Thao tác Mô phỏng
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mb-4">
+                Thả ngẫu nhiên các cây kim dài <MathView math="\ell = 35" /> lên mặt phẳng có các đường kẻ song song cách nhau <MathView math="d = 50" />.
+              </p>
+              <div className="flex gap-2">
+                <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(100)} className="w-full text-xs">
+                  + 100 Kim
+                </ClayButton>
+                <ClayButton variant="secondary" size="sm" onClick={() => dropNeedles(1000)} className="w-full text-xs">
+                  + 1,000 Kim
+                </ClayButton>
+              </div>
+            </ClayCard>
+
+            {/* Card 2: Công thức Hình học Buffon */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Công thức Tích phân Buffon (1777)
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mb-2">
+                Xác suất cây kim cắt đường kẻ:
+              </p>
+              <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-xs">
+                <MathView math="P = \frac{2\ell}{\pi d} \implies \pi = \frac{2\ell}{d \cdot P}" />
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Kết quả Ước lượng Pi */}
+            <ClayCard glowColor="rose" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Ước lượng Số Pi
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Giá trị Monte Carlo:</span>
+                  <span className="font-mono font-extrabold text-teal-600 dark:text-teal-400 text-base">
+                    {fmt(estimatedPi, 4)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Số Pi thực tế:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">3.14159...</span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Sai số tuyệt đối:</span>
+                  <span className="font-mono font-bold text-rose-500">
+                    {fmt(piError, 4)}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
           </div>
-        </ClayCard>
+        </div>
       )}
     </div>
   );
 };
+

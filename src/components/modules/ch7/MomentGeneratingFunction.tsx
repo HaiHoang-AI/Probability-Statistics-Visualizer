@@ -3,6 +3,7 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { MathView } from '../../common/MathView';
 import { fmt } from '../../../utils/math';
+import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 
 export const MomentGeneratingFunction: React.FC = () => {
   const [dist, setDist] = useState<'poisson' | 'exponential' | 'normal'>('poisson');
@@ -37,7 +38,7 @@ export const MomentGeneratingFunction: React.FC = () => {
     titleParam = `\\mu = ${param}, \\sigma = 1`;
   }
 
-  // Calculate MGF curve points around s in [-1, 0.8]
+  // Calculate MGF curve points around s in [-0.8, 0.6]
   const points = [];
   const tangentPoints = [];
   const parabolaPoints = [];
@@ -48,6 +49,7 @@ export const MomentGeneratingFunction: React.FC = () => {
       val = Math.exp(param * (Math.exp(s) - 1));
     } else if (dist === 'exponential') {
       if (s < param) val = param / (param - s);
+      else val = 10;
     } else {
       val = Math.exp(param * s + 0.5 * s * s);
     }
@@ -59,6 +61,11 @@ export const MomentGeneratingFunction: React.FC = () => {
     // Parabola at s = 0: P(s) = 1 + mean*s + 0.5*moment2*s^2
     parabolaPoints.push({ s, val: 1 + mean * s + 0.5 * moment2 * s * s });
   }
+
+  // SVG coordinate transformation
+  // Origin (s=0, val=0) at (380, 360)
+  const mapS = (s: number) => 380 + s * 340;
+  const mapV = (v: number) => 360 - v * 70;
 
   return (
     <div className="space-y-6">
@@ -72,181 +79,256 @@ export const MomentGeneratingFunction: React.FC = () => {
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Controls */}
-        <div className="space-y-4">
-          <ClayCard glowColor="blue">
-            <h3 className="font-heading font-bold text-base text-slate-900 dark:text-white mb-3">
-              Chọn Phân bố Xác suất
-            </h3>
-
-            <div className="flex gap-2 mb-4">
-              <button
-                onClick={() => setDist('poisson')}
-                className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
-                  dist === 'poisson'
-                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
-                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
-                }`}
-              >
-                Poisson(λ)
-              </button>
-              <button
-                onClick={() => setDist('exponential')}
-                className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
-                  dist === 'exponential'
-                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
-                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
-                }`}
-              >
-                Mũ Exp(λ)
-              </button>
-              <button
-                onClick={() => setDist('normal')}
-                className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all ${
-                  dist === 'normal'
-                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
-                    : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
-                }`}
-              >
-                Chuẩn N(μ, 1)
-              </button>
-            </div>
-
-            <ClaySlider
-              label={dist === 'normal' ? 'Kỳ vọng mu' : 'Tham số lambda'}
-              value={param}
-              min={dist === 'normal' ? -1 : 0.5}
-              max={dist === 'normal' ? 3 : 4}
-              step={0.1}
-              color="rose"
-              formatValue={(v) => fmt(v, 1)}
-              onChange={setParam}
-            />
-
-            <div className="mt-4 space-y-2 pt-4 border-t border-slate-200 dark:border-slate-800">
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+      {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
+      <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+        <DesmosStageHeader
+          title="Đồ thị Hàm Sinh Moment MGF & Tiếp Tuyến Taylor tại Gốc"
+          formula={mgfFormula}
+          badge={titleParam}
+          onReset={() => {
+            setDist('poisson');
+            setParam(2.0);
+            setShowTangent(true);
+            setShowParabola(true);
+          }}
+          extraActions={
+            <div className="flex items-center gap-2">
+              <label className="flex items-center gap-1.5 text-xs font-heading font-bold text-slate-700 dark:text-slate-200 cursor-pointer select-none bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700">
                 <input
                   type="checkbox"
                   checked={showTangent}
                   onChange={(e) => setShowTangent(e.target.checked)}
-                  className="rounded text-rose-500 focus:ring-rose-400"
+                  className="rounded text-sky-600 accent-sky-600"
                 />
-                <span>Hiện Tiếp tuyến tại s = 0 (Độ dốc = E[X])</span>
+                <span>Tiếp tuyến E[X]</span>
               </label>
-
-              <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-1.5 text-xs font-heading font-bold text-slate-700 dark:text-slate-200 cursor-pointer select-none bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700">
                 <input
                   type="checkbox"
                   checked={showParabola}
                   onChange={(e) => setShowParabola(e.target.checked)}
-                  className="rounded text-rose-500 focus:ring-rose-400"
+                  className="rounded text-amber-500 accent-amber-500"
                 />
-                <span>Hiện Parabol xấp xỉ bậc 2 (Độ cong = E[X²])</span>
+                <span>Parabol E[X²]</span>
               </label>
             </div>
+          }
+        />
 
-            <div className="mt-4 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-xs space-y-1 font-mono">
-              <div className="text-rose-700 dark:text-rose-300 font-bold">
-                <MathView math={mgfFormula} />
-              </div>
-              <div className="text-slate-600 dark:text-slate-400">
-                E[X] = M'(0) = {fmt(mean, 2)}
-              </div>
-              <div className="text-slate-600 dark:text-slate-400">
-                E[X²] = M''(0) = {fmt(moment2, 2)}
-              </div>
-              <div className="text-slate-600 dark:text-slate-400">
-                Var(X) = {fmt(variance, 2)}
-              </div>
-            </div>
-          </ClayCard>
-        </div>
+        <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+          <svg viewBox="0 0 800 400" className="w-full h-auto select-none">
+            <defs>
+              <marker id="arrow-mgf-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+              </marker>
+              <marker id="arrow-mgf-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+              </marker>
+            </defs>
 
-        {/* MGF Curve SVG */}
-        <div className="lg:col-span-2">
-          <ClayCard glowColor="rose" className="p-6">
-            <h4 className="font-heading font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center justify-between">
-              <span>Đồ thị MGF & Tiếp tuyến Khai triển Taylor quanh s = 0</span>
-              <span className="text-xs px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-mono font-bold">
-                <MathView math={titleParam} />
-              </span>
-            </h4>
+            {/* Desmos Cartesian Axes (Origin at 380, 360) */}
+            <line x1="50" y1="360" x2="740" y2="360" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-mgf-x)" />
+            <line x1="380" y1="385" x2="380" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-mgf-y)" />
+            <text x="750" y="364" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">s</text>
+            <text x="380" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">M_X(s)</text>
 
-            <div className="w-full h-80 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 p-4 flex flex-col justify-between">
-              <svg viewBox="-0.9 0 1.7 4" className="w-full h-full">
-                {/* Axes */}
-                <line x1="-0.9" y1="3.6" x2="0.8" y2="3.6" stroke="#475569" strokeWidth="0.015" />
-                <line x1="0" y1="0.2" x2="0" y2="3.8" stroke="#475569" strokeWidth="0.015" />
-
-                {/* Point (0, 1) where M(0) = 1 */}
-                <line x1="-0.04" y1="2.6" x2="0.04" y2="2.6" stroke="#94A3B8" strokeWidth="0.01" />
-                <text x="-0.06" y="2.63" fill="#94A3B8" fontSize="0.08" textAnchor="end">
-                  M(0)=1
+            {/* s-axis ticks */}
+            {[-0.8, -0.6, -0.4, -0.2, 0.2, 0.4, 0.6].map((val) => (
+              <g key={val}>
+                <line x1={mapS(val)} y1="356" x2={mapS(val)} y2="364" stroke="#64748B" strokeWidth="1.5" />
+                <text x={mapS(val)} y="380" fill="#64748B" fontSize="11" textAnchor="middle" fontWeight="bold" fontFamily="monospace">
+                  {val.toFixed(1)}
                 </text>
+              </g>
+            ))}
 
-                {/* Tangent line at s = 0 */}
-                {showTangent && (
-                  <path
-                    d={tangentPoints
-                      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.s} ${3.6 - p.val}`)
-                      .join(' ')}
-                    fill="none"
-                    stroke="#38BDF8"
-                    strokeWidth="0.02"
-                    strokeDasharray="0.04 0.02"
-                  />
-                )}
+            {/* M-axis ticks */}
+            {[1, 2, 3, 4].map((val) => (
+              <g key={val}>
+                <line x1="376" y1={mapV(val)} x2="384" y2={mapV(val)} stroke="#64748B" strokeWidth="1.5" />
+                <text x={368} y={mapV(val) + 4} fill="#64748B" fontSize="11" textAnchor="end" fontWeight="bold" fontFamily="monospace">
+                  {val}
+                </text>
+              </g>
+            ))}
 
-                {/* Parabola at s = 0 */}
-                {showParabola && (
-                  <path
-                    d={parabolaPoints
-                      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.s} ${3.6 - p.val}`)
-                      .join(' ')}
-                    fill="none"
-                    stroke="#FBBF24"
-                    strokeWidth="0.02"
-                    strokeDasharray="0.02 0.02"
-                  />
-                )}
+            {/* Point (0, 1) reference where M(0) = 1 always */}
+            <line x1="80" y1={mapV(1)} x2="720" y2={mapV(1)} stroke="#64748B" strokeWidth="1" strokeDasharray="3 3" opacity="0.4" />
+            <circle cx={mapS(0)} cy={mapV(1)} r="7" fill="#F43F5E" stroke="#FFFFFF" strokeWidth="2.5" />
+            <text x={mapS(0) - 15} y={mapV(1) - 10} fill="#F43F5E" fontSize="12" fontWeight="bold" textAnchor="end" fontFamily="monospace">
+              M(0) = 1
+            </text>
 
-                {/* True MGF curve */}
-                <path
-                  d={points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.s} ${3.6 - p.val}`).join(' ')}
-                  fill="none"
-                  stroke="#F43F5E"
-                  strokeWidth="0.035"
-                />
+            {/* Tangent line at s = 0 */}
+            {showTangent && (
+              <path
+                d={tangentPoints
+                  .filter((p) => p.val >= 0 && p.val <= 4.8)
+                  .map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`)
+                  .join(' ')}
+                fill="none"
+                stroke="#0284C7"
+                strokeWidth="3"
+                strokeDasharray="6 4"
+              />
+            )}
 
-                {/* Anchor dot at (0, 1) */}
-                <circle cx="0" cy="2.6" r="0.04" fill="#F43F5E" stroke="#FFFFFF" strokeWidth="0.01" />
-              </svg>
+            {/* Parabola approx at s = 0 */}
+            {showParabola && (
+              <path
+                d={parabolaPoints
+                  .filter((p) => p.val >= 0 && p.val <= 4.8)
+                  .map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`)
+                  .join(' ')}
+                fill="none"
+                stroke="#F59E0B"
+                strokeWidth="2.5"
+                strokeDasharray="3 3"
+              />
+            )}
 
-              <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-slate-800 text-xs">
-                <div className="flex items-center gap-4">
-                  <span className="flex items-center gap-1 text-rose-400 font-bold">
-                    <span className="w-3 h-0.5 bg-rose-500"></span> M_X(s)
-                  </span>
-                  {showTangent && (
-                    <span className="flex items-center gap-1 text-sky-400">
-                      <span className="w-3 h-0.5 bg-sky-400 border-dashed"></span> Tiếp tuyến E[X]
-                    </span>
-                  )}
-                  {showParabola && (
-                    <span className="flex items-center gap-1 text-amber-400">
-                      <span className="w-3 h-0.5 bg-amber-400"></span> Parabol E[X²]
-                    </span>
-                  )}
-                </div>
-                <span className="text-slate-400 text-[11px]">
-                  Khai triển Taylor: <MathView math="M(s) \approx 1 + s\mathbb{E}[X] + \frac{s^2}{2}\mathbb{E}[X^2]" />
+            {/* True MGF curve */}
+            <path
+              d={points
+                .filter((p) => p.val >= 0 && p.val <= 4.8)
+                .map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`)
+                .join(' ')}
+              fill="none"
+              stroke="#F43F5E"
+              strokeWidth="4"
+              strokeLinecap="round"
+            />
+          </svg>
+
+          {/* Bottom Stage Legend */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+            <div className="flex items-center gap-4 flex-wrap">
+              <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                <span className="w-4 h-1 bg-rose-500 rounded-full"></span> Đường cong M_X(s)
+              </span>
+              {showTangent && (
+                <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
+                  <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span> Tiếp tuyến: Độ dốc = E[X] = {fmt(mean, 2)}
                 </span>
-              </div>
+              )}
+              {showParabola && (
+                <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
+                  <span className="w-4 h-0.5 bg-amber-500"></span> Parabol: Độ cong = E[X²] = {fmt(moment2, 2)}
+                </span>
+              )}
             </div>
-          </ClayCard>
+            <span className="font-mono text-slate-700 dark:text-slate-300 text-xs">
+              Taylor: M(s) ≈ 1 + s·E[X] + (s²/2)·E[X²]
+            </span>
+          </div>
         </div>
+      </ClayCard>
+
+      {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Card 1: Chọn Phân bố & Tham số */}
+        <ClayCard glowColor="rose" className="p-5">
+          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+            Chọn Phân bố Xác suất
+          </h4>
+
+          <div className="flex gap-2 mb-4">
+            <button
+              onClick={() => setDist('poisson')}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                dist === 'poisson'
+                  ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
+            >
+              Poisson(λ)
+            </button>
+            <button
+              onClick={() => setDist('exponential')}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                dist === 'exponential'
+                  ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
+            >
+              Mũ Exp(λ)
+            </button>
+            <button
+              onClick={() => setDist('normal')}
+              className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                dist === 'normal'
+                  ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
+                  : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
+            >
+              Chuẩn N(μ, 1)
+            </button>
+          </div>
+
+          <ClaySlider
+            label={dist === 'normal' ? 'Kỳ vọng mu' : 'Tham số lambda'}
+            value={param}
+            min={dist === 'normal' ? -1 : 0.5}
+            max={dist === 'normal' ? 3 : 4}
+            step={0.1}
+            color="rose"
+            formatValue={(v) => fmt(v, 1)}
+            onChange={setParam}
+          />
+        </ClayCard>
+
+        {/* Card 2: Khai triển Taylor & Đạo hàm */}
+        <ClayCard glowColor="blue" className="p-5">
+          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+            Ý nghĩa Hình học tại s = 0
+          </h4>
+          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+            Hàm sinh moment mã hóa toàn bộ thông tin của các moment vào độ dốc và độ cong tại gốc:
+          </p>
+          <div className="space-y-1.5 text-xs">
+            <div className="p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700">
+              <span className="font-bold text-sky-700 dark:text-sky-300">Độ dốc tiếp tuyến:</span>{' '}
+              <MathView math="M'_X(0) = \mathbb{E}[X]" />
+            </div>
+            <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+              <span className="font-bold text-amber-700 dark:text-amber-300">Độ cong bậc 2:</span>{' '}
+              <MathView math="M''_X(0) = \mathbb{E}[X^2]" />
+            </div>
+          </div>
+        </ClayCard>
+
+        {/* Card 3: Bảng Moment & Phương sai */}
+        <ClayCard glowColor="emerald" className="p-5">
+          <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+            Các Moment Giải tích
+          </h4>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-500">M(0) [Chuẩn hóa]:</span>
+              <span className="font-mono font-bold text-slate-800 dark:text-slate-200">1.00</span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-500">E[X] = M'(0):</span>
+              <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                {fmt(mean, 2)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+              <span className="text-slate-500">E[X²] = M''(0):</span>
+              <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                {fmt(moment2, 2)}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-1">
+              <span className="text-slate-500">Var(X) = E[X²] - (E[X])²:</span>
+              <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                {fmt(variance, 2)}
+              </span>
+            </div>
+          </div>
+        </ClayCard>
       </div>
     </div>
   );
 };
+
