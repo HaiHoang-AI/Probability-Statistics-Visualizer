@@ -15,7 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="sticky top-3 z-40 w-full px-4 sm:px-6 transition-colors">
-      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0f172a] dark:hover:shadow-[3px_3px_0px_#0284c7] flex items-center justify-between transition-all duration-150">
+      <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] flex items-center justify-between transition-all duration-150">
         
         {/* Brand & Logo */}
         <div 
