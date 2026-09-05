@@ -3,14 +3,14 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
-import { fmt, randomPoisson, randomExponential, randomNormal } from '../../../utils/math';
+import { fmt } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
 
 export const MomentGeneratingFunction: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'tangent' | 'product' | 'wald'>('tangent');
 
-  // Tab 1: MGF Tangent State
+  // Tab 1: MGF Tangent State (Original Lab)
   const [dist, setDist] = useState<'poisson' | 'exponential' | 'normal'>('poisson');
   const [param, setParam] = useState<number>(2.0);
   const [showTangent, setShowTangent] = useState<boolean>(true);
@@ -18,12 +18,12 @@ export const MomentGeneratingFunction: React.FC = () => {
 
   // Tab 2: MGF Product Sum State
   const [sumDist, setSumDist] = useState<'poisson' | 'normal'>('poisson');
-  const [param1, setParam1] = useState<number>(2.0); // lambda1 or mu1
-  const [param2, setParam2] = useState<number>(3.0); // lambda2 or mu2
+  const [param1, setParam1] = useState<number>(2.0);
+  const [param2, setParam2] = useState<number>(3.0);
 
-  // Tab 3: Wald Identity (Random Sum of Random Variables)
-  const [lambdaN, setLambdaN] = useState<number>(5.0); // Mean number of customers N ~ Poisson(lambda)
-  const [muX, setMuX] = useState<number>(10.0); // Mean transaction amount X ~ Exp(1/muX)
+  // Tab 3: Wald Identity (Random Sum)
+  const [lambdaN, setLambdaN] = useState<number>(5.0);
+  const [muX, setMuX] = useState<number>(10.0);
   const [waldSamples, setWaldSamples] = useState<number[]>([]);
 
   // Theoretical moments for Tab 1
@@ -74,14 +74,13 @@ export const MomentGeneratingFunction: React.FC = () => {
   }
 
   const mapS = (s: number) => 380 + s * 340;
-  const mapV = (v: number) => 360 - v * 70;
+  const mapV = (v: number) => 310 - (v - 0) * 55;
 
   // Simulate Wald random sum
   const runWaldSimulation = () => {
     const trials = 3000;
     const samples: number[] = new Array(trials);
     for (let t = 0; t < trials; t++) {
-      // Sample N from Poisson
       let n = 0;
       const L = Math.exp(-lambdaN);
       let p = 1.0;
@@ -91,7 +90,6 @@ export const MomentGeneratingFunction: React.FC = () => {
       } while (p > L);
       n = Math.max(0, n - 1);
 
-      // Sum N exponential variables
       let sum = 0;
       for (let i = 0; i < n; i++) {
         sum += -muX * Math.log(1 - Math.random());
@@ -101,58 +99,60 @@ export const MomentGeneratingFunction: React.FC = () => {
     setWaldSamples(samples);
   };
 
-  const { waldEmpiricalMean, waldEmpiricalVar } = useMemo(() => {
-    if (waldSamples.length === 0) return { waldEmpiricalMean: 0, waldEmpiricalVar: 0 };
-    const m = waldSamples.reduce((a, b) => a + b, 0) / waldSamples.length;
-    const v = waldSamples.reduce((acc, x) => acc + (x - m) ** 2, 0) / waldSamples.length;
-    return { waldEmpiricalMean: m, waldEmpiricalVar: v };
+  const waldTheoMean = lambdaN * muX;
+  const waldTheoVar = lambdaN * (muX * muX) + lambdaN * (muX * muX); // Exp Var = mu^2, Poisson Var = lambda
+
+  const waldEmpiricalMean = useMemo(() => {
+    if (waldSamples.length === 0) return 0;
+    return waldSamples.reduce((a, b) => a + b, 0) / waldSamples.length;
   }, [waldSamples]);
 
-  const waldTheoMean = lambdaN * muX;
-  const varX = muX * muX; // for Exponential
-  const varN = lambdaN; // for Poisson
-  const waldTheoVar = lambdaN * varX + muX * muX * varN;
+  const waldEmpiricalVar = useMemo(() => {
+    if (waldSamples.length === 0) return 0;
+    const m = waldEmpiricalMean;
+    return waldSamples.reduce((a, b) => a + (b - m) ** 2, 0) / waldSamples.length;
+  }, [waldSamples, waldEmpiricalMean]);
 
   return (
     <div className="space-y-6">
-      {/* Banner */}
+      {/* Chapter Subtitle & Context Banner */}
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
             MAT1101 Bài 7.2 — Hàm sinh Moment (MGF)
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Hàm sinh Moment <MathView math="M_X(s) = \mathbb{E}[e^{sX}]" /> & Định lý Wald
+            Hàm sinh Moment, Khai triển Taylor & Phép nhân Đại số
           </h2>
         </div>
 
-        {/* Tab Selector */}
+        {/* Tab Navigation Buttons */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('tangent')}
             className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeTab === 'tangent'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            1. Tiếp tuyến & Moment tại Gốc
+            1. Tiếp tuyến & Độ cong tại s = 0
           </button>
           <button
             onClick={() => setActiveTab('product')}
             className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeTab === 'product'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            2. Nhân MGF (Thay cho Tích chập)
+            2. Nhân đại số thay cho Tích chập
           </button>
           <button
             onClick={() => setActiveTab('wald')}
             className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
               activeTab === 'wald'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -162,28 +162,28 @@ export const MomentGeneratingFunction: React.FC = () => {
       </div>
 
       {/* =========================================================================
-          TAB 1: MGF TANGENT & MOMENTS AT ORIGIN
+          TAB 1: TIẾP TUYẾN & ĐỘ CONG TẠI s = 0 (RESTORED ORIGINAL FULL GRID LAB)
          ========================================================================= */}
       {activeTab === 'tangent' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Tại sao hàm M_X(s) = E[e^{sX}] lại được gọi là 'Hàm sinh Moment'? Biến số s ở đây mang ý nghĩa gì và làm sao để tìm E[X], E[X^2] mà không cần tính tích phân phức tạp?"
-            formula="M_X(s) = 1 + \mathbb{E}[X]s + \frac{\mathbb{E}[X^2]}{2!}s^2 + \dots \implies M_X'(0) = \mathbb{E}[X], \quad M_X''(0) = \mathbb{E}[X^2]"
-            mathExplanation="Khi khai triển chuỗi Taylor của e^{sX} tại s=0, hệ số của s chính là kỳ vọng E[X], hệ số của s^2 chính là E[X^2]/2. Do đó, hình học của đồ thị MGF tại điểm gốc (s=0, M=1) gói trọn mọi thông tin: Độ dốc tiếp tuyến chính là Kỳ vọng, còn độ cong parabol chính là Moment bậc hai!"
+            question="Hàm sinh Moment M_X(s) = E[e^{sX}] là một công cụ biến đổi đại số cực mạnh. Làm thế nào mà chỉ cần đạo hàm hàm số này tại điểm gốc s = 0, ta lại thu được toàn bộ các moment kỳ vọng và phương sai?"
+            formula="M_X(s) = \mathbb{E}[e^{sX}] = 1 + s\mathbb{E}[X] + \frac{s^2}{2!}\mathbb{E}[X^2] + \dots \implies M'_X(0) = \mathbb{E}[X], \quad M''_X(0) = \mathbb{E}[X^2]"
+            mathExplanation="Khai triển chuỗi Taylor của hàm e^{sX} tại s = 0 biến các lũy thừa của s thành hệ số chứa các moment E[X^k]. Do đó: độ dốc tiếp tuyến tại 0 chính là Kỳ vọng E[X], và độ cong uốn parabol tại 0 chính là Moment bậc 2 E[X²]!"
             howToInteract={[
-              "Chuyển đổi giữa 3 phân phối: Poisson, Exponential, và Normal.",
-              "Kéo slider tham số để xem đường cong MGF và tiếp tuyến thay đổi theo thời gian thực.",
-              "Bật/tắt checkbox 'Hiện Tiếp Tuyến Taylor' và 'Hiện Parabol xấp xỉ' để so sánh độ khít quanh s = 0."
+              "Chọn một trong 3 phân phối: Poisson(λ), Mũ Exp(λ), hoặc Chuẩn N(μ, 1).",
+              "Kéo slider tham số để xem đường cong M_X(s) đổi độ dốc tại điểm s = 0.",
+              "Bật/tắt checkbox 'Hiện tiếp tuyến' và 'Hiện parabol' để kiểm chứng xấp xỉ Taylor bậc 1 và bậc 2 quanh gốc tọa độ."
             ]}
-            whatToObserve="Tại s = 0, đồ thị MGF luôn luôn đi qua điểm cố định (0, 1) vì M(0) = E[e^0] = 1. Khi bạn tăng kỳ vọng E[X], tiếp tuyến màu cam quay dốc đứng lên trên!"
-            takeaway="Muốn tìm kỳ vọng và phương sai của một biến ngẫu nhiên bất kỳ: Đạo hàm MGF cấp 1 lấy tại s=0 ra E[X]; đạo hàm cấp 2 lấy tại s=0 ra E[X^2]; sau đó tính Var(X) = E[X^2] - (E[X])^2!"
+            whatToObserve="Tại s = 0, M_X(0) LUÔN LUÔN BẰNG 1.00 với mọi phân phối (do e^0 = 1). Đường tiếp tuyến màu cam bám khít hàm số quanh lân cận s = 0 với độ dốc bằng đúng E[X]."
+            takeaway="Mẹo thi cử: Muốn tìm kỳ vọng và phương sai từ MGF: Tính đạo hàm M'(0) được E[X], tính đạo hàm cấp hai M''(0) được E[X²], rồi dùng Var(X) = E[X²] - (E[X])²!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Đồ thị Hàm Sinh Moment MGF & Tiếp Tuyến Taylor tại Gốc"
+              title="Đồ Thị Hàm Sinh Moment & Tiếp Tuyến Taylor tại s = 0"
               formula={mgfFormula}
-              badge={titleParam}
+              badge={`Phân bố: ${dist.toUpperCase()} (${titleParam})`}
               onReset={() => {
                 setDist('poisson');
                 setParam(2.0);
@@ -199,132 +199,235 @@ export const MomentGeneratingFunction: React.FC = () => {
                       onChange={(e) => setShowTangent(e.target.checked)}
                       className="rounded text-sky-600 focus:ring-0"
                     />
-                    <span>Tiếp tuyến</span>
+                    <span>Tiếp tuyến E[X]</span>
                   </label>
                   <label className="flex items-center gap-1.5 text-xs font-heading font-bold text-slate-700 dark:text-slate-200 cursor-pointer select-none bg-white dark:bg-slate-800 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-700">
                     <input
                       type="checkbox"
                       checked={showParabola}
                       onChange={(e) => setShowParabola(e.target.checked)}
-                      className="rounded text-purple-600 focus:ring-0"
+                      className="rounded text-amber-600 focus:ring-0"
                     />
-                    <span>Parabol</span>
+                    <span>Parabol E[X²]</span>
                   </label>
                 </div>
               }
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[460px]">
-              <div className="relative w-full max-w-3xl h-80 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                <svg viewBox="100 0 600 420" className="w-full h-full">
-                  <line x1="100" y1="360" x2="680" y2="360" stroke="#94a3b8" strokeWidth="1.5" />
-                  <line x1="380" y1="20" x2="380" y2="400" stroke="#94a3b8" strokeWidth="1.5" />
-                  <line x1="100" y1="290" x2="680" y2="290" stroke="#cbd5e1" strokeWidth="1" strokeDasharray="3 3" />
-                  <text x="365" y="295" fontSize="12" fill="#64748b" textAnchor="end" fontFamily="monospace">
-                    M(0) = 1
-                  </text>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <defs>
+                  <marker id="arrow-mgf-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+                  </marker>
+                  <marker id="arrow-mgf-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+                  </marker>
+                </defs>
 
-                  {/* MGF Curve */}
+                {/* Axes directly on the Desmos Cartesian Grid */}
+                <line x1="60" y1="310" x2="740" y2="310" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-mgf-x)" />
+                <line x1="380" y1="340" x2="380" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-mgf-y)" />
+                <text x="750" y="314" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">s</text>
+                <text x="380" y="22" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">M_X(s)</text>
+
+                {/* Baseline M(0) = 1 line */}
+                <line x1="60" y1={mapV(1)} x2="720" y2={mapV(1)} stroke="#CBD5E1" strokeWidth="1" strokeDasharray="3 3" />
+                <text x="370" y={mapV(1) + 4} fill="#64748B" fontSize="11" textAnchor="end" fontWeight="bold" fontFamily="monospace">
+                  M(0) = 1
+                </text>
+
+                {/* Tangent line at s = 0 */}
+                {showTangent && (
                   <path
-                    d={points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`).join(' ')}
+                    d={tangentPoints
+                      .filter((p) => p.val >= 0 && p.val <= 5.5)
+                      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`)
+                      .join(' ')}
                     fill="none"
-                    stroke="#0284c7"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
+                    stroke="#0284C7"
+                    strokeWidth="3"
+                    strokeDasharray="6 4"
                   />
+                )}
 
-                  {/* Tangent at s=0 */}
-                  {showTangent && (
-                    <path
-                      d={tangentPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`).join(' ')}
-                      fill="none"
-                      stroke="#f97316"
-                      strokeWidth="2"
-                      strokeDasharray="4 4"
-                    />
-                  )}
+                {/* Parabola approx at s = 0 */}
+                {showParabola && (
+                  <path
+                    d={parabolaPoints
+                      .filter((p) => p.val >= 0 && p.val <= 5.5)
+                      .map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`)
+                      .join(' ')}
+                    fill="none"
+                    stroke="#F59E0B"
+                    strokeWidth="2.5"
+                    strokeDasharray="3 3"
+                  />
+                )}
 
-                  {/* Parabola at s=0 */}
-                  {showParabola && (
-                    <path
-                      d={parabolaPoints.map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`).join(' ')}
-                      fill="none"
-                      stroke="#8b5cf6"
-                      strokeWidth="2"
-                      strokeDasharray="2 2"
-                    />
-                  )}
-
-                  <circle cx={mapS(0)} cy={mapV(1)} r="5" fill="#e11d48" />
-                </svg>
-
-                <div className="absolute top-3 left-4 text-xs font-mono bg-white/90 dark:bg-slate-900/90 p-2 rounded-lg border border-slate-300 dark:border-slate-700">
-                  <div>Độ dốc tiếp tuyến M'(0) = E[X] = {fmt(mean, 2)}</div>
-                  <div>Độ cong M''(0) = E[X²] = {fmt(moment2, 2)}</div>
-                  <div className="text-sky-600 font-bold">Phương sai Var(X) = {fmt(variance, 2)}</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <div className="flex justify-center gap-3">
-                  <ClayButton
-                    variant={dist === 'poisson' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => { setDist('poisson'); setParam(2.0); }}
-                  >
-                    Poisson (λ)
-                  </ClayButton>
-                  <ClayButton
-                    variant={dist === 'exponential' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => { setDist('exponential'); setParam(1.5); }}
-                  >
-                    Exponential (λ)
-                  </ClayButton>
-                  <ClayButton
-                    variant={dist === 'normal' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => { setDist('normal'); setParam(0.0); }}
-                  >
-                    Normal (μ, σ=1)
-                  </ClayButton>
-                </div>
-
-                <ClaySlider
-                  label={dist === 'normal' ? 'Kỳ vọng μ' : 'Tham số λ'}
-                  sublabel="Kéo để quan sát tiếp tuyến quay"
-                  value={param}
-                  min={dist === 'normal' ? -2 : 0.5}
-                  max={dist === 'normal' ? 2 : 4}
-                  step={0.1}
-                  color="blue"
-                  onChange={setParam}
+                {/* True MGF curve */}
+                <path
+                  d={points
+                    .filter((p) => p.val >= 0 && p.val <= 5.5)
+                    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${mapS(p.s)} ${mapV(p.val)}`)
+                    .join(' ')}
+                  fill="none"
+                  stroke="#F43F5E"
+                  strokeWidth="4"
+                  strokeLinecap="round"
                 />
+
+                {/* Origin point (0, 1) */}
+                <circle cx={mapS(0)} cy={mapV(1)} r="6" fill="#F43F5E" stroke="#FFFFFF" strokeWidth="2" />
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span> Đường cong M_X(s)
+                  </span>
+                  {showTangent && (
+                    <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
+                      <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span> Tiếp tuyến: Độ dốc = E[X] = {fmt(mean, 2)}
+                    </span>
+                  )}
+                  {showParabola && (
+                    <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
+                      <span className="w-4 h-0.5 bg-amber-500"></span> Parabol: Độ cong = E[X²] = {fmt(moment2, 2)}
+                    </span>
+                  )}
+                </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 text-xs">
+                  Taylor: M(s) ≈ 1 + s·E[X] + (s²/2)·E[X²]
+                </span>
               </div>
             </div>
           </ClayCard>
+
+          {/* 2. BẢNG TÙY CHỌN ĐIỀU CHỈNH THÔNG SỐ Ở DƯỚI (BOTTOM CONTROL DOCK) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Card 1: Chọn Phân bố & Tham số */}
+            <ClayCard glowColor="rose" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Chọn Phân bố Xác suất
+              </h4>
+
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setDist('poisson')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    dist === 'poisson'
+                      ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
+                      : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  Poisson(λ)
+                </button>
+                <button
+                  onClick={() => setDist('exponential')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    dist === 'exponential'
+                      ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
+                      : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  Mũ Exp(λ)
+                </button>
+                <button
+                  onClick={() => setDist('normal')}
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    dist === 'normal'
+                      ? 'bg-rose-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#f43f5e]'
+                      : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  Chuẩn N(μ, 1)
+                </button>
+              </div>
+
+              <ClaySlider
+                label={dist === 'normal' ? 'Kỳ vọng mu' : 'Tham số lambda'}
+                value={param}
+                min={dist === 'normal' ? -1 : 0.5}
+                max={dist === 'normal' ? 3 : 4}
+                step={0.1}
+                color="rose"
+                formatValue={(v) => fmt(v, 1)}
+                onChange={setParam}
+              />
+            </ClayCard>
+
+            {/* Card 2: Khai triển Taylor & Đạo hàm */}
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Ý nghĩa Hình học tại s = 0
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-3">
+                Hàm sinh moment mã hóa toàn bộ thông tin của các moment vào độ dốc và độ cong tại gốc:
+              </p>
+              <div className="space-y-1.5 text-xs">
+                <div className="p-2 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700">
+                  <span className="font-bold text-sky-700 dark:text-sky-300">Độ dốc tiếp tuyến:</span>{' '}
+                  <MathView math="M'_X(0) = \mathbb{E}[X]" />
+                </div>
+                <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800">
+                  <span className="font-bold text-amber-700 dark:text-amber-300">Độ cong bậc 2:</span>{' '}
+                  <MathView math="M''_X(0) = \mathbb{E}[X^2]" />
+                </div>
+              </div>
+            </ClayCard>
+
+            {/* Card 3: Bảng Moment & Phương sai */}
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Các Moment Giải tích
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">M(0) [Chuẩn hóa]:</span>
+                  <span className="font-mono font-bold text-slate-800 dark:text-slate-200">1.00</span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">E[X] = M'(0):</span>
+                  <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
+                    {fmt(mean, 2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">E[X²] = M''(0):</span>
+                  <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
+                    {fmt(moment2, 2)}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-1">
+                  <span className="text-slate-500">Var(X) = E[X²] - (E[X])²:</span>
+                  <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
+                    {fmt(variance, 2)}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+          </div>
         </div>
       )}
 
       {/* =========================================================================
-          TAB 2: MGF PRODUCT (ALGEBRAIC CONVOLUTION)
+          TAB 2: NHÂN ĐẠI SỐ MGF THAY CHO TÍCH CHẬP - TRÊN Ô GRID TRỰC TIẾP
          ========================================================================= */}
       {activeTab === 'product' && (
         <div className="space-y-6">
           <LabBriefing
             question="Khi cộng hai biến ngẫu nhiên độc lập Z = X + Y, tích phân tích chập rất khó tính. Tại sao MGF lại biến bài toán tích chập thành phép nhân đại số đơn giản?"
-            formula="M_{X+Y}(s) = \mathbb{E}[e^{s(X+Y)}] = \mathbb{E}[e^{sX} \cdot e^{sY}] = \mathbb{E}[e^{sX}] \cdot \mathbb{E}[e^{sY}] = M_X(s) \cdot M_Y(s)"
+            formula="M_{X+Y}(s) = \mathbb{E}[e^{s(X+Y)}] = \mathbb{E}[e^{sX} \cdot e^{sY}] = M_X(s) \cdot M_Y(s)"
             mathExplanation="Do X và Y độc lập, kỳ vọng của tích bằng tích các kỳ vọng! Khi nhân 2 hàm MGF với nhau, các số mũ cộng lại. Nhìn vào dạng hàm MGF kết quả, ta nhận dạng được ngay phân phối của tổng mà không cần giải bất kỳ một tích phân nào!"
             howToInteract={[
-              "Chọn kịch bản: Tổng 2 biến Poisson hoặc Tổng 2 biến Normal.",
+              "Chọn loại phân phối: Tổng 2 biến Poisson hoặc Tổng 2 biến Gaussian.",
               "Kéo slider tham số của X và Y.",
-              "Xem công thức đại số M_Z(s) tự động suy luận ra phân phối đích."
+              "Quan sát 3 đường cong M_X, M_Y và đường tích M_{X+Y} trên cùng hệ trục tọa độ Desmos."
             ]}
-            whatToObserve="Nếu X ~ Poisson(λ₁) và Y ~ Poisson(λ₂), thì M_X(s) M_Y(s) = e^{λ₁(e^s - 1)} e^{λ₂(e^s - 1)} = e^{(λ₁ + λ₂)(e^s - 1)}. Đây chính là MGF của phân phối Poisson(λ₁ + λ₂)! Tính chất ổn định này giải thích vì sao cộng nhiều biến Poisson vẫn ra Poisson!"
-            takeaway="MGF là 'biến đổi Fourier' của xác suất: Chuyển phép tích chập phức tạp ở miền không gian thành phép nhân đơn giản ở miền tần số s!"
+            whatToObserve="Đường cong tích M_{X+Y}(s) dâng lên rất nhanh vì là tích của 2 hàm tăng. Tham số của tổng chính là tổng các tham số: λ_Z = λ_X + λ_Y hoặc μ_Z = μ_X + μ_Y."
+            takeaway="Tổng các biến Poisson độc lập LÀ một biến Poisson. Tổng các biến Gauss độc lập LÀ một biến Gauss. Điều này được chứng minh dễ dàng nhất qua MGF!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
@@ -339,40 +442,89 @@ export const MomentGeneratingFunction: React.FC = () => {
               onReset={() => { setParam1(2.0); setParam2(3.0); }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-3xl p-6 shadow-[3px_3px_0px_#0f172a] space-y-4">
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="p-3 bg-sky-50 dark:bg-slate-800 rounded-2xl border border-sky-200 dark:border-sky-900">
-                    <span className="text-[11px] font-bold text-sky-700 dark:text-sky-300">Biến 1: X</span>
-                    <div className="font-mono font-bold text-sm text-slate-900 dark:text-white mt-1">
-                      {sumDist === 'poisson' ? `P(${param1})` : `N(${param1}, 1)`}
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center text-xl font-black text-slate-400">
-                    ×
-                  </div>
-                  <div className="p-3 bg-emerald-50 dark:bg-slate-800 rounded-2xl border border-emerald-200 dark:border-emerald-900">
-                    <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300">Biến 2: Y</span>
-                    <div className="font-mono font-bold text-sm text-slate-900 dark:text-white mt-1">
-                      {sumDist === 'poisson' ? `P(${param2})` : `N(${param2}, 1)`}
-                    </div>
-                  </div>
-                </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <defs>
+                  <marker id="arrow-prod-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+                  </marker>
+                  <marker id="arrow-prod-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+                  </marker>
+                </defs>
 
-                <div className="p-4 bg-purple-50 dark:bg-slate-800/80 rounded-2xl border-2 border-purple-300 dark:border-purple-800 text-center">
-                  <span className="text-xs font-heading font-black text-purple-700 dark:text-purple-300 uppercase tracking-wider">
-                    Kết quả Tổng Z = X + Y (Nhờ định lý duy nhất MGF)
+                {/* Cartesian Axes */}
+                <line x1="80" y1="300" x2="740" y2="300" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-prod-x)" />
+                <line x1="380" y1="330" x2="380" y2="40" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-prod-y)" />
+                <text x="750" y="304" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">s</text>
+                <text x="380" y="30" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">M(s)</text>
+
+                {/* Grid ticks for s in [-0.6, 0.6] */}
+                {[-0.6, -0.4, -0.2, 0.2, 0.4, 0.6].map((sv) => (
+                  <g key={`prod-s-${sv}`}>
+                    <line x1={mapS(sv)} y1="296" x2={mapS(sv)} y2="304" stroke="#64748B" strokeWidth="1.5" />
+                    <text x={mapS(sv)} y="322" fill="#64748B" fontSize="11" textAnchor="middle" fontWeight="bold" fontFamily="monospace">
+                      {sv.toFixed(1)}
+                    </text>
+                  </g>
+                ))}
+
+                {/* Baseline 1.0 */}
+                <line x1="80" y1={300 - 45} x2="720" y2={300 - 45} stroke="#CBD5E1" strokeWidth="1" strokeDasharray="3 3" />
+                <text x="370" y={300 - 41} fill="#64748B" fontSize="11" textAnchor="end" fontWeight="bold">1.0</text>
+
+                {/* Plot M_X, M_Y, M_Z */}
+                {(() => {
+                  const ptsX = [], ptsY = [], ptsZ = [];
+                  for (let s = -0.6; s <= 0.6; s += 0.03) {
+                    let vx = 1, vy = 1, vz = 1;
+                    if (sumDist === 'poisson') {
+                      vx = Math.exp(param1 * (Math.exp(s) - 1));
+                      vy = Math.exp(param2 * (Math.exp(s) - 1));
+                      vz = vx * vy;
+                    } else {
+                      vx = Math.exp(param1 * s + 0.5 * s * s);
+                      vy = Math.exp(param2 * s + 0.5 * s * s);
+                      vz = vx * vy;
+                    }
+                    const px = mapS(s);
+                    const pyX = 300 - Math.min(250, vx * 45);
+                    const pyY = 300 - Math.min(250, vy * 45);
+                    const pyZ = 300 - Math.min(250, vz * 45);
+                    ptsX.push(`${px},${pyX}`);
+                    ptsY.push(`${px},${pyY}`);
+                    ptsZ.push(`${px},${pyZ}`);
+                  }
+                  return (
+                    <g>
+                      <path d={`M ${ptsX.join(' L ')}`} fill="none" stroke="#0284C7" strokeWidth="2.5" strokeDasharray="5 3" />
+                      <path d={`M ${ptsY.join(' L ')}`} fill="none" stroke="#10B981" strokeWidth="2.5" strokeDasharray="5 3" />
+                      <path d={`M ${ptsZ.join(' L ')}`} fill="none" stroke="#F43F5E" strokeWidth="4" strokeLinecap="round" />
+                    </g>
+                  );
+                })()}
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
+                    <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span> M_X(s) (Biến 1)
                   </span>
-                  <div className="text-base sm:text-lg font-heading font-black text-slate-900 dark:text-white mt-1">
-                    {sumDist === 'poisson'
-                      ? `Z tuân theo phân phối Poisson với λ_Z = ${fmt(param1 + param2, 1)}`
-                      : `Z tuân theo phân phối Chuẩn với μ_Z = ${fmt(param1 + param2, 1)}, σ_Z² = 2.0`}
-                  </div>
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="w-4 h-0.5 bg-emerald-500 border-dashed"></span> M_Y(s) (Biến 2)
+                  </span>
+                  <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span> M_Z(s) = M_X(s) · M_Y(s)
+                  </span>
                 </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  {sumDist === 'poisson' ? `λ_Z = ${fmt(param1 + param2, 1)}` : `μ_Z = ${fmt(param1 + param2, 1)}, σ_Z² = 2.0`}
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
               <div className="max-w-xl mx-auto space-y-4">
                 <div className="flex justify-center gap-3">
@@ -429,7 +581,7 @@ export const MomentGeneratingFunction: React.FC = () => {
             mathExplanation="Đây là đẳng thức Wald kinh điển! Phương sai của tổng ngẫu nhiên gồm 2 nguồn: Sự bấp bênh từ giá trị của từng khách hàng E[N]Var(X) CỘNG VỚI sự bấp bênh từ số lượng khách hàng ghé thăm (E[X])^2 Var(N)."
             howToInteract={[
               "Kéo slider 'Kỳ vọng số khách E[N]' và 'Kỳ vọng số tiền mỗi khách E[X]'.",
-              "Bấm nút 'Chạy Mô Phỏng Monte Carlo 3,000 ngày' để xem kết quả thực nghiệm.",
+              "Bấm nút 'Chạy Mô Phỏng Monte Carlo 3,000 ngày' để xem phân phối mẫu.",
               "So sánh số liệu thực nghiệm với công thức lý thuyết Wald."
             ]}
             whatToObserve="Sau 3,000 lần mô phỏng, trung bình thực tế E_emp và phương sai Var_emp hội tụ sát sàn sạt với giá trị tính từ công thức Wald!"
@@ -444,67 +596,133 @@ export const MomentGeneratingFunction: React.FC = () => {
               onReset={() => { setLambdaN(5.0); setMuX(10.0); setWaldSamples([]); }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl space-y-5">
-                {/* Bảng so sánh Lý thuyết vs Thực nghiệm */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 bg-sky-50 dark:bg-slate-800 rounded-2xl border-2 border-slate-900 dark:border-slate-700">
-                    <span className="text-xs font-heading font-black text-sky-700 dark:text-sky-300 uppercase tracking-wider">
-                      Công thức Lý thuyết Wald
-                    </span>
-                    <div className="mt-2 space-y-1.5 text-xs font-mono">
-                      <div>E[S] = E[N] · E[X] = <span className="font-bold text-sky-600 text-sm">{fmt(waldTheoMean, 1)}</span></div>
-                      <div>Var(S) = <span className="font-bold text-sky-600 text-sm">{fmt(waldTheoVar, 1)}</span></div>
-                    </div>
-                  </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <defs>
+                  <marker id="arrow-wald-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+                  </marker>
+                  <marker id="arrow-wald-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+                  </marker>
+                </defs>
 
-                  <div className="p-4 bg-emerald-50 dark:bg-slate-800 rounded-2xl border-2 border-slate-900 dark:border-slate-700">
-                    <span className="text-xs font-heading font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wider">
-                      Mô phỏng Thực nghiệm (3,000 ván)
-                    </span>
-                    <div className="mt-2 space-y-1.5 text-xs font-mono">
-                      {waldSamples.length > 0 ? (
-                        <>
-                          <div>E_thực tế = <span className="font-bold text-emerald-600 text-sm">{fmt(waldEmpiricalMean, 1)}</span></div>
-                          <div>Var_thực tế = <span className="font-bold text-emerald-600 text-sm">{fmt(waldEmpiricalVar, 1)}</span></div>
-                        </>
-                      ) : (
-                        <div className="text-slate-400 italic">Bấm nút bên dưới để chạy mô phỏng</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                {/* Cartesian Axes */}
+                <line x1="80" y1="300" x2="740" y2="300" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-wald-x)" />
+                <line x1="120" y1="330" x2="120" y2="40" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-wald-y)" />
+                <text x="750" y="304" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">Tổng tiền S</text>
+                <text x="120" y="30" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">Tần số</text>
 
-                {/* Nút kích hoạt mô phỏng */}
-                <div className="text-center pt-2">
-                  <ClayButton variant="primary" size="lg" onClick={runWaldSimulation}>
-                    🎲 Chạy Mô Phỏng 3,000 Ván Ngẫu Nhiên
-                  </ClayButton>
+                {/* Samples histogram or empty guide */}
+                {waldSamples.length > 0 ? (
+                  (() => {
+                    const maxVal = Math.max(...waldSamples, waldTheoMean * 2.5);
+                    const binCount = 30;
+                    const bins = new Array(binCount).fill(0);
+                    for (const s of waldSamples) {
+                      const idx = Math.min(binCount - 1, Math.floor((s / maxVal) * binCount));
+                      if (idx >= 0) bins[idx]++;
+                    }
+                    const maxBin = Math.max(...bins, 1);
+                    return (
+                      <g>
+                        {bins.map((cnt, i) => {
+                          const px = 120 + (i / binCount) * 600;
+                          const bw = 600 / binCount - 2;
+                          const bh = (cnt / maxBin) * 230;
+                          return (
+                            <rect
+                              key={i}
+                              x={px}
+                              y={300 - bh}
+                              width={bw}
+                              height={bh}
+                              fill="#0284C7"
+                              opacity="0.65"
+                              stroke="#0369A1"
+                              strokeWidth="1"
+                            />
+                          );
+                        })}
+
+                        {/* Theoretical Mean Vertical Line */}
+                        <line
+                          x1={120 + (waldTheoMean / maxVal) * 600}
+                          y1="50"
+                          x2={120 + (waldTheoMean / maxVal) * 600}
+                          y2="300"
+                          stroke="#EF4444"
+                          strokeWidth="3"
+                          strokeDasharray="6 3"
+                        />
+                        <text
+                          x={120 + (waldTheoMean / maxVal) * 600}
+                          y="40"
+                          fill="#EF4444"
+                          fontSize="12"
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          fontFamily="monospace"
+                        >
+                          E[S] lý thuyết = {fmt(waldTheoMean, 1)}
+                        </text>
+                      </g>
+                    );
+                  })()
+                ) : (
+                  <text x="400" y="180" fill="#94A3B8" fontSize="14" fontWeight="bold" textAnchor="middle">
+                    Bấm nút "Chạy Mô Phỏng Monte Carlo 3,000 Lần" ở bảng điều khiển bên dưới để vẽ đồ thị
+                  </text>
+                )}
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
+                    <span className="w-3.5 h-1.5 rounded-sm bg-sky-500"></span> Phân phối thực nghiệm 3,000 mẫu
+                  </span>
+                  <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                    <span className="w-4 h-0.5 bg-rose-500 border-dashed"></span> Kỳ vọng lý thuyết Wald
+                  </span>
                 </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  {waldSamples.length > 0 ? `E_thực tế = ${fmt(waldEmpiricalMean, 1)} | Var_thực tế = ${fmt(waldEmpiricalVar, 1)}` : 'Chưa có mẫu'}
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Số lượng khách bình quân E[N] (Poisson λ)"
-                  value={lambdaN}
-                  min={1}
-                  max={15}
-                  step={1}
-                  color="blue"
-                  onChange={setLambdaN}
-                />
-                <ClaySlider
-                  label="Số tiền rút bình quân E[X] (Exp μ)"
-                  value={muX}
-                  min={5}
-                  max={50}
-                  step={5}
-                  color="emerald"
-                  onChange={setMuX}
-                />
+              <div className="max-w-2xl mx-auto space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <ClaySlider
+                    label="Kỳ vọng số khách E[N]"
+                    sublabel="N ~ Poisson(λ)"
+                    value={lambdaN}
+                    min={1}
+                    max={15}
+                    step={1}
+                    color="blue"
+                    onChange={setLambdaN}
+                  />
+                  <ClaySlider
+                    label="Kỳ vọng số tiền mỗi khách E[X]"
+                    sublabel="X ~ Exp(1/μ)"
+                    value={muX}
+                    min={5}
+                    max={30}
+                    step={1}
+                    color="emerald"
+                    onChange={setMuX}
+                  />
+                </div>
+
+                <div className="text-center pt-2">
+                  <ClayButton variant="primary" size="md" onClick={runWaldSimulation}>
+                    Chạy Mô Phỏng Monte Carlo 3,000 Lần
+                  </ClayButton>
+                </div>
               </div>
             </div>
           </ClayCard>

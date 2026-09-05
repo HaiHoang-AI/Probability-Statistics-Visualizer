@@ -3,13 +3,13 @@ import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
-import { fmt, randomNormal, standardNormalInv, studentTPdf, normalPdf } from '../../../utils/math';
+import { fmt, normalPdf, standardNormalInv, studentTPdf, randomNormal } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
 
-interface IntervalData {
+interface IntervalItem {
   id: number;
-  sampleMean: number;
+  mean: number;
   lower: number;
   upper: number;
   covers: boolean;
@@ -18,87 +18,80 @@ interface IntervalData {
 export const ClassicalEstimation: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'ci' | 'student' | 'bessel' | 'mle'>('ci');
 
-  // Tab 1: Confidence Interval Coverage State
-  const [trueMu, setTrueMu] = useState<number>(50);
-  const [trueSigma, setTrueSigma] = useState<number>(10);
-  const [sampleSizeN, setSampleSizeN] = useState<number>(25);
+  // Tab 1: 100 Confidence Intervals State (Original Lab)
   const [confLevel, setConfLevel] = useState<number>(0.95);
-  const [intervals, setIntervals] = useState<IntervalData[]>([]);
+  const [sampleSizeN, setSampleSizeN] = useState<number>(25);
+  const [intervals, setIntervals] = useState<IntervalItem[]>([]);
+  const trueMu = 50.0;
+  const trueSigma = 10.0;
 
   const generateIntervals = () => {
-    const zCrit = standardNormalInv(1 - (1 - confLevel) / 2);
-    const marginOfError = zCrit * (trueSigma / Math.sqrt(sampleSizeN));
-    const newIntervals: IntervalData[] = [];
+    const alpha = 1 - confLevel;
+    const zCrit = standardNormalInv(1 - alpha / 2);
+    const se = trueSigma / Math.sqrt(sampleSizeN);
+    const margin = zCrit * se;
 
+    const list: IntervalItem[] = [];
     for (let i = 0; i < 100; i++) {
       let sum = 0;
-      for (let j = 0; j < sampleSizeN; j++) {
+      for (let s = 0; s < sampleSizeN; s++) {
         sum += randomNormal(trueMu, trueSigma);
       }
-      const xBar = sum / sampleSizeN;
-      const lower = xBar - marginOfError;
-      const upper = xBar + marginOfError;
-      const covers = trueMu >= lower && trueMu <= upper;
-      newIntervals.push({ id: i, sampleMean: xBar, lower, upper, covers });
+      const m = sum / sampleSizeN;
+      const lower = m - margin;
+      const upper = m + margin;
+      const covers = lower <= trueMu && trueMu <= upper;
+      list.push({ id: i + 1, mean: m, lower, upper, covers });
     }
-    setIntervals(newIntervals);
+    setIntervals(list);
   };
 
   useEffect(() => {
     generateIntervals();
-  }, [trueMu, trueSigma, sampleSizeN, confLevel]);
+  }, [confLevel, sampleSizeN]);
 
   const coveredCount = intervals.filter((it) => it.covers).length;
-  const coveragePercent = intervals.length > 0 ? (coveredCount / intervals.length) * 100 : 0;
+  const coveragePercent = coveredCount;
 
-  // Tab 2: Student t vs Normal
-  const [degFreedom, setDegFreedom] = useState<number>(3);
+  // Tab 2: Student t vs Normal State (Original Lab)
+  const [dfNu, setDfNu] = useState<number>(4);
 
-  // Tab 3: Bessel Correction State
-  const [besselN, setBesselN] = useState<number>(4);
-  const [besselSim, setBesselSim] = useState<{ meanN: number; meanNMinus1: number; trueVar: number }>({
-    meanN: 0,
-    meanNMinus1: 0,
-    trueVar: 16,
-  });
+  // Tab 3: Bessel's Correction State
+  const [besselSampleSize, setBesselSampleSize] = useState<number>(5);
+  const [besselRuns, setBesselRuns] = useState<{ biasedVar: number; unbiasedVar: number } | null>(null);
 
-  const runBesselSimulation = () => {
-    const trials = 2500;
-    const trueStd = 4.0;
-    const trueV = 16.0;
-    let sumVarN = 0;
-    let sumVarN1 = 0;
+  const runBesselMonteCarlo = () => {
+    const K = 2500;
+    const popSigma2 = 4.0;
+    let sumBiased = 0;
+    let sumUnbiased = 0;
 
-    for (let t = 0; t < trials; t++) {
-      const sample: number[] = [];
-      let sMean = 0;
-      for (let i = 0; i < besselN; i++) {
-        const val = randomNormal(0, trueStd);
-        sample.push(val);
-        sMean += val;
+    for (let k = 0; k < K; k++) {
+      const sample = [];
+      for (let i = 0; i < besselSampleSize; i++) {
+        sample.push(randomNormal(0, 2.0));
       }
-      sMean /= besselN;
-
+      const m = sample.reduce((a, b) => a + b, 0) / besselSampleSize;
       let ss = 0;
-      for (let i = 0; i < besselN; i++) {
-        ss += (sample[i] - sMean) ** 2;
+      for (const x of sample) {
+        ss += (x - m) ** 2;
       }
-      sumVarN += ss / besselN;
-      sumVarN1 += ss / (besselN - 1);
+      sumBiased += ss / besselSampleSize;
+      sumUnbiased += ss / (besselSampleSize - 1);
     }
-    setBesselSim({
-      meanN: sumVarN / trials,
-      meanNMinus1: sumVarN1 / trials,
-      trueVar: trueV,
+
+    setBesselRuns({
+      biasedVar: sumBiased / K,
+      unbiasedVar: sumUnbiased / K,
     });
   };
 
   useEffect(() => {
-    runBesselSimulation();
-  }, [besselN]);
+    runBesselMonteCarlo();
+  }, [besselSampleSize]);
 
-  // Tab 4: MLE State
-  const [mlePoints, setMlePoints] = useState<number[]>([2, 4, 5, 7, 8]);
+  // Tab 4: MLE Curve State (Original Lab)
+  const [mlePoints, setMlePoints] = useState<number[]>([2.0, 3.5, 4.2, 5.8, 6.5]);
   const mleMean = mlePoints.length > 0 ? mlePoints.reduce((a, b) => a + b, 0) / mlePoints.length : 0;
 
   return (
@@ -107,13 +100,14 @@ export const ClassicalEstimation: React.FC = () => {
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-            MAT1101 Bài 10.1 — Ước lượng Thống kê Cổ điển
+            MAT1101 Bài 10.1 — Ước lượng thống kê cổ điển
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Khoảng Tin Cậy (CI), Phân phối Student-t & Hiệu chỉnh Bessel
+            Khoảng Tin cậy, Phân bố Student t, Hiệu chỉnh Bessel & Cực đại Hợp lý (MLE)
           </h2>
         </div>
 
+        {/* Tab Switcher */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('ci')}
@@ -133,7 +127,7 @@ export const ClassicalEstimation: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            2. Phân phối Student t
+            2. Phân bố Student t
           </button>
           <button
             onClick={() => setActiveTab('bessel')}
@@ -143,7 +137,7 @@ export const ClassicalEstimation: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            3. Hiệu chỉnh Bessel (n-1)
+            3. Bí ẩn Bessel (n-1 vs n)
           </button>
           <button
             onClick={() => setActiveTab('mle')}
@@ -153,13 +147,13 @@ export const ClassicalEstimation: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            4. Ước lượng MLE
+            4. Đường cong MLE
           </button>
         </div>
       </div>
 
       {/* =========================================================================
-          TAB 1: 100 CONFIDENCE INTERVALS
+          TAB 1: 100 CONFIDENCE INTERVALS (ORIGINAL LAB - DIRECTLY ON DESMOS GRID)
          ========================================================================= */}
       {activeTab === 'ci' && (
         <div className="space-y-6">
@@ -178,149 +172,235 @@ export const ClassicalEstimation: React.FC = () => {
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Mô phỏng 100 Khoảng Tin Cậy Đồng Thời: Đánh giá Tỷ lệ Bao phủ Thực tế"
-              formula={`\\text{Bao phủ: } ${coveredCount}/100 \\quad (${fmt(coveragePercent, 1)}\\%)`}
-              badge={`Mục tiêu: ${Math.round(confLevel * 100)}%`}
-              onReset={() => { setConfLevel(0.95); setSampleSizeN(25); generateIntervals(); }}
+              title="100 Khoảng Tin Cậy Xếp Chồng Độc Lập"
+              formula="CI = \left[\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}}, \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\right]"
+              badge={`Độ phủ: ${coveragePercent}%`}
+              onReset={generateIntervals}
+              extraActions={
+                <div className="flex items-center gap-2">
+                  <span className="text-xs px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-mono font-bold border border-emerald-300">
+                    Trúng: {coveredCount}
+                  </span>
+                  <span className="text-xs px-2 py-0.5 rounded-md bg-rose-100 dark:bg-rose-950 text-rose-700 dark:text-rose-300 font-mono font-bold border border-rose-300">
+                    Trượt: {100 - coveredCount}
+                  </span>
+                </div>
+              }
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[460px]">
-              <div className="relative w-full max-w-3xl h-80 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner overflow-y-auto">
-                <svg viewBox="20 0 60 100" className="w-full h-full" preserveAspectRatio="none">
-                  {/* Đường tham số thực mu */}
-                  <line x1={trueMu} y1="0" x2={trueMu} y2="100" stroke="#0284c7" strokeWidth="0.8" strokeDasharray="1 1" />
-
-                  {/* 100 Intervals */}
-                  {intervals.map((it) => (
-                    <g key={it.id}>
-                      <line
-                        x1={it.lower}
-                        y1={it.id}
-                        x2={it.upper}
-                        y2={it.id}
-                        stroke={it.covers ? '#10b981' : '#e11d48'}
-                        strokeWidth="0.6"
-                      />
-                      <circle cx={it.sampleMean} cy={it.id} r="0.3" fill={it.covers ? '#059669' : '#dc2626'} />
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                {/* Vertical grid lines */}
+                {[35, 40, 45, 50, 55, 60, 65].map((val) => {
+                  const px = 400 + (val - 50) * 14;
+                  return (
+                    <g key={`ci-grid-${val}`}>
+                      <line x1={px} y1="20" x2={px} y2="330" stroke="rgba(148, 163, 184, 0.2)" strokeWidth="1" />
+                      <text x={px} y="348" textAnchor="middle" className="text-[11px] font-mono font-bold fill-slate-500">
+                        {val}
+                      </text>
                     </g>
-                  ))}
-                </svg>
+                  );
+                })}
 
-                <div className="absolute top-3 right-4 text-xs font-mono bg-white/90 dark:bg-slate-900/90 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700">
-                  <div className="text-emerald-600 font-bold">Bao phủ đúng (Xanh): {coveredCount} khoảng</div>
-                  <div className="text-rose-600 font-bold">Trượt ra ngoài (Đỏ): {100 - coveredCount} khoảng</div>
+                {/* Vertical line for true mu (center) */}
+                <line x1="400" y1="15" x2="400" y2="330" stroke="#0284C7" strokeWidth="3" strokeDasharray="6 3" />
+                <text x="400" y="12" fill="#0284C7" fontSize="11" textAnchor="middle" fontWeight="black" className="font-mono">
+                  Tham số thực μ = {trueMu} (Cố định)
+                </text>
+
+                {/* 100 Intervals sitting directly on the grid */}
+                {intervals.map((it, idx) => {
+                  const y = 25 + idx * 3.0;
+                  const x1 = 400 + (it.lower - trueMu) * 14;
+                  const x2 = 400 + (it.upper - trueMu) * 14;
+                  const strokeColor = it.covers ? '#10B981' : '#EF4444';
+
+                  return (
+                    <g key={it.id}>
+                      <line x1={x1} y1={y} x2={x2} y2={y} stroke={strokeColor} strokeWidth="2.2" strokeLinecap="round" />
+                      {!it.covers && (
+                        <circle cx={(x1 + x2) / 2} cy={y} r="2.5" fill="#EF4444" stroke="#FFFFFF" strokeWidth="0.8" />
+                      )}
+                    </g>
+                  );
+                })}
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="w-4 h-1 bg-emerald-500 rounded-full"></span> Xanh lá: Chứa tham số μ ({coveredCount})
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-rose-600 dark:text-rose-400">
+                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span> Đỏ: Trượt khỏi tham số μ ({100 - coveredCount})
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="w-5 h-0.5 bg-sky-600 border-dashed"></span> Vạch chuẩn μ = {trueMu}
+                  </span>
                 </div>
-              </div>
-            </div>
-
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <div className="flex justify-center gap-3">
-                  <ClayButton variant="primary" size="md" onClick={generateIntervals}>
-                    🎲 Lấy lại 100 mẫu ngẫu nhiên
-                  </ClayButton>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <ClaySlider
-                    label="Mức tin cậy (1 - α)"
-                    sublabel="Mức càng cao, khoảng càng dài"
-                    value={confLevel}
-                    min={0.80}
-                    max={0.99}
-                    step={0.01}
-                    color="blue"
-                    onChange={setConfLevel}
-                  />
-                  <ClaySlider
-                    label="Cỡ mẫu n"
-                    sublabel="n càng lớn, khoảng càng co ngắn lại"
-                    value={sampleSizeN}
-                    min={10}
-                    max={100}
-                    step={5}
-                    color="emerald"
-                    onChange={setSampleSizeN}
-                  />
+                <div className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Tỷ lệ độ phủ: {coveragePercent}% (Mục tiêu: {Math.round(confLevel * 100)}%)
                 </div>
               </div>
             </div>
           </ClayCard>
+
+          {/* Bottom Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Mức Tin Cậy (1 - α)
+              </h4>
+              <ClaySlider
+                label="Độ tin cậy"
+                value={confLevel}
+                min={0.8}
+                max={0.99}
+                step={0.01}
+                color="blue"
+                formatValue={(v) => `${Math.round(v * 100)}%`}
+                onChange={setConfLevel}
+              />
+              <div className="mt-3 flex gap-2">
+                {[0.8, 0.9, 0.95, 0.99].map((lvl) => (
+                  <button
+                    key={lvl}
+                    onClick={() => setConfLevel(lvl)}
+                    className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
+                  >
+                    {Math.round(lvl * 100)}%
+                  </button>
+                ))}
+              </div>
+            </ClayCard>
+
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Cỡ Mẫu n Lấy Thử
+              </h4>
+              <ClaySlider
+                label="Số quan sát n"
+                sublabel="Càng lớn thì khoảng càng hẹp"
+                value={sampleSizeN}
+                min={5}
+                max={100}
+                step={5}
+                color="emerald"
+                onChange={setSampleSizeN}
+              />
+              <div className="mt-4 text-center">
+                <ClayButton variant="primary" size="md" onClick={generateIntervals} className="w-full text-xs">
+                  Lấy Lại 100 Mẫu Ngẫu Nhiên
+                </ClayButton>
+              </div>
+            </ClayCard>
+
+            <ClayCard glowColor="amber" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Bản chất Tần Suất
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Tham số <MathView math="\mu" /> là cố định và duy nhất. Khoảng tin cậy là ngẫu nhiên, thay đổi theo từng mẫu. Phát biểu đúng: Có 95% số khoảng sinh ra sẽ bao trùm giá trị thực <MathView math="\mu" />.
+              </p>
+            </ClayCard>
+          </div>
         </div>
       )}
 
       {/* =========================================================================
-          TAB 2: STUDENT T VS NORMAL
+          TAB 2: STUDENT T VS NORMAL (ORIGINAL LAB - DIRECTLY ON DESMOS GRID)
          ========================================================================= */}
       {activeTab === 'student' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Khi nào bắt buộc phải dùng phân phối Student-t thay vì phân phối Chuẩn Gauss Z? Tại sao khi bậc tự do df tăng lên thì phân phối Student lại biến thành phân phối Chuẩn?"
-            formula="T = \frac{\bar{X} - \mu}{S / \sqrt{n}} \sim t_{n-1} \quad (\text{khi } \sigma \text{ chưa biết})"
-            mathExplanation="Khi phương sai tổng thể sigma chưa biết, ta phải thay bằng phương sai mẫu S. Do S cũng biến động ngẫu nhiên, sự bấp bênh tăng lên khiến đuôi phân phối bị dày ra (Heavier Tails). Bậc tự do df = n - 1."
+            question="Khi cỡ mẫu n nhỏ (ví dụ n < 30) và chưa biết phương sai tổng thể σ², tại sao bắt buộc phải dùng phân phối Student t thay cho phân phối Chuẩn Gauss?"
+            formula="T = \frac{\bar{X} - \mu}{S / \sqrt{n}} \sim t(\nu = n - 1), \quad t(\nu) \xrightarrow{\nu \to \infty} \mathcal{N}(0, 1)"
+            mathExplanation="Khi thay độ lệch chuẩn lý thuyết σ bằng độ lệch chuẩn mẫu S, ta đưa thêm một nguồn bất định ngẫu nhiên mới vào mẫu số. Điều này làm cho phân phối của T có ĐUÔI DÀY HƠN phân phối chuẩn Gauss để bù đắp rủi ro của việc ước lượng non."
             howToInteract={[
-              "Kéo slider bậc tự do df từ 1 lên 30.",
-              "Quan sát đường cong màu đỏ (Student-t) so với đường cong nét đứt màu xanh (Chuẩn tắc Z)."
+              "Kéo slider 'Bậc tự do nu' từ 1 đến 35.",
+              "Quan sát đuôi của phân phối Student t (màu tím) dày hơn nhiều so với phân phối Chuẩn Gauss (màu xanh dương).",
+              "Khi kéo nu >= 30: Quan sát đường Student xẹp dần và trùng khít hoàn hảo với đường Gauss!"
             ]}
-            whatToObserve="Khi df = 1..3, đỉnh Student thấp hơn và hai đuôi vểnh cao hơn nhiều so với Gauss (xác suất xảy ra giá trị ngoại lai cao hơn). Nhưng khi df >= 30, đường đỏ đè khít lên đường xanh!"
-            takeaway="Quy tắc thi cử: Mẫu nhỏ (n < 30) VÀ chưa biết sigma $\implies$ bắt buộc dùng bảng tra t-Student với df = n - 1!"
+            whatToObserve="Tại ν = 1 (Phân phối Cauchy), đuôi cực dày. Tại ν = 30, sự khác biệt giữa Student và Gauss gần như bằng 0, giải thích vì sao quy tắc ngón tay cái thường chọn mốc n = 30!"
+            takeaway="Trong bài thi: Nếu không cho σ mà chỉ cho độ lệch chuẩn mẫu s, cỡ mẫu n < 30 $\implies$ BẮT BUỘC dùng bảng Student t với bậc tự do ν = n - 1!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title={`Phân phối Student-t (df = ${degFreedom}) so với Chuẩn Tắc N(0, 1)`}
-              formula="t_{\nu} \to \mathcal{N}(0, 1) \quad \text{khi } \nu \to \infty"
-              badge={`Bậc tự do df = ${degFreedom}`}
-              onReset={() => setDegFreedom(3)}
+              title="So Sánh Phân Bố Student t vs Chuẩn Chuẩn Hóa Gauss"
+              formula="t(\nu) \xrightarrow{\nu \to \infty} \mathcal{N}(0, 1)"
+              badge={`Bậc tự do ν = ${dfNu}`}
+              onReset={() => setDfNu(4)}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="relative w-full max-w-2xl h-72 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                <svg viewBox="-4 0 8 0.5" className="w-full h-full" preserveAspectRatio="none">
-                  {/* Trục */}
-                  <line x1="-4" y1="0.48" x2="4" y2="0.48" stroke="#94a3b8" strokeWidth="0.005" />
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <line x1="60" y1="300" x2="740" y2="300" stroke="#0F172A" strokeWidth="2" />
+                {[-3, -2, -1, 0, 1, 2, 3].map((t) => (
+                  <g key={`t-tick-${t}`}>
+                    <line x1={400 + t * 90} y1="300" x2={400 + t * 90} y2="306" stroke="#0F172A" strokeWidth="1.5" />
+                    <text x={400 + t * 90} y="324" textAnchor="middle" className="text-xs font-mono font-bold fill-slate-600">
+                      {t}
+                    </text>
+                  </g>
+                ))}
 
-                  {/* Standard Normal (Blue dashed) */}
-                  {(() => {
-                    const pts = [];
-                    for (let x = -4; x <= 4; x += 0.1) {
-                      const y = 0.48 - normalPdf(x, 0, 1);
-                      pts.push(`${x},${y}`);
-                    }
-                    return <polyline points={pts.join(' ')} fill="none" stroke="#0284c7" strokeWidth="0.008" strokeDasharray="0.05 0.05" />;
-                  })()}
+                {/* Normal Gauss (Blue dashed) */}
+                {(() => {
+                  const pts = [];
+                  for (let x = -3.8; x <= 3.8; x += 0.1) {
+                    const px = 400 + x * 90;
+                    const py = 300 - normalPdf(x, 0, 1) * 600;
+                    pts.push(`${px},${py}`);
+                  }
+                  return (
+                    <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#0284C7" strokeWidth="2.5" strokeDasharray="6 3" />
+                  );
+                })()}
 
-                  {/* Student-t (Rose solid) */}
-                  {(() => {
-                    const pts = [];
-                    for (let x = -4; x <= 4; x += 0.05) {
-                      const y = 0.48 - studentTPdf(x, degFreedom);
-                      pts.push(`${x},${y}`);
-                    }
-                    return <polyline points={pts.join(' ')} fill="none" stroke="#e11d48" strokeWidth="0.015" />;
-                  })()}
-                </svg>
+                {/* Student t Curve (Purple solid) */}
+                {(() => {
+                  const pts = [];
+                  for (let x = -3.8; x <= 3.8; x += 0.1) {
+                    const px = 400 + x * 90;
+                    const py = 300 - studentTPdf(x, dfNu) * 600;
+                    pts.push(`${px},${py}`);
+                  }
+                  return (
+                    <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#8B5CF6" strokeWidth="3.5" strokeLinecap="round" />
+                  );
+                })()}
+              </svg>
 
-                <div className="absolute top-3 right-4 text-xs font-mono bg-white/90 dark:bg-slate-900/90 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
-                  <div className="text-sky-600 font-bold">Đường đứt nét xanh: Chuẩn tắc N(0, 1)</div>
-                  <div className="text-rose-600 font-extrabold">Đường liền đỏ: Student-t (df = {degFreedom})</div>
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="w-5 h-0.5 bg-sky-500 border-dashed"></span> Chuẩn N(0, 1) cố định
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-purple-600 dark:text-purple-400">
+                    <span className="w-5 h-1 bg-purple-600 rounded-full"></span> Student t(ν = {dfNu})
+                  </span>
+                </div>
+                <div className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+                  {dfNu >= 30 ? 'ν ≥ 30: Student t trùng khít Gauss!' : 'Đuôi Student dày hơn (Bất định cao)'}
                 </div>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto">
+              <div className="max-w-xl mx-auto space-y-4">
                 <ClaySlider
-                  label="Bậc tự do (Degrees of Freedom df = n - 1)"
-                  sublabel="Kéo từ 1 lên 35 để thấy Student-t hội tụ hoàn toàn về Normal"
-                  value={degFreedom}
+                  label="Bậc tự do ν (Degrees of Freedom = n - 1)"
+                  value={dfNu}
                   min={1}
                   max={35}
                   step={1}
-                  color="rose"
-                  onChange={setDegFreedom}
+                  color="purple"
+                  onChange={setDfNu}
                 />
               </div>
             </div>
@@ -329,82 +409,131 @@ export const ClassicalEstimation: React.FC = () => {
       )}
 
       {/* =========================================================================
-          TAB 3: BESSEL CORRECTION (n - 1 vs n)
+          TAB 3: BÍ ẨN BESSEL (n-1 vs n) - TRÊN Ô GRID TRỰC TIẾP
          ========================================================================= */}
       {activeTab === 'bessel' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Tại sao công thức phương sai mẫu trong sách giáo trình đại học lại chia cho (n - 1) thay vì chia cho n? Hiệu chỉnh Bessel giải quyết vấn đề gì?"
-            formula="\mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2 \quad \implies \quad S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2 \text{ là ước lượng KHÔNG CHỆCH}"
-            mathExplanation="Khi ta dùng trung bình mẫu X̄ thay cho kỳ vọng thực mu, các điểm dữ liệu luôn gần X̄ hơn là gần mu (vì X̄ nằm ngay tâm của mẫu). Do đó, khoảng cách bình phương (X_i - X̄)^2 luôn bị bé hơn thực tế! Để bù lại độ hụt này, ta phải giảm mẫu số từ n xuống (n - 1)."
+            question="Tại sao trong công thức tính phương sai mẫu S², ta bắt buộc phải chia cho n - 1 (Hiệu chỉnh Bessel) thay vì chia cho n như trực giác tự nhiên?"
+            formula="S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2 \implies \mathbb{E}[S^2] = \sigma^2, \quad \mathbb{E}\left[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2\right] = \frac{n-1}{n}\sigma^2"
+            mathExplanation="Vì trung bình mẫu X̄ được tính từ chính các điểm dữ liệu, các điểm dữ liệu luôn có xu hướng nằm gần X̄ hơn là nằm gần trung bình thực μ! Việc chia cho n sẽ luôn luôn đánh giá thấp (ước lượng non) phương sai thực tế một tỷ lệ (n-1)/n. Chia cho n-1 sẽ triệt tiêu hoàn toàn độ chệch này!"
             howToInteract={[
-              "Chọn cỡ mẫu nhỏ n = 2, 3, 4, hoặc 6.",
-              "Bấm nút 'Chạy lại 2,500 mẫu mô phỏng'.",
-              "So sánh trung bình thực nghiệm của công thức chia n so với công thức chia (n - 1)."
+              "Kéo slider 'Cỡ mẫu nhỏ n' từ 2 đến 12.",
+              "Xem đồ thị so sánh 2 cột phương sai mẫu sau 2,500 lần lấy mẫu Monte Carlo.",
+              "Quan sát độ lệch: Cột chia cho n luôn bị hụt dưới vạch phương sai chân lý σ² = 4.00, trong khi cột chia cho n-1 đạt chuẩn không chệch 100%!"
             ]}
-            whatToObserve="Với n = 4 và phương sai thực = 16: Công thức chia cho n chỉ ước lượng ra khoảng 12 (bị hụt đúng 1/4 = 25%). Trong khi công thức chia (n - 1) ước lượng ra đúng 16.0!"
-            takeaway="Bản chất của chia (n - 1): Mất 1 bậc tự do để ước lượng trung bình mẫu X̄. Muốn ước lượng không chệch (Unbiased) cho phương sai tổng thể, BẮT BUỘC phải chia cho (n - 1)!"
+            whatToObserve="Khi n = 2 hoặc 3, công thức chia cho n ước lượng non tới 33-50% phương sai thật! Khi n tăng lên 30, sai số này nhỏ dần, nhưng về mặt giải tích chỉ có chia n-1 mới là ước lượng không chệch (Unbiased Estimator)!"
+            takeaway="Bessel correction giải thích triệt để vì sao máy tính Casio luôn có 2 phím tính phương sai: sx (chia n-1 cho mẫu) và σx (chia n cho toàn thể)!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Bí Ẩn Hiệu Chỉnh Bessel: Tại sao phương sai mẫu chia cho (n - 1)?"
-              formula={`\\text{Phương sai thực } \\sigma^2 = ${besselSim.trueVar}`}
-              badge={`n = ${besselN} quan sát`}
-              onReset={() => { setBesselN(4); runBesselSimulation(); }}
+              title="Mô phỏng Monte Carlo 2,500 Lần: Kiểm chứng Độ Chệch Hiệu Chỉnh Bessel"
+              formula="\mathbb{E}[S^2_{n-1}] = \sigma^2 \quad \text{vs} \quad \mathbb{E}[S^2_n] = \frac{n-1}{n}\sigma^2"
+              badge={`n = ${besselSampleSize} quan sát`}
+              onReset={() => { setBesselSampleSize(5); runBesselMonteCarlo(); }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Card chia n (Có chệch) */}
-                  <div className="p-5 bg-rose-50 dark:bg-rose-950/40 rounded-2xl border-2 border-rose-300 dark:border-rose-800 text-center space-y-1">
-                    <span className="text-xs font-heading font-black text-rose-700 dark:text-rose-300 uppercase">
-                      1. Chia cho n (Ước lượng có chệch)
-                    </span>
-                    <div className="text-3xl font-mono font-extrabold text-rose-600 mt-1">
-                      {fmt(besselSim.meanN, 2)}
-                    </div>
-                    <p className="text-[11px] text-rose-700 dark:text-rose-300 font-semibold">
-                      Bị ước lượng non hụt đi {fmt((1 - (besselN - 1) / besselN) * 100, 1)}%!
-                    </p>
-                  </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <line x1="80" y1="300" x2="720" y2="300" stroke="#0F172A" strokeWidth="2.5" />
 
-                  {/* Card chia n - 1 (Không chệch) */}
-                  <div className="p-5 bg-emerald-50 dark:bg-emerald-950/40 rounded-2xl border-2 border-emerald-300 dark:border-emerald-800 text-center space-y-1">
-                    <span className="text-xs font-heading font-black text-emerald-700 dark:text-emerald-300 uppercase">
-                      2. Chia cho (n - 1) (Hiệu chỉnh Bessel)
-                    </span>
-                    <div className="text-3xl font-mono font-extrabold text-emerald-600 mt-1">
-                      {fmt(besselSim.meanNMinus1, 2)}
-                    </div>
-                    <p className="text-[11px] text-emerald-700 dark:text-emerald-300 font-bold">
-                      Trùng khớp hoàn hảo với σ² thực = 16.0!
-                    </p>
-                  </div>
-                </div>
+                {/* True Variance line: sigma^2 = 4.0 */}
+                <line x1="80" y1="120" x2="720" y2="120" stroke="#EF4444" strokeWidth="2.5" strokeDasharray="6 4" />
+                <text x="725" y="124" fill="#EF4444" fontSize="12" fontWeight="bold" fontFamily="monospace">
+                  σ² thực = 4.00
+                </text>
 
-                <div className="text-center pt-2">
-                  <ClayButton variant="primary" size="md" onClick={runBesselSimulation}>
-                    🎲 Chạy lại 2,500 mẫu ngẫu nhiên
-                  </ClayButton>
-                </div>
+                {/* Column 1: Biased (divide by n) */}
+                {besselRuns && (
+                  <g>
+                    <rect
+                      x="220"
+                      y={300 - (besselRuns.biasedVar / 4.0) * 180}
+                      width="120"
+                      height={(besselRuns.biasedVar / 4.0) * 180}
+                      fill="#F43F5E"
+                      stroke="#BE123C"
+                      strokeWidth="2"
+                      rx="6"
+                    />
+                    <text x="280" y="325" fill="#F43F5E" fontSize="12" fontWeight="bold" textAnchor="middle">
+                      Chia cho n (Có chệch)
+                    </text>
+                    <text
+                      x="280"
+                      y={290 - (besselRuns.biasedVar / 4.0) * 180}
+                      fill="#F43F5E"
+                      fontSize="13"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                      fontFamily="monospace"
+                    >
+                      {fmt(besselRuns.biasedVar, 2)}
+                    </text>
+                  </g>
+                )}
+
+                {/* Column 2: Unbiased (divide by n-1) */}
+                {besselRuns && (
+                  <g>
+                    <rect
+                      x="460"
+                      y={300 - (besselRuns.unbiasedVar / 4.0) * 180}
+                      width="120"
+                      height={(besselRuns.unbiasedVar / 4.0) * 180}
+                      fill="#10B981"
+                      stroke="#047857"
+                      strokeWidth="2"
+                      rx="6"
+                    />
+                    <text x="520" y="325" fill="#047857" fontSize="12" fontWeight="bold" textAnchor="middle">
+                      Chia cho n - 1 (Bessel)
+                    </text>
+                    <text
+                      x="520"
+                      y={290 - (besselRuns.unbiasedVar / 4.0) * 180}
+                      fill="#047857"
+                      fontSize="13"
+                      fontWeight="bold"
+                      textAnchor="middle"
+                      fontFamily="monospace"
+                    >
+                      {fmt(besselRuns.unbiasedVar, 2)}
+                    </text>
+                  </g>
+                )}
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <span className="text-rose-600 font-bold">
+                  Chia n bị ước lượng hụt: {fmt(((besselSampleSize - 1) / besselSampleSize) * 100, 1)}% giá trị thật
+                </span>
+                <span className="text-emerald-600 font-bold">
+                  Chia n - 1 đạt kỳ vọng chuẩn không chệch: E[S²] = σ²
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto">
+              <div className="max-w-xl mx-auto space-y-4">
                 <ClaySlider
                   label="Cỡ mẫu nhỏ n"
-                  sublabel="Càng nhỏ, độ chệch của công thức chia n càng lộ rõ"
-                  value={besselN}
+                  sublabel="Khi n nhỏ, hiệu ứng chệch thể hiện rõ nhất"
+                  value={besselSampleSize}
                   min={2}
-                  max={10}
+                  max={15}
                   step={1}
                   color="blue"
-                  onChange={setBesselN}
+                  onChange={setBesselSampleSize}
                 />
+                <div className="text-center pt-1">
+                  <ClayButton variant="primary" size="md" onClick={runBesselMonteCarlo}>
+                    Chạy Lại 2,500 Lần Lấy Mẫu
+                  </ClayButton>
+                </div>
               </div>
             </div>
           </ClayCard>
@@ -412,71 +541,127 @@ export const ClassicalEstimation: React.FC = () => {
       )}
 
       {/* =========================================================================
-          TAB 4: MLE (MAXIMUM LIKELIHOOD ESTIMATION)
+          TAB 4: ĐƯỜNG CONG MLE (ORIGINAL LAB - DIRECTLY ON DESMOS GRID)
          ========================================================================= */}
       {activeTab === 'mle' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Ước lượng Hợp lý Cực đại (MLE) hoạt động theo nguyên lý nào? Làm sao tìm ra tham số mu khiến cho tập dữ liệu quan sát được có xác suất xuất hiện cao nhất?"
-            formula="L(\mu) = \prod_{i=1}^n f(x_i; \mu) \implies \hat{\mu}_{MLE} = \arg\max \ln L(\mu) = \bar{X}"
-            mathExplanation="Hàm hợp lý L(mu) đo xem nếu giả định kỳ vọng là mu thì xác suất xảy ra toàn bộ mẫu quan sát x_1..x_n là bao nhiêu. Đỉnh cao nhất của đường cong L(mu) chính là nghiệm ước lượng hợp lý cực đại MLE!"
+            question="Khi ta thu được một tập dữ liệu mẫu, làm thế nào để tìm ra giá trị tham số mu có khả năng cao nhất đã sinh ra bộ dữ liệu đó? Nguyên lý Hợp lý Cực đại (MLE) hoạt động ra sao?"
+            formula="L(\mu) = \prod_{i=1}^n f(x_i \mid \mu), \quad \ln L(\mu) = -\frac{n}{2}\ln(2\pi\sigma^2) - \sum_{i=1}^n \frac{(x_i - \mu)^2}{2\sigma^2}"
+            mathExplanation="Hàm hợp lý L(mu) đo lường 'mức độ hợp lý' của giả thuyết mu đối với dữ liệu quan sát được. Để tìm điểm cực đại, ta lấy log rồi đạo hàm triệt tiêu: Đỉnh cực đại của đường cong Likelihood chính là nghiệm MLE mu_hat!"
             howToInteract={[
-              "Bấm trực tiếp vào khung đồ thị để thêm/bớt điểm dữ liệu.",
-              "Quan sát đường cong Log-Likelihood tự động đạt cực đại tại vị trí trung bình mẫu X̄."
+              "Quan sát các điểm dữ liệu trên trục số.",
+              "Đường cong Likelihood dâng lên và đạt đỉnh cực đại duy nhất tại giá trị trung bình mẫu.",
+              "Bấm 'Thêm điểm dữ liệu' hoặc 'Xóa điểm' để xem đỉnh MLE dịch chuyển."
             ]}
-            whatToObserve="Dù dữ liệu nằm rải rác ở đâu, đỉnh của hàm hợp lý Gauss luôn luôn nằm chính xác tại điểm trung bình mẫu X̄!"
-            takeaway="MLE là phương pháp ước lượng chuẩn mực nhất của thống kê hiện đại và machine learning!"
+            whatToObserve="Đỉnh của quả chuông hàm hợp lý luôn nằm chính xác tại điểm trung bình cộng của các mẫu dữ liệu!"
+            takeaway="Đối với phân phối Chuẩn: Ước lượng hợp lý cực đại MLE của kỳ vọng mu chính là trung bình mẫu x̄!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Mô phỏng Ước Lượng Hợp Lý Cực Đại (MLE Gaussian)"
-              formula={`\\hat{\\mu}_{MLE} = \\bar{X} = ${fmt(mleMean, 2)}`}
-              badge={`${mlePoints.length} điểm mẫu`}
-              onReset={() => setMlePoints([2, 4, 5, 7, 8])}
+              title="Đường Cong Hàm Hợp Lý Cực Đại L(μ)"
+              formula="\hat{\mu}_{\text{MLE}} = \arg\max_\mu L(\mu) = \bar{X}"
+              badge={`Nghiệm MLE: μ_hat = ${fmt(mleMean, 2)}`}
+              onReset={() => setMlePoints([2.0, 3.5, 4.2, 5.8, 6.5])}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl space-y-4">
-                <div className="text-center">
-                  <span className="text-xs font-heading font-black text-sky-600 uppercase tracking-wider">
-                    Giá trị Ước lượng Cực đại Hợp lý (MLE)
-                  </span>
-                  <div className="text-3xl font-heading font-black text-slate-900 dark:text-white mt-1">
-                    μ_MLE = {fmt(mleMean, 2)}
-                  </div>
-                </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                {/* Horizontal axis */}
+                <line x1="60" y1="300" x2="740" y2="300" stroke="#0F172A" strokeWidth="2" />
+                {[0, 2, 4, 6, 8, 10].map((v) => (
+                  <g key={`mle-x-${v}`}>
+                    <line x1={80 + (v / 10) * 640} y1="300" x2={80 + (v / 10) * 640} y2="306" stroke="#0F172A" strokeWidth="1.5" />
+                    <text x={80 + (v / 10) * 640} y="324" textAnchor="middle" className="text-xs font-mono font-bold fill-slate-600">
+                      {v}
+                    </text>
+                  </g>
+                ))}
 
-                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border-2 border-slate-900 dark:border-slate-700">
-                  <div className="text-xs font-mono font-bold mb-2">Các điểm dữ liệu quan sát:</div>
-                  <div className="flex flex-wrap gap-2">
-                    {mlePoints.map((pt, i) => (
-                      <span key={i} className="px-3 py-1 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-mono font-bold">
-                        x_{i + 1} = {pt}
-                      </span>
-                    ))}
-                  </div>
+                {/* Likelihood Curve */}
+                {(() => {
+                  const pts = [];
+                  for (let mu = 0.5; mu <= 9.5; mu += 0.1) {
+                    let logL = 0;
+                    for (const pt of mlePoints) {
+                      logL += -0.5 * ((pt - mu) ** 2);
+                    }
+                    const lVal = Math.exp(logL * 0.4);
+                    const px = 80 + (mu / 10) * 640;
+                    const py = 300 - lVal * 240;
+                    pts.push(`${px},${py}`);
+                  }
+                  return (
+                    <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#0284C7" strokeWidth="3.5" />
+                  );
+                })()}
+
+                {/* Data Points on Axis */}
+                {mlePoints.map((pt, i) => (
+                  <g key={i}>
+                    <circle cx={80 + (pt / 10) * 640} cy="300" r="5" fill="#F59E0B" stroke="#0F172A" strokeWidth="1.5" />
+                    <line x1={80 + (pt / 10) * 640} y1="300" x2={80 + (pt / 10) * 640} y2="270" stroke="#F59E0B" strokeWidth="1" strokeDasharray="2 2" />
+                  </g>
+                ))}
+
+                {/* MLE Peak Marker */}
+                <line
+                  x1={80 + (mleMean / 10) * 640}
+                  y1="50"
+                  x2={80 + (mleMean / 10) * 640}
+                  y2="300"
+                  stroke="#EF4444"
+                  strokeWidth="2"
+                  strokeDasharray="4 3"
+                />
+                <circle cx={80 + (mleMean / 10) * 640} cy="60" r="6" fill="#EF4444" />
+                <text
+                  x={80 + (mleMean / 10) * 640}
+                  y="40"
+                  fill="#EF4444"
+                  fontSize="12"
+                  fontWeight="bold"
+                  textAnchor="middle"
+                  fontFamily="monospace"
+                >
+                  Đỉnh MLE μ̂ = {fmt(mleMean, 2)}
+                </text>
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span> {mlePoints.length} Điểm dữ liệu mẫu
+                  </span>
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                    <span className="w-4 h-0.5 bg-sky-500"></span> Đường cong Hợp lý Likelihood L(μ)
+                  </span>
                 </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  Nghiệm tối ưu: x̄ = {fmt(mleMean, 2)}
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
               <div className="max-w-xl mx-auto flex justify-center gap-3">
                 <ClayButton
                   variant="primary"
                   size="md"
-                  onClick={() => setMlePoints([...mlePoints, Math.round(Math.random() * 10)])}
+                  onClick={() => setMlePoints([...mlePoints, Math.round((2 + Math.random() * 6) * 10) / 10])}
                 >
-                  ➕ Thêm điểm ngẫu nhiên
+                  Thêm Điểm Mẫu Mới
                 </ClayButton>
                 <ClayButton
                   variant="outline"
                   size="md"
                   onClick={() => setMlePoints(mlePoints.slice(0, -1))}
-                  disabled={mlePoints.length <= 2}
+                  disabled={mlePoints.length <= 1}
                 >
-                  ➖ Bớt điểm
+                  Xóa Điểm Cuối
                 </ClayButton>
               </div>
             </div>

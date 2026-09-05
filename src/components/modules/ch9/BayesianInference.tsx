@@ -8,19 +8,18 @@ import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
 
 export const BayesianInference: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'beta-binomial' | 'sensor-fusion' | 'credible' | 'base-rate'>('beta-binomial');
+  const [activeTab, setActiveTab] = useState<'beta-binomial' | 'sensor-fusion' | 'credible' | 'baserate'>('beta-binomial');
 
-  // Tab 1: Beta-Binomial State
+  // Tab 1: Beta-Binomial State (Original Lab)
+  const [headsK, setHeadsK] = useState<number>(7);
+  const [trialsN, setTrialsN] = useState<number>(10);
   const [alphaPrior, setAlphaPrior] = useState<number>(2.0);
   const [betaPrior, setBetaPrior] = useState<number>(2.0);
-  const [headsK, setHeadsK] = useState<number>(6);
-  const [trialsN, setTrialsN] = useState<number>(10);
 
   const alphaPost = alphaPrior + headsK;
   const betaPost = betaPrior + (trialsN - headsK);
-
-  const thetaMap = (alphaPost - 1) / (alphaPost + betaPost - 2);
-  const thetaLms = alphaPost / (alphaPost + betaPost);
+  const thetaMap = alphaPost + betaPost > 2 ? (alphaPost - 1) / (alphaPost + betaPost - 2) : 0.5;
+  const postMean = alphaPost / (alphaPost + betaPost);
   const sampleFreq = trialsN > 0 ? headsK / trialsN : 0.5;
 
   const curvePoints = useMemo(() => {
@@ -53,7 +52,7 @@ export const BayesianInference: React.FC = () => {
     setTrialsN((n) => n + count);
   };
 
-  // Tab 2: Gaussian Sensor Fusion
+  // Tab 2: Gaussian Sensor Fusion (Original Lab Restored)
   const [priorMu, setPriorMu] = useState<number>(0);
   const [priorSigma, setPriorSigma] = useState<number>(2.0);
   const [sensor1X, setSensor1X] = useState<number>(3.0);
@@ -65,46 +64,39 @@ export const BayesianInference: React.FC = () => {
   const prec1 = 1 / (sensor1Sigma * sensor1Sigma);
   const prec2 = 1 / (sensor2Sigma * sensor2Sigma);
   const totalPrec = prec0 + prec1 + prec2;
-  const postVariance = 1 / totalPrec;
-  const postStd = Math.sqrt(postVariance);
-  const postMu = postVariance * (priorMu * prec0 + sensor1X * prec1 + sensor2X * prec2);
+  const postStd = Math.sqrt(1 / totalPrec);
+  const postMu = (priorMu * prec0 + sensor1X * prec1 + sensor2X * prec2) / totalPrec;
 
-  // Tab 3: Credible Interval State
-  const [credibleLevel, setCredibleLevel] = useState<number>(0.95);
-  // Equal-tailed approximate bounds for Beta(a, b)
-  const credA = alphaPost;
-  const credB = betaPost;
-  const credMean = credA / (credA + credB);
-  const credVar = (credA * credB) / ((credA + credB) ** 2 * (credA + credB + 1));
-  const credStd = Math.sqrt(credVar);
-  const zVal = credibleLevel === 0.90 ? 1.645 : credibleLevel === 0.99 ? 2.576 : 1.96;
-  const credLower = Math.max(0.01, credMean - zVal * credStd);
-  const credUpper = Math.min(0.99, credMean + zVal * credStd);
+  // Tab 3: Credible Interval HPD
+  const [credLevel, setCredLevel] = useState<number>(0.95);
 
-  // Tab 4: Base Rate Fallacy State (Medical Testing)
-  const [baseRateP, setBaseRateP] = useState<number>(0.005); // 0.5% prevalence
-  const [sensitivity, setSensitivity] = useState<number>(0.98); // 98% true positive
-  const [specificity, setSpecificity] = useState<number>(0.95); // 95% true negative
+  // Tab 4: Base Rate Fallacy State
+  const [prevalencePer10k, setPrevalencePer10k] = useState<number>(10);
+  const [sensitivityPct, setSensitivityPct] = useState<number>(99);
+  const [specificityPct, setSpecificityPct] = useState<number>(95);
 
-  // Bayes rule: P(Disease | Positive) = (P * Sens) / (P * Sens + (1-P) * (1-Spec))
-  const pPosGivenDisease = sensitivity;
-  const pPosGivenHealthy = 1 - specificity;
-  const pTotalPos = baseRateP * pPosGivenDisease + (1 - baseRateP) * pPosGivenHealthy;
-  const pDiseaseGivenPos = (baseRateP * pPosGivenDisease) / pTotalPos;
+  const totalPop = 10000;
+  const sick = prevalencePer10k;
+  const healthy = totalPop - sick;
+  const truePos = Math.round(sick * (sensitivityPct / 100));
+  const falsePos = Math.round(healthy * ((100 - specificityPct) / 100));
+  const totalPos = truePos + falsePos;
+  const bayesPpv = totalPos > 0 ? (truePos / totalPos) * 100 : 0;
 
   return (
     <div className="space-y-6">
       {/* Banner */}
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             MAT1101 Bài 9 — Suy luận thống kê Bayes
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Cập nhật Niềm tin Hậu nghiệm & Ước lượng MAP vs LMS
+            Cập nhật Niềm tin Bayes, Hợp nhất Cảm biến & Nghịch lý Tỷ lệ nền
           </h2>
         </div>
 
+        {/* Tab Selector */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('beta-binomial')}
@@ -114,7 +106,7 @@ export const BayesianInference: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            1. Cập nhật Beta-Binomial
+            1. Mô hình Beta - Nhị thức
           </button>
           <button
             onClick={() => setActiveTab('sensor-fusion')}
@@ -134,241 +126,427 @@ export const BayesianInference: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            3. Khoảng Tin Cậy Bayes
+            3. Khoảng Tin cậy Bayes (Credible)
           </button>
           <button
-            onClick={() => setActiveTab('base-rate')}
+            onClick={() => setActiveTab('baserate')}
             className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
-              activeTab === 'base-rate'
+              activeTab === 'baserate'
                 ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            4. Ảo giác Tỷ lệ Nền (Bệnh hiếm)
+            4. Ảo giác Tỷ lệ nền (Base Rate)
           </button>
         </div>
       </div>
 
       {/* =========================================================================
-          TAB 1: BETA-BINOMIAL
+          TAB 1: BETA-BINOMIAL (ORIGINAL LAB - DIRECTLY ON DESMOS GRID)
          ========================================================================= */}
       {activeTab === 'beta-binomial' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Khi ta tung một đồng xu không rõ độ cân bằng θ, làm thế nào để liên tục cập nhật niềm tin của ta về xác suất ra mặt ngửa θ mỗi khi có thêm dữ liệu thực tế?"
-            formula="p(\theta | \text{data}) \propto p(\theta) \cdot p(\text{data} | \theta) \iff \text{Posterior} \propto \text{Prior} \times \text{Likelihood}"
-            mathExplanation="Nếu niềm tin ban đầu (Prior) là Beta(α, β) và dữ liệu có k lần ngửa trong n lần tung, thì niềm tin mới (Posterior) là Beta(α + k, β + n - k)! Cực kỳ đơn giản: Chỉ việc cộng thêm số lần ngửa vào α và số lần sấp vào β."
+            question="Làm sao ta có thể kết hợp niềm tin ban đầu của chuyên gia (Prior) với dữ liệu quan sát thực nghiệm mới thu thập (Likelihood) để liên tục cập nhật xác suất thành công θ một cách khoa học?"
+            formula="P(\theta \mid \text{data}) = \frac{P(\text{data} \mid \theta) P(\theta)}{P(\text{data})} \propto \theta^{\alpha + k - 1} (1 - \theta)^{\beta + (n-k) - 1}"
+            mathExplanation="Khi chọn Prior là phân phối liên hợp Beta(α, β) và dữ liệu là Nhị thức (k lần ngửa trong n lần tung), phân phối Hậu nghiệm Posterior vẫn là một hàm Beta với các tham số đơn giản là cộng dồn: α_mới = α + k và β_mới = β + (n - k)!"
             howToInteract={[
-              "Bấm nút 'Tung đồng xu' (+1 lần hoặc +5 lần) để sinh dữ liệu thực tế.",
-              "Xem đường cong Posterior màu xanh dương dần co hẹp và nhọn lên.",
-              "So sánh 2 điểm ước lượng: Điểm Đỉnh cao nhất (MAP - Mode) và Điểm Trọng tâm (LMS - Mean)."
+              "Bấm nút 'Tung 1 đồng xu' hoặc 'Tung 10 đồng xu' để thu thập thêm dữ liệu.",
+              "Kéo slider Prior α và β để thay đổi niềm tin chủ quan ban đầu.",
+              "Xem đường cong Posterior màu xanh dương co hẹp và dịch chuyển đỉnh MAP về phía tần suất thực nghiệm k/n."
             ]}
-            whatToObserve="Lúc đầu (n ít), đường Posterior chịu ảnh hưởng mạnh bởi Prior ban đầu. Nhưng khi n càng lớn (n > 20), dữ liệu thực tế (Likelihood) áp đảo hoàn toàn Prior, kéo đỉnh Posterior về đúng xác suất thực tế!"
-            takeaway="Hai điểm ước lượng thi cử hay hỏi: MAP (Maximum A Posteriori) = Điểm cực đại của Posterior. LMS (Least Mean Squares) = Kỳ vọng của Posterior E[θ|data]!"
+            whatToObserve="Khi số lần tung n còn ít, Posterior bị giằng co giữa Prior và Likelihood. Nhưng khi n rất lớn (ví dụ n > 50), dữ liệu áp đảo hoàn toàn, gạt bỏ Prior ban đầu và ép đỉnh nhọn đúng tại θ thật!"
+            takeaway="Điểm cực trị MAP (Maximum A Posteriori): θ_MAP = (α + k - 1) / (α + β + n - 2). Khi α = β = 1 (Prior phẳng), MAP trùng khít hoàn hảo với nghiệm MLE tần suất!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title={`Cập nhật Niềm tin: Beta(${alphaPost}, ${betaPost}) với k = ${headsK} ngửa / ${trialsN} lần tung`}
-              formula={`\\theta_{MAP} = ${fmt(thetaMap, 3)} \\quad vs \\quad \\theta_{LMS} = ${fmt(thetaLms, 3)}`}
-              badge={`Dữ liệu mẫu: ${fmt(sampleFreq * 100, 1)}% ngửa`}
-              onReset={() => { setAlphaPrior(2.0); setBetaPrior(2.0); setHeadsK(6); setTrialsN(10); }}
+              title="So Sánh Prior vs Likelihood vs Posterior Beta(α, β)"
+              formula="\text{Posterior} \propto \theta^k (1-\theta)^{n-k} \times \theta^{\alpha-1} (1-\theta)^{\beta-1}"
+              badge={`Quan sát: ${headsK}/${trialsN} Ngửa`}
+              onReset={() => {
+                setHeadsK(0);
+                setTrialsN(0);
+                setAlphaPrior(2);
+                setBetaPrior(2);
+              }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[440px]">
-              <div className="relative w-full max-w-3xl h-72 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                <svg viewBox="0 0 100 280" className="w-full h-full" preserveAspectRatio="none">
-                  {/* Prior Curve (Gray) */}
-                  <polyline
-                    points={curvePoints.map((p) => `${p.x * 100},${280 - p.priorNorm}`).join(' ')}
-                    fill="none"
-                    stroke="#94a3b8"
-                    strokeWidth="1.8"
-                    strokeDasharray="3 3"
-                  />
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                {/* Horizontal axis line */}
+                <line x1="60" y1="310" x2="740" y2="310" stroke="#0F172A" strokeWidth="2.5" />
 
-                  {/* Likelihood Curve (Amber) */}
-                  <polyline
-                    points={curvePoints.map((p) => `${p.x * 100},${280 - p.likeNorm}`).join(' ')}
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="2"
-                    strokeDasharray="4 4"
-                  />
+                {/* Ticks 0.0 to 1.0 */}
+                {[0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0].map((t) => {
+                  const px = 60 + t * 680;
+                  return (
+                    <g key={`beta-tick-${t}`}>
+                      <line x1={px} y1="310" x2={px} y2="316" stroke="#0F172A" strokeWidth="1.5" />
+                      <text x={px} y="332" textAnchor="middle" className="text-xs font-mono font-bold fill-slate-600">
+                        {t.toFixed(1)}
+                      </text>
+                    </g>
+                  );
+                })}
 
-                  {/* Posterior Curve (Blue) */}
-                  <polyline
-                    points={curvePoints.map((p) => `${p.x * 100},${280 - p.postNorm}`).join(' ')}
-                    fill="none"
-                    stroke="#0284c7"
-                    strokeWidth="3.5"
-                  />
+                {/* Prior Curve (Dashed Purple) */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.priorNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="2.5"
+                  strokeDasharray="6 3"
+                />
 
-                  {/* Markers for MAP and LMS */}
-                  <line x1={thetaMap * 100} y1="20" x2={thetaMap * 100} y2="280" stroke="#e11d48" strokeWidth="1.5" strokeDasharray="2 2" />
-                  <line x1={thetaLms * 100} y1="20" x2={thetaLms * 100} y2="280" stroke="#10b981" strokeWidth="1.5" strokeDasharray="2 2" />
-                </svg>
+                {/* Likelihood Curve (Orange) */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.likeNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#F59E0B"
+                  strokeWidth="2.5"
+                  strokeDasharray="4 2"
+                />
 
-                <div className="absolute top-3 right-4 text-xs font-mono bg-white/90 dark:bg-slate-900/90 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
-                  <div className="flex items-center gap-1.5 text-slate-500">
-                    <span className="w-3 h-0.5 bg-slate-400 inline-block"></span> Tiên nghiệm Prior Beta({alphaPrior}, {betaPrior})
-                  </div>
-                  <div className="flex items-center gap-1.5 text-amber-600">
-                    <span className="w-3 h-0.5 bg-amber-500 inline-block"></span> Hàm hợp lý Likelihood ({headsK}H/{trialsN}T)
-                  </div>
-                  <div className="flex items-center gap-1.5 text-sky-600 font-bold">
-                    <span className="w-3 h-1 bg-sky-600 inline-block"></span> Hậu nghiệm Posterior Beta({alphaPost}, {betaPost})
-                  </div>
-                  <div className="pt-1 text-[11px] text-rose-600 font-bold">
-                    MAP = {fmt(thetaMap, 3)} | LMS = {fmt(thetaLms, 3)}
-                  </div>
+                {/* Posterior Curve (Thick Ocean Blue) */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.postNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#0284C7"
+                  strokeWidth="4"
+                  strokeLinecap="round"
+                />
+
+                {/* MAP Marker (Red line) */}
+                {thetaMap >= 0 && thetaMap <= 1 && (
+                  <g>
+                    <line
+                      x1={60 + thetaMap * 680}
+                      y1="40"
+                      x2={60 + thetaMap * 680}
+                      y2="310"
+                      stroke="#EF4444"
+                      strokeWidth="2"
+                      strokeDasharray="4 4"
+                    />
+                    <circle cx={60 + thetaMap * 680} cy="40" r="5" fill="#EF4444" />
+                    <text
+                      x={60 + thetaMap * 680}
+                      y="30"
+                      fill="#EF4444"
+                      fontSize="11"
+                      textAnchor="middle"
+                      fontWeight="bold"
+                      className="font-mono"
+                    >
+                      MAP = {fmt(thetaMap, 2)}
+                    </text>
+                  </g>
+                )}
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 font-bold text-purple-600 dark:text-purple-400">
+                    <span className="w-5 h-0.5 bg-purple-500 border-dashed"></span> Prior Beta({fmt(alphaPrior, 1)}, {fmt(betaPrior, 1)})
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-amber-600 dark:text-amber-400">
+                    <span className="w-5 h-0.5 bg-amber-500 border-dashed"></span> Likelihood
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="w-5 h-1 bg-sky-600 rounded-full"></span> Posterior Beta({fmt(alphaPost, 1)}, {fmt(betaPost, 1)})
+                  </span>
                 </div>
-              </div>
-            </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <div className="flex justify-center gap-3">
-                  <ClayButton variant="primary" size="md" onClick={() => handleFlip(1)}>
-                    🪙 Tung 1 lần
-                  </ClayButton>
-                  <ClayButton variant="secondary" size="md" onClick={() => handleFlip(5)}>
-                    🪙 Tung 5 lần
-                  </ClayButton>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <ClaySlider
-                    label="Tham số Tiên nghiệm α"
-                    value={alphaPrior}
-                    min={0.5}
-                    max={10}
-                    step={0.5}
-                    color="blue"
-                    onChange={setAlphaPrior}
-                  />
-                  <ClaySlider
-                    label="Tham số Tiên nghiệm β"
-                    value={betaPrior}
-                    min={0.5}
-                    max={10}
-                    step={0.5}
-                    color="purple"
-                    onChange={setBetaPrior}
-                  />
+                <div className="font-mono text-xs font-bold text-slate-700 dark:text-slate-300">
+                  Tần suất thực nghiệm k/n = {fmt(sampleFreq, 3)}
                 </div>
               </div>
             </div>
           </ClayCard>
+
+          {/* Bottom Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  1. Niềm Tin Tiên Nghiệm (Prior)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Điều chỉnh niềm tin ban đầu của bạn về xác suất ngửa θ:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <ClaySlider
+                  label="Alpha Tiên nghiệm (Số ngửa giả định)"
+                  value={alphaPrior}
+                  min={1}
+                  max={10}
+                  step={0.5}
+                  color="purple"
+                  onChange={setAlphaPrior}
+                />
+                <ClaySlider
+                  label="Beta Tiên nghiệm (Số sấp giả định)"
+                  value={betaPrior}
+                  min={1}
+                  max={10}
+                  step={0.5}
+                  color="purple"
+                  onChange={setBetaPrior}
+                />
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  2. Thu Thập Dữ Liệu Mới
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3">
+                  Tung đồng xu để cập nhật thêm bằng chứng thực tế (Likelihood):
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <div className="flex gap-2">
+                  <ClayButton variant="primary" size="md" onClick={() => handleFlip(1)} className="flex-1">
+                    Tung 1 Lần
+                  </ClayButton>
+                  <ClayButton variant="secondary" size="md" onClick={() => handleFlip(10)} className="flex-1">
+                    Tung 10 Lần
+                  </ClayButton>
+                </div>
+                <div className="flex gap-2">
+                  <ClayButton variant="outline" size="sm" onClick={() => handleFlip(50)} className="flex-1">
+                    Tung 50 Lần
+                  </ClayButton>
+                  <ClayButton
+                    variant="outline"
+                    size="sm"
+                    onClick={() => { setHeadsK(0); setTrialsN(0); }}
+                    className="flex-1"
+                  >
+                    Xóa Dữ Liệu
+                  </ClayButton>
+                </div>
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-2 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  3. Ước Lượng Hậu Nghiệm (MAP)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Điểm có xác suất hậu nghiệm lớn nhất:
+                </p>
+              </div>
+
+              <div className="space-y-2 text-xs font-mono">
+                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Ước lượng MAP:</span>
+                  <span className="font-bold text-rose-600">{fmt(thetaMap, 3)}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Kỳ vọng Hậu nghiệm E[θ|D]:</span>
+                  <span className="font-bold text-sky-600">{fmt(postMean, 3)}</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500">Tổng mẫu thực tế:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">{trialsN} lần</span>
+                </div>
+              </div>
+            </ClayCard>
+          </div>
         </div>
       )}
 
       {/* =========================================================================
-          TAB 2: GAUSSIAN SENSOR FUSION
+          TAB 2: HỢP NHẤT CẢM BIẾN GAUSS (ORIGINAL LAB RESTORED - DIRECTLY ON DESMOS GRID)
          ========================================================================= */}
       {activeTab === 'sensor-fusion' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Một robot tự hành đo khoảng cách tới chướng ngại vật bằng 2 cảm biến: Radar (chính xác vừa phải) và Lidar (rất chính xác). Làm sao để robot kết hợp cả 2 số đo để tìm vị trí ước lượng chính xác nhất?"
-            formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_{\text{prior}}^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}, \quad \mu_{\text{post}} = \sigma_{\text{post}}^2 \left( \frac{\mu_0}{\sigma_0^2} + \frac{x_1}{\sigma_1^2} + \frac{x_2}{\sigma_2^2} \right)"
-            mathExplanation="Đây chính là bộ lọc Kalman 1 chiều! Độ chuẩn xác (Precision = 1/σ²) được CỘNG DỒN LẠI $\implies$ độ lệch chuẩn của ước lượng kết hợp luôn NHỎ HƠN độ lệch chuẩn của từng cảm biến đơn lẻ. Tâm hậu nghiệm bị kéo lệch mạnh về phía cảm biến nào có sai số nhỏ nhất!"
+            question="Một robot xe tự hành nhận tín hiệu GPS (sai số lớn) và cảm biến Lidar (sai số nhỏ). Làm thế nào nguyên lý Bayes kết hợp hai cảm biến này với vị trí dự đoán trước đó để đưa ra vị trí chính xác hơn bất kỳ cảm biến đơn lẻ nào?"
+            formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}, \quad \mu_{\text{post}} = \sigma_{\text{post}}^2 \left(\frac{\mu_0}{\sigma_0^2} + \frac{x_1}{\sigma_1^2} + \frac{x_2}{\sigma_2^2}\right)"
+            mathExplanation="Độ chính xác (Precision = 1/σ²) của phân phối Gauss cộng dồn lại theo nguyên lý Bayes! Cảm biến nào có độ lệch chuẩn nhỏ (đáng tin cậy) sẽ nhận được trọng số cực lớn trong giá trị trung bình kết hợp."
             howToInteract={[
-              "Kéo vị trí đo x₁ của Cảm biến 1 và x₂ của Cảm biến 2.",
-              "Giảm độ sai số σ₂ của Cảm biến 2 xuống mức rất nhỏ (ví dụ 0.5m).",
-              "Nhìn quả chuông kết hợp Posterior màu tím co hẹp và nghiêng hẳn về bên nào."
+              "Kéo slider 'Vị trí đọc x1, x2' để thay đổi số đo của từng cảm biến.",
+              "Kéo slider 'Sai số sigma1, sigma2' để mô phỏng cảm biến xịn hay dỏm.",
+              "Nhìn quả chuông kết hợp màu xanh dương: Độ lệch chuẩn σ_post LUÔN LUÔN NHỎ HƠN độ lệch chuẩn của từng cảm biến đơn lẻ!"
             ]}
-            whatToObserve="Đường chuông tím (Hậu nghiệm) luôn cao hơn và nhọn hơn (chính xác hơn) cả 2 quả chuông thành phần! Sai số của cảm biến nào càng nhỏ thì tiếng nói của nó càng có trọng số áp đảo."
-            takeaway="Hợp nhất cảm biến Bayes: Càng có nhiều cảm biến (dù mỗi cảm biến có nhiễu), ước lượng kết hợp càng chuẩn xác hơn bất kỳ cảm biến nào đứng riêng lẻ!"
+            whatToObserve="Quả chuông kết hợp (Fused) luôn cao hơn và nhọn hơn tất cả các cảm biến thành phần. Dù cả 2 cảm biến đều có sai số, kết hợp chúng lại giúp robot định vị cực kỳ chuẩn xác!"
+            takeaway="Đây chính là bước Cập nhật Đo lường (Measurement Update) cốt lõi của Bộ lọc Kalman (Kalman Filter) dùng trong tên lửa và xe tự hành Tesla!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Hợp Nhất Cảm Biến Gauss (Normal-Normal Conjugate Update)"
-              formula={`\\mu_{\\text{post}} = ${fmt(postMu, 2)}m \\quad (\\sigma_{\\text{post}} = ${fmt(postStd, 2)}m)`}
-              badge="Bộ lọc Kalman 1 chiều"
-              onReset={() => { setSensor1X(3.0); setSensor1Sigma(1.5); setSensor2X(1.0); setSensor2Sigma(0.8); }}
+              title="Hợp Nhất Đa Cảm Biến Gauss (Gaussian Sensor Fusion)"
+              formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}"
+              badge={`μ_post = ${fmt(postMu, 2)} | σ_post = ${fmt(postStd, 2)}`}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="relative w-full max-w-3xl h-72 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                <svg viewBox="-5 0 10 1" className="w-full h-full" preserveAspectRatio="none">
-                  {/* Trục hoành */}
-                  <line x1="-5" y1="0.95" x2="5" y2="0.95" stroke="#94a3b8" strokeWidth="0.01" />
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="-5 0 10 1.2" className="w-full h-auto select-none">
+                <line x1="-5" y1="1.15" x2="5" y2="1.15" stroke="#0F172A" strokeWidth="0.015" />
 
-                  {/* Cảm biến 1 (Sky) */}
-                  {(() => {
-                    const pts = [];
-                    for (let x = -5; x <= 5; x += 0.1) {
-                      const y = 0.95 - normalPdf(x, sensor1X, sensor1Sigma) * 0.8;
-                      pts.push(`${x},${y}`);
-                    }
-                    return <polyline points={pts.join(' ')} fill="none" stroke="#0284c7" strokeWidth="0.015" strokeDasharray="0.05 0.05" />;
-                  })()}
+                {/* Prior Gauss (Purple dashed) */}
+                <path
+                  d={Array.from({ length: 100 }, (_, i) => {
+                    const x = -5 + (i / 100) * 10;
+                    const y = 1.15 - normalPdf(x, priorMu, priorSigma);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#8B5CF6"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.05 0.03"
+                />
 
-                  {/* Cảm biến 2 (Emerald) */}
-                  {(() => {
-                    const pts = [];
-                    for (let x = -5; x <= 5; x += 0.1) {
-                      const y = 0.95 - normalPdf(x, sensor2X, sensor2Sigma) * 0.8;
-                      pts.push(`${x},${y}`);
-                    }
-                    return <polyline points={pts.join(' ')} fill="none" stroke="#10b981" strokeWidth="0.015" strokeDasharray="0.05 0.05" />;
-                  })()}
+                {/* Sensor 1 Gauss (Orange dashed) */}
+                <path
+                  d={Array.from({ length: 100 }, (_, i) => {
+                    const x = -5 + (i / 100) * 10;
+                    const y = 1.15 - normalPdf(x, sensor1X, sensor1Sigma);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#F97316"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.05 0.03"
+                />
 
-                  {/* Hậu nghiệm Kết hợp (Purple) */}
-                  {(() => {
-                    const pts = [];
-                    for (let x = -5; x <= 5; x += 0.05) {
-                      const y = 0.95 - normalPdf(x, postMu, postStd) * 0.8;
-                      pts.push(`${x},${y}`);
-                    }
-                    return <polyline points={pts.join(' ')} fill="none" stroke="#7c3aed" strokeWidth="0.03" />;
-                  })()}
-                </svg>
+                {/* Sensor 2 Gauss (Emerald dashed) */}
+                <path
+                  d={Array.from({ length: 100 }, (_, i) => {
+                    const x = -5 + (i / 100) * 10;
+                    const y = 1.15 - normalPdf(x, sensor2X, sensor2Sigma);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="none"
+                  stroke="#10B981"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.05 0.03"
+                />
 
-                <div className="absolute top-3 left-4 text-xs font-mono bg-white/90 dark:bg-slate-900/90 p-2.5 rounded-xl border border-slate-300 dark:border-slate-700 space-y-1">
-                  <div className="text-sky-600 font-bold">Cảm biến 1: x₁ = {fmt(sensor1X, 1)}m (σ₁ = {fmt(sensor1Sigma, 1)}m)</div>
-                  <div className="text-emerald-600 font-bold">Cảm biến 2: x₂ = {fmt(sensor2X, 1)}m (σ₂ = {fmt(sensor2Sigma, 1)}m)</div>
-                  <div className="text-purple-600 font-extrabold text-sm border-t border-slate-200 dark:border-slate-700 pt-1">
-                    Kết hợp: μ = {fmt(postMu, 2)}m (σ = {fmt(postStd, 2)}m)
-                  </div>
+                {/* Fused Posterior (Thick Ocean Blue) */}
+                <path
+                  d={Array.from({ length: 140 }, (_, i) => {
+                    const x = -5 + (i / 140) * 10;
+                    const y = 1.15 - normalPdf(x, postMu, postStd);
+                    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+                  }).join(' ')}
+                  fill="rgba(2, 132, 199, 0.2)"
+                  stroke="#0284C7"
+                  strokeWidth="0.035"
+                  strokeLinecap="round"
+                />
+
+                {/* Peak marker for fused estimate */}
+                <line
+                  x1={postMu}
+                  y1="0.1"
+                  x2={postMu}
+                  y2="1.15"
+                  stroke="#0284C7"
+                  strokeWidth="0.02"
+                  strokeDasharray="0.04 0.02"
+                />
+                <circle cx={postMu} cy="0.1" r="0.04" fill="#0284C7" />
+                <text
+                  x={postMu}
+                  y="0.06"
+                  fill="#0284C7"
+                  fontSize="0.13"
+                  textAnchor="middle"
+                  fontWeight="black"
+                  className="font-mono"
+                >
+                  μ_post = {fmt(postMu, 2)}
+                </text>
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-indigo-400">
+                    <span className="w-5 h-0.5 bg-indigo-500 border-dashed"></span> Prior
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-orange-600 dark:text-orange-400">
+                    <span className="w-5 h-0.5 bg-orange-500 border-dashed"></span> Cảm biến 1
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="w-5 h-0.5 bg-emerald-500 border-dashed"></span> Cảm biến 2
+                  </span>
+                  <span className="flex items-center gap-1.5 font-bold text-sky-600 dark:text-sky-400">
+                    <span className="w-5 h-1 bg-sky-600 rounded-full"></span> Hợp nhất Hậu nghiệm (Fused)
+                  </span>
+                </div>
+                <div className="font-mono text-xs font-bold text-sky-600 dark:text-sky-400">
+                  Độ lệch chuẩn: σ_post = {fmt(postStd, 3)}
                 </div>
               </div>
             </div>
+          </ClayCard>
 
-            {/* Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Bottom Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  1. Cảm Biến 1
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Giá trị đọc và sai số đo của cảm biến 1:
+                </p>
+              </div>
+
+              <div className="space-y-3">
                 <ClaySlider
-                  label="Vị trí đo Cảm biến 1 (x₁)"
+                  label="Vị trí đọc x1"
                   value={sensor1X}
-                  min={-2}
+                  min={-3}
                   max={4}
-                  step={0.2}
-                  color="blue"
+                  step={0.5}
+                  color="orange"
                   onChange={setSensor1X}
                 />
                 <ClaySlider
-                  label="Sai số Cảm biến 1 (σ₁)"
+                  label="Sai số sigma1"
                   value={sensor1Sigma}
                   min={0.5}
                   max={3}
                   step={0.1}
-                  color="blue"
+                  color="orange"
                   onChange={setSensor1Sigma}
                 />
+              </div>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  2. Cảm Biến 2
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Giá trị đọc và sai số đo của cảm biến 2:
+                </p>
+              </div>
+
+              <div className="space-y-3">
                 <ClaySlider
-                  label="Vị trí đo Cảm biến 2 (x₂)"
+                  label="Vị trí đọc x2"
                   value={sensor2X}
-                  min={-2}
+                  min={-3}
                   max={4}
-                  step={0.2}
+                  step={0.5}
                   color="emerald"
                   onChange={setSensor2X}
                 />
                 <ClaySlider
-                  label="Sai số Cảm biến 2 (σ₂)"
+                  label="Sai số sigma2"
                   value={sensor2Sigma}
                   min={0.5}
                   max={3}
@@ -377,82 +555,146 @@ export const BayesianInference: React.FC = () => {
                   onChange={setSensor2Sigma}
                 />
               </div>
-            </div>
-          </ClayCard>
+            </ClayCard>
+
+            <ClayCard className="p-5 space-y-3 flex flex-col justify-between">
+              <div>
+                <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mb-1">
+                  3. Niềm Tin Tiên Nghiệm (Prior)
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">
+                  Dự đoán trước đó về vị trí vật thể:
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <ClaySlider
+                  label="Tâm tiên nghiệm mu0"
+                  value={priorMu}
+                  min={-3}
+                  max={3}
+                  step={0.5}
+                  color="purple"
+                  onChange={setPriorMu}
+                />
+                <ClaySlider
+                  label="Độ bất định sigma0"
+                  value={priorSigma}
+                  min={0.5}
+                  max={4}
+                  step={0.2}
+                  color="purple"
+                  onChange={setPriorSigma}
+                />
+              </div>
+            </ClayCard>
+          </div>
         </div>
       )}
 
       {/* =========================================================================
-          TAB 3: BAYESIAN CREDIBLE INTERVAL
+          TAB 3: KHOẢNG TIN CẬY BAYES (CREDIBLE INTERVAL) - TRÊN Ô GRID TRỰC TIẾP
          ========================================================================= */}
       {activeTab === 'credible' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Khoảng Tin Cậy Bayes (Credible Interval) và Khoảng Tin Cậy Cổ Điển (Confidence Interval) khác nhau như thế nào về mặt triết học?"
-            formula="P(L \le \theta \le U \mid \text{data}) = 1 - \alpha"
-            mathExplanation="Trường phái Cổ điển coi tham số θ là HẰNG SỐ CỐ ĐỊNH, nên phát biểu 'xác suất để θ nằm trong khoảng là 95%' là SAI. Ngược lại, trường phái Bayes coi dữ liệu là cố định còn θ là BIẾN NGẪU NHIÊN tuân theo Posterior, do đó phát biểu 'xác suất θ nằm trong khoảng [L, U] đúng bằng 95%' là HOÀN TOÀN HỢP LỆ VÀ CHÍNH XÁC!"
+            question="Khoảng tin cậy Bayes (Credible Interval) khác gì về mặt bản chất so với Khoảng tin cậy Tần suất (Confidence Interval)? Tại sao Bayes cho phép ta nói thẳng: 'Xác suất tham số nằm trong khoảng này là 95%'?"
+            formula="P(L \le \theta \le U \mid \text{data}) = \int_L^U P(\theta \mid \text{data}) \, d\theta = 1 - \alpha"
+            mathExplanation="Trong trường phái Bayes, tham số θ là một biến ngẫu nhiên có hàm phân phối xác suất Posterior! Do đó, ta hoàn toàn có thể tính tích phân diện tích trực tiếp dưới đường cong Posterior để thu được khoảng tin cậy có mật độ cao nhất (HPD - Highest Posterior Density)."
             howToInteract={[
-              "Chọn mức tin cậy: 90%, 95%, hoặc 99%.",
-              "Quan sát vùng diện tích màu tím HPD (Highest Posterior Density) dưới đường cong Posterior.",
-              "Đọc giá trị hai đầu mút [L, U] của khoảng tin cậy Bayes."
+              "Kéo slider 'Mức độ tin cậy' (ví dụ 80%, 90%, 95%, 99%).",
+              "Quan sát hai vạch biên L và U cùng vùng diện tích tích phân màu xanh dương co giãn trực tiếp trên đường cong Posterior.",
+              "Xem giá trị cận dưới L và cận trên U thay đổi theo thời gian thực."
             ]}
-            whatToObserve="Vùng tô màu tím chiếm đúng diện tích (1 - α) dưới hàm mật độ. Vùng này chứa các giá trị tham số θ có độ khả tín cao nhất trong mắt người quan sát!"
-            takeaway="Khi bạn muốn khẳng định một khoảng chứa tham số với xác suất 95% theo nghĩa đen trực giác thông thường $\implies$ bạn đang dùng Khoảng tin cậy Bayes (Credible Interval)!"
+            whatToObserve="Vùng Credible Interval luôn tự động bao phủ vùng mật độ cao nhất quanh đỉnh MAP. Khi tăng mức tin cậy từ 90% lên 99%, khoảng phải nới rộng ra hai bên để ôm trọn 99% diện tích xác suất."
+            takeaway="Phân biệt sống còn: Tần suất coi tham số cố định, khoảng là ngẫu nhiên. Bayes coi tham số là ngẫu nhiên, cho phép phát biểu xác suất trực tiếp trên tham số!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title={`Khoảng Tin Cậy Bayes ${Math.round(credibleLevel * 100)}%: [${fmt(credLower, 3)}, ${fmt(credUpper, 3)}]`}
-              formula={`P(${fmt(credLower, 3)} \\le \\theta \\le ${fmt(credUpper, 3)} \\mid \\text{data}) = ${Math.round(credibleLevel * 100)}\\%`}
-              badge={`Posterior Beta(${alphaPost}, ${betaPost})`}
-              onReset={() => setCredibleLevel(0.95)}
+              title="Khoảng Tin Cậy Hậu Nghiệm Mật Độ Cao (HPD Credible Interval)"
+              formula={`P(L \\le \\theta \\le U \\mid \\text{Data}) = ${fmt(credLevel * 100, 0)}\\%`}
+              badge={`Mức tin cậy: ${fmt(credLevel * 100, 0)}%`}
+              onReset={() => setCredLevel(0.95)}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-3xl p-6 shadow-[3px_3px_0px_#0f172a] space-y-4">
-                <div className="text-center">
-                  <span className="text-xs font-heading font-black text-purple-600 uppercase tracking-wider">
-                    Khoảng Tin Cậy Bayes (Highest Posterior Density - HPD)
-                  </span>
-                  <div className="text-2xl sm:text-3xl font-heading font-black text-slate-900 dark:text-white mt-1">
-                    [{fmt(credLower, 3)} , {fmt(credUpper, 3)}]
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Độ rộng khoảng: Δ = {fmt(credUpper - credLower, 3)}
-                  </p>
-                </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <line x1="60" y1="310" x2="740" y2="310" stroke="#0F172A" strokeWidth="2.5" />
+                {[0.0, 0.2, 0.4, 0.6, 0.8, 1.0].map((t) => (
+                  <g key={`cred-t-${t}`}>
+                    <line x1={60 + t * 680} y1="310" x2={60 + t * 680} y2="316" stroke="#0F172A" strokeWidth="1.5" />
+                    <text x={60 + t * 680} y="332" textAnchor="middle" className="text-xs font-mono font-bold fill-slate-600">
+                      {t.toFixed(1)}
+                    </text>
+                  </g>
+                ))}
 
-                <div className="p-4 bg-purple-50 dark:bg-slate-800 rounded-2xl border border-purple-200 dark:border-purple-800 text-xs leading-relaxed text-slate-700 dark:text-slate-300">
-                  <span className="font-bold text-purple-700 dark:text-purple-300">Ý nghĩa thực tế: </span>
-                  Dựa trên niềm tin ban đầu và dữ liệu thu thập được ({headsK} lần ngửa / {trialsN} lần tung), ta tin chắc chắn tới <strong className="text-purple-600">{Math.round(credibleLevel * 100)}%</strong> rằng xác suất thực tế của đồng xu nằm gọn trong khoảng [{fmt(credLower, 3)}, {fmt(credUpper, 3)}].
-                </div>
+                {/* Shaded Credible Region */}
+                {(() => {
+                  const tail = (1 - credLevel) / 2;
+                  const L = Math.max(0.05, postMean - 1.96 * Math.sqrt((alphaPost * betaPost) / ((alphaPost + betaPost) ** 2 * (alphaPost + betaPost + 1))));
+                  const U = Math.min(0.95, postMean + 1.96 * Math.sqrt((alphaPost * betaPost) / ((alphaPost + betaPost) ** 2 * (alphaPost + betaPost + 1))));
+                  const pxL = 60 + L * 680;
+                  const pxU = 60 + U * 680;
+
+                  const regionPts = curvePoints
+                    .filter((p) => p.x >= L && p.x <= U)
+                    .map((p) => `${60 + p.x * 680},${310 - p.postNorm}`);
+
+                  return (
+                    <g>
+                      {regionPts.length > 0 && (
+                        <polygon
+                          points={`${pxL},310 ${regionPts.join(' ')} ${pxU},310`}
+                          fill="rgba(2, 132, 199, 0.35)"
+                        />
+                      )}
+                      <line x1={pxL} y1="60" x2={pxL} y2="310" stroke="#0284C7" strokeWidth="2" strokeDasharray="4 2" />
+                      <line x1={pxU} y1="60" x2={pxU} y2="310" stroke="#0284C7" strokeWidth="2" strokeDasharray="4 2" />
+                      <text x={pxL} y="50" fill="#0284C7" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                        L = {fmt(L, 2)}
+                      </text>
+                      <text x={pxU} y="50" fill="#0284C7" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                        U = {fmt(U, 2)}
+                      </text>
+                    </g>
+                  );
+                })()}
+
+                {/* Posterior Curve */}
+                <polyline
+                  points={curvePoints.map((p) => `${60 + p.x * 680},${310 - p.postNorm}`).join(' ')}
+                  fill="none"
+                  stroke="#0284C7"
+                  strokeWidth="3.5"
+                />
+              </svg>
+
+              {/* Bottom Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
+                  <span className="w-3 h-3 bg-sky-500 rounded-sm"></span> Vùng tin cậy Bayes {fmt(credLevel * 100, 0)}%
+                </span>
+                <span className="font-mono text-slate-700 dark:text-slate-300">
+                  θ ∈ [L, U] với xác suất đúng bằng {fmt(credLevel * 100, 0)}%
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-md mx-auto flex justify-center gap-3">
-                <ClayButton
-                  variant={credibleLevel === 0.90 ? 'primary' : 'outline'}
-                  size="md"
-                  onClick={() => setCredibleLevel(0.90)}
-                >
-                  90% Credible
-                </ClayButton>
-                <ClayButton
-                  variant={credibleLevel === 0.95 ? 'primary' : 'outline'}
-                  size="md"
-                  onClick={() => setCredibleLevel(0.95)}
-                >
-                  95% Credible
-                </ClayButton>
-                <ClayButton
-                  variant={credibleLevel === 0.99 ? 'primary' : 'outline'}
-                  size="md"
-                  onClick={() => setCredibleLevel(0.99)}
-                >
-                  99% Credible
-                </ClayButton>
+              <div className="max-w-xl mx-auto space-y-4">
+                <ClaySlider
+                  label="Mức độ tin cậy HPD (1 - α)"
+                  value={credLevel}
+                  min={0.8}
+                  max={0.99}
+                  step={0.01}
+                  color="blue"
+                  formatValue={(v) => `${fmt(v * 100, 0)}%`}
+                  onChange={setCredLevel}
+                />
               </div>
             </div>
           </ClayCard>
@@ -460,104 +702,137 @@ export const BayesianInference: React.FC = () => {
       )}
 
       {/* =========================================================================
-          TAB 4: BASE RATE FALLACY
+          TAB 4: ẢO GIÁC TỶ LỆ NỀN (BASE RATE FALLACY) - TRÊN Ô GRID TRỰC TIẾP
          ========================================================================= */}
-      {activeTab === 'base-rate' && (
+      {activeTab === 'baserate' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Một căn bệnh hiếm có tỷ lệ mắc chỉ 0.5% dân số. Một xét nghiệm y tế có độ chính xác lên tới 98% (độ nhạy) và chỉ nhầm 5% (dương tính giả). Nếu bạn đi xét nghiệm và nhận kết quả DƯƠNG TÍNH, xác suất thực sự bạn mắc bệnh là bao nhiêu?"
-            formula="P(\text{Bệnh} \mid +) = \frac{P(\text{Bệnh}) \cdot P(+ \mid \text{Bệnh})}{P(\text{Bệnh})P(+ \mid \text{Bệnh}) + P(\text{Khỏe})P(+ \mid \text{Khỏe})}"
-            mathExplanation="Trực giác con người luôn nghĩ mình có 98% nguy cơ mắc bệnh! Nhưng công thức Bayes chỉ ra rằng: Vì người khỏe đông gấp 200 lần người bệnh, nên 5% dương tính giả của số đông người khỏe sẽ áp đảo hoàn toàn số người bệnh thật!"
+            question="Một xét nghiệm y tế chẩn đoán có độ chính xác lên tới 99% (độ nhạy 99%, độ đặc hiệu 95%). Một người nhận kết quả DƯƠNG TÍNH (+). Tại sao xác suất người đó thực sự mắc bệnh lại chỉ có khoảng 16%, thậm chí dưới 10%?"
+            formula="P(\text{Bệnh} \mid +) = \frac{P(+ \mid \text{Bệnh}) P(\text{Bệnh})}{P(+ \mid \text{Bệnh})P(\text{Bệnh}) + P(+ \mid \text{Khỏe})P(\text{Khỏe})}"
+            mathExplanation="Khi một căn bệnh rất hiếm (tỷ lệ nền Base Rate chỉ 1/1000 người), số người khỏe mạnh trong cộng đồng áp đảo tuyệt đối (999 người). Dù tỷ lệ báo động nhầm (dương tính giả) chỉ là 5%, nhưng 5% của 999 người khỏe vẫn ra tới ~50 ca dương tính giả, đè bẹp hoàn toàn 1 ca dương tính thật duy nhất!"
             howToInteract={[
-              "Kéo slider 'Tỷ lệ mắc bệnh trong cộng đồng' từ 0.1% đến 3%.",
-              "Kéo 'Độ nhạy của Test' và 'Độ đặc hiệu (Chính xác cho người khỏe)'.",
-              "Nhìn xác suất mắc bệnh thực tế tính ra bên dưới."
+              "Kéo slider 'Tỷ lệ mắc bệnh trong cộng đồng' từ 1 đến 100 ca trên 10,000 dân.",
+              "Kéo slider 'Độ nhạy (Sensitivity)' và 'Độ đặc hiệu (Specificity)' của bộ kit test.",
+              "Nhìn biểu đồ diện tích ma trận 10,000 người để so sánh số ca Dương tính Thật (xanh) vs Dương tính Giả (đỏ)."
             ]}
-            whatToObserve="Khi bệnh hiếm (0.5%), dù test chính xác tới 98%, xác suất thực tế bạn bị bệnh khi có kết quả dương tính chỉ vỏn vẹn khoảng 8.9%! Đa số người nhận kết quả dương tính thực chất là DƯƠNG TÍNH GIẢ."
-            takeaway="Đây là bài toán 'Kinh điển của Kinh điển' trong đề thi và y tế: Luôn nhớ nhân với tỷ lệ nền P(Disease). Bỏ quên tỷ lệ nền (Base Rate Fallacy) là sai lầm phổ biến nhất trong tư duy xác suất!"
+            whatToObserve="Kéo tỷ lệ nền xuống 5 ca/10,000 dân: Khối màu đỏ (dương tính giả) phình to gấp 10 lần khối màu xanh (dương tính thật)! Dẫn tới giá trị dự đoán dương tính PPV rơi xuống dưới 10%!"
+            takeaway="Bẫy kinh điển: Không bao giờ được đánh đồng độ chính xác của xét nghiệm P(+|Bệnh) với xác suất mắc bệnh khi có kết quả P(Bệnh|+)! Tỷ lệ nền là yếu tố quyết định!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Khám Phá Ảo Giác Tỷ Lệ Nền: Nhận kết quả (+) có thực sự bị bệnh?"
-              formula={`P(\\text{Bệnh} \\mid +) = ${fmt(pDiseaseGivenPos * 100, 1)}\\%`}
-              badge={`Dương tính giả chiếm: ${fmt((1 - pDiseaseGivenPos) * 100, 1)}%`}
-              onReset={() => { setBaseRateP(0.005); setSensitivity(0.98); setSpecificity(0.95); }}
+              title="Phân Tích 10,000 Người & Ảo Giác Tỷ Lệ Nền (Base Rate Fallacy)"
+              formula="P(\text{Bệnh} \mid +) = \frac{\text{Dương tính thật}}{\text{Dương tính thật} + \text{Dương tính giả}}"
+              badge={`Xác suất mắc thật P(Bệnh|+) = ${fmt(bayesPpv, 1)}%`}
+              onReset={() => { setPrevalencePer10k(10); setSensitivityPct(99); setSpecificityPct(95); }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl space-y-4">
-                {/* Kết quả sốc */}
-                <div className="p-5 bg-rose-50 dark:bg-rose-950/40 border-2 border-rose-400 dark:border-rose-800 rounded-3xl text-center space-y-1">
-                  <span className="text-xs font-heading font-black text-rose-700 dark:text-rose-300 uppercase tracking-wider">
-                    Xác suất Thực sự Bị Bệnh khi nhận kết quả (+)
-                  </span>
-                  <div className="text-3xl sm:text-4xl font-heading font-black text-rose-600 dark:text-rose-400">
-                    {fmt(pDiseaseGivenPos * 100, 1)}%
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">
-                    Có tới <strong className="text-rose-600">{fmt((1 - pDiseaseGivenPos) * 100, 1)}%</strong> khả năng bạn hoàn toàn khỏe mạnh (Dương tính giả)!
-                  </p>
-                </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              {/* Mosaic Probability Chart directly on the Desmos Grid */}
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                {/* Total population box: 10,000 people */}
+                <rect x="80" y="50" width="640" height="240" fill="rgba(241, 245, 249, 0.6)" stroke="#0F172A" strokeWidth="2" />
 
-                {/* Minh họa 10,000 người */}
-                <div className="p-4 bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl space-y-2 text-xs font-mono">
-                  <div className="font-bold text-slate-800 dark:text-slate-200">
-                    Mô phỏng mẫu 10,000 người dân:
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
-                    <span>Số người bệnh thật ({fmt(baseRateP * 100, 2)}%):</span>
-                    <span className="font-bold text-rose-600">{Math.round(10000 * baseRateP)} người</span>
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
-                    <span>Người bệnh test (+) đúng ({fmt(sensitivity * 100, 0)}%):</span>
-                    <span className="font-bold text-rose-600">{fmt(10000 * baseRateP * sensitivity, 1)} người</span>
-                  </div>
-                  <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
-                    <span>Người khỏe test (+) nhầm ({fmt((1 - specificity) * 100, 0)}%):</span>
-                    <span className="font-bold text-amber-600">{fmt(10000 * (1 - baseRateP) * (1 - specificity), 1)} người</span>
-                  </div>
-                  <div className="flex justify-between py-1 text-sky-600 font-bold">
-                    <span>Tổng số ca (+) trong cộng đồng:</span>
-                    <span>{fmt(10000 * pTotalPos, 1)} người</span>
-                  </div>
+                {/* Left slice: Sick population (Width proportional to prevalence) */}
+                {(() => {
+                  const sickW = Math.max(12, (sick / totalPop) * 640);
+                  const healthyW = 640 - sickW;
+
+                  // In sick column: True Positive vs False Negative
+                  const truePosH = (sensitivityPct / 100) * 240;
+                  const falseNegH = 240 - truePosH;
+
+                  // In healthy column: False Positive vs True Negative
+                  const falsePosH = ((100 - specificityPct) / 100) * 240;
+                  const trueNegH = 240 - falsePosH;
+
+                  return (
+                    <g>
+                      {/* True Positive (Green) */}
+                      <rect x="80" y="50" width={sickW} height={truePosH} fill="#10B981" stroke="#047857" strokeWidth="1.5" />
+                      {/* False Negative (Grey) */}
+                      <rect x="80" y={50 + truePosH} width={sickW} height={falseNegH} fill="#94A3B8" opacity="0.5" />
+
+                      {/* False Positive (Rose) */}
+                      <rect x={80 + sickW} y="50" width={healthyW} height={falsePosH} fill="#F43F5E" stroke="#BE123C" strokeWidth="1.5" />
+                      {/* True Negative (Clean Slate) */}
+                      <rect x={80 + sickW} y={50 + falsePosH} width={healthyW} height={trueNegH} fill="rgba(203, 213, 225, 0.4)" />
+
+                      {/* Labels and Count Callouts */}
+                      <text x={80 + sickW / 2} y="35" fill="#047857" fontSize="12" fontWeight="bold" textAnchor="middle">
+                        Người Mắc ({sick})
+                      </text>
+                      <text x={80 + sickW + healthyW / 2} y="35" fill="#475569" fontSize="12" fontWeight="bold" textAnchor="middle">
+                        Người Khỏe Mạnh ({healthy})
+                      </text>
+
+                      {/* Callout box for True Pos */}
+                      <text x="85" y={50 + truePosH / 2 + 4} fill="#FFFFFF" fontSize="10" fontWeight="black">
+                        (+) Thật: {truePos}
+                      </text>
+
+                      {/* Callout box for False Pos */}
+                      <text x={80 + sickW + 15} y={50 + falsePosH / 2 + 5} fill="#FFFFFF" fontSize="12" fontWeight="black">
+                        DƯƠNG TÍNH GIẢ: {falsePos} CA BÁO NHẦM!
+                      </text>
+                    </g>
+                  );
+                })()}
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-emerald-600 font-bold">
+                    <span className="w-3 h-3 bg-emerald-500 rounded-sm"></span> Dương tính thật: {truePos} ca
+                  </span>
+                  <span className="flex items-center gap-1.5 text-rose-600 font-bold">
+                    <span className="w-3 h-3 bg-rose-500 rounded-sm"></span> Dương tính giả: {falsePos} ca
+                  </span>
                 </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  Tỷ lệ thật trong các ca (+): {truePos} / ({truePos} + {falsePos}) = {fmt(bayesPpv, 1)}%
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto space-y-4">
-                <ClaySlider
-                  label="Tỷ lệ mắc bệnh trong cộng đồng (P)"
-                  sublabel="Bệnh càng hiếm, dương tính giả càng chiếm đa số"
-                  value={baseRateP}
-                  min={0.001}
-                  max={0.03}
-                  step={0.001}
-                  color="rose"
-                  onChange={setBaseRateP}
-                />
-                <ClaySlider
-                  label="Độ nhạy của test (True Positive)"
-                  sublabel="Xác suất test (+) khi người đó có bệnh thật"
-                  value={sensitivity}
-                  min={0.8}
-                  max={0.99}
-                  step={0.01}
-                  color="blue"
-                  onChange={setSensitivity}
-                />
-                <ClaySlider
-                  label="Độ đặc hiệu của test (True Negative)"
-                  sublabel="Xác suất test (-) khi người đó khỏe mạnh"
-                  value={specificity}
-                  min={0.8}
-                  max={0.99}
-                  step={0.01}
-                  color="emerald"
-                  onChange={setSpecificity}
-                />
+              <div className="max-w-2xl mx-auto space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <ClaySlider
+                    label="Tỷ lệ bệnh (Base Rate)"
+                    sublabel="Số ca / 10,000 dân"
+                    value={prevalencePer10k}
+                    min={1}
+                    max={100}
+                    step={1}
+                    color="blue"
+                    onChange={setPrevalencePer10k}
+                  />
+                  <ClaySlider
+                    label="Độ nhạy (Sensitivity)"
+                    sublabel="P(+|Bệnh)"
+                    value={sensitivityPct}
+                    min={90}
+                    max={100}
+                    step={1}
+                    color="emerald"
+                    formatValue={(v) => `${v}%`}
+                    onChange={setSensitivityPct}
+                  />
+                  <ClaySlider
+                    label="Độ đặc hiệu (Specificity)"
+                    sublabel="P(-|Khỏe)"
+                    value={specificityPct}
+                    min={85}
+                    max={99}
+                    step={1}
+                    color="purple"
+                    formatValue={(v) => `${v}%`}
+                    onChange={setSpecificityPct}
+                  />
+                </div>
               </div>
             </div>
           </ClayCard>

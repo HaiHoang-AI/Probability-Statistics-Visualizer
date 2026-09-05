@@ -10,7 +10,7 @@ import { LabBriefing } from '../../common/LabBriefing';
 export const LimitTheoremsCLT: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'clt' | 'lln' | 'bounds' | 'cauchy'>('clt');
 
-  // Tab 1: CLT Lab State
+  // Tab 1: CLT Lab State (Original Lab)
   const [sourceDist, setSourceDist] = useState<'uniform' | 'exponential' | 'bimodal' | 'dice'>('bimodal');
   const [sampleSizeN, setSampleSizeN] = useState<number>(1);
   const [simulatedAverages, setSimulatedAverages] = useState<number[]>([]);
@@ -82,7 +82,7 @@ export const LimitTheoremsCLT: React.FC = () => {
     }));
   }, [simulatedAverages, minVal, maxVal]);
 
-  // Tab 2: LLN Lab State
+  // Tab 2: LLN Lab State (Original Lab)
   const [epsilon, setEpsilon] = useState<number>(0.08);
   const [llnPaths, setLlnPaths] = useState<number[][]>([]);
 
@@ -107,16 +107,18 @@ export const LimitTheoremsCLT: React.FC = () => {
     generateLlnPaths();
   }, []);
 
-  // Tab 3: Tail Bounds State (Markov vs Chebyshev vs Chernoff for Poisson or Standard Normal)
-  const [boundK, setBoundK] = useState<number>(2.5); // Deviation k in standard deviations
-  // For Standard Normal: E[X] = 0, Var(X) = 1.
-  // P(|X| >= k) exact = 2 * (1 - Phi(k))
-  // Chebyshev: P(|X| >= k) <= 1 / k^2
-  // Chernoff: P(X >= k) <= e^{-k^2 / 2} => P(|X| >= k) <= 2 * e^{-k^2 / 2}
-  // Markov on X^2: P(X^2 >= k^2) <= E[X^2] / k^2 = 1 / k^2
-  const exactProb = 2 * (1 - (0.5 * (1 + Math.sign(boundK) * Math.sqrt(1 - Math.exp(-2 * boundK * boundK / Math.PI))))); // simple approx
+  // Tab 3: Tail Bounds State
+  const [boundK, setBoundK] = useState<number>(2.5);
   const chebyshevBound = Math.min(1.0, 1 / (boundK * boundK));
   const chernoffBound = Math.min(1.0, 2 * Math.exp(-0.5 * boundK * boundK));
+  // Exact Standard Normal 2-tail prob
+  const exactProb = useMemo(() => {
+    const z = boundK;
+    const t = 1 / (1 + 0.2316419 * z);
+    const d = 0.39894228 * Math.exp(-z * z / 2);
+    const p = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274))));
+    return 2 * p;
+  }, [boundK]);
 
   // Tab 4: Cauchy Failure State
   const [cauchyN, setCauchyN] = useState<number>(10);
@@ -153,14 +155,14 @@ export const LimitTheoremsCLT: React.FC = () => {
       <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-            MAT1101 Bài 8 — Các định lý Giới hạn
+            MAT1101 Bài 8 — Các định lý giới hạn
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Định lý Giới hạn Trung tâm (CLT), Luật Số lớn & Cận Xác suất Đuôi
+            Định lý Giới hạn Trung tâm (CLT), Luật số lớn & Cận xác suất
           </h2>
         </div>
 
-        {/* Tab Selector */}
+        {/* Tab Switcher */}
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('clt')}
@@ -170,7 +172,7 @@ export const LimitTheoremsCLT: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            1. Phép màu CLT
+            1. Phòng thí nghiệm CLT
           </button>
           <button
             onClick={() => setActiveTab('lln')}
@@ -180,7 +182,7 @@ export const LimitTheoremsCLT: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            2. Quỹ đạo Luật Số Lớn
+            2. Quỹ đạo Luật số lớn (LLN)
           </button>
           <button
             onClick={() => setActiveTab('bounds')}
@@ -190,7 +192,7 @@ export const LimitTheoremsCLT: React.FC = () => {
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
-            3. So tài 3 Cận Đuôi
+            3. So tài Cận Đuôi (Chernoff)
           </button>
           <button
             onClick={() => setActiveTab('cauchy')}
@@ -206,72 +208,275 @@ export const LimitTheoremsCLT: React.FC = () => {
       </div>
 
       {/* =========================================================================
-          TAB 1: CLT LAB
+          TAB 1: CLT LAB (ORIGINAL LAB - DIRECTLY ON DESMOS GRID)
          ========================================================================= */}
       {activeTab === 'clt' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Cho dù dữ liệu gốc có hình dạng dị biệt đến đâu (lệch một bên, 2 đỉnh bimodal, xúc xắc), tại sao khi ta lấy trung bình của nhiều quan sát (X̄_n), phân phối của trung bình đó luôn tự động uốn thành hình chuông Gauss hoàn hảo?"
+            question="Dù biến ngẫu nhiên gốc có hình thù kỳ dị tới mức nào (2 đỉnh bimodal, lệch hẳn về một bên như Exponential, hay phân phối rời rạc xúc xắc), tại sao khi ta cộng trung bình nhiều biến lại thì kết quả LUÔN LUÔN biến thành quả chuông đối xứng Gauss?"
             formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma / \sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1) \quad \text{khi } n \to \infty"
-            mathExplanation="Đây là định lý vĩ đại nhất của xác suất thống kê! Phép lấy trung bình triệt tiêu dần các dị biệt cá thể, phương sai bị chia cho n (\sigma^2/n \to 0), và hình dạng tổng hợp luôn hội tụ về đường cong chuẩn tắc Gauss."
+            mathExplanation="Đây là định lý vĩ đại nhất của thống kê học! Nó khẳng định rằng tổng của một lượng lớn các biến độc lập có phương sai hữu hạn sẽ triệt tiêu các đặc tính riêng lẻ kỳ quặc của từng biến và hội tụ về phân phối Chuẩn phổ quát."
             howToInteract={[
-              "Chọn 1 phân phối gốc quái đản nhất: 'Hai đỉnh (Bimodal)' hoặc 'Lệch mạnh (Exponential)'.",
-              "Kéo slider cỡ mẫu n từ 1 lên 30.",
-              "Xem 5,000 lần mô phỏng trung bình mẫu biến đổi hình dạng biểu đồ cột."
+              "Chọn phân phối gốc: '2 Đỉnh (Bimodal)' hoặc 'Hàm mũ Exp(1)'.",
+              "Khi n = 1: Đồ thị thể hiện chính xác hình dáng méo mó của phân phối gốc.",
+              "Kéo slider cỡ mẫu n từ 1 lên 2, 5, 10, rồi 30 để chứng kiến phép màu xảy ra!"
             ]}
-            whatToObserve="Tại n = 1, biểu đồ có 2 đỉnh tách rời kỳ quặc. Nhưng chỉ cần kéo n lên 15 - 30, hai đỉnh lập tức hòa vào nhau, biểu đồ biến thành một hình chuông chuẩn tắc mượt mà khớp khít với đường cong lý thuyết màu đỏ!"
-            takeaway="Trong thực tế & bài thi: Khi cỡ mẫu n >= 30, ta ĐƯỢC PHÉP dùng phân phối Chuẩn để tính xác suất cho trung bình mẫu X̄_n mà không cần quan tâm phân phối gốc của từng cá thể là gì!"
+            whatToObserve="Chỉ cần n >= 15-20, hai ngọn núi của phân phối bimodal sụp đổ và dồn hết về giữa, khớp hoàn hảo 100% với đường cong quả chuông Gauss màu cam!"
+            takeaway="Trong các bài toán thực tế: Khi cỡ mẫu n >= 30, ta được phép dùng bảng phân phối chuẩn Z để tính xấp xỉ xác suất của trung bình mẫu!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="Phòng Thí Nghiệm Kiểm Chứng Định Lý Giới Hạn Trung Tâm (CLT)"
-              formula={`\\bar{X}_n \\sim \\mathcal{N}\\left(${fmt(trueMean, 2)}, \\frac{${fmt(trueVar, 2)}}{${sampleSizeN}}\\right)`}
-              badge={`n = ${sampleSizeN} quan sát / mẫu`}
-              onReset={() => { setSourceDist('bimodal'); setSampleSizeN(1); }}
+              title="Phân Bố Mẫu vs Chuông Gauss Lý Thuyết"
+              formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)"
+              badge={`5,000 Mẫu | n = ${sampleSizeN}`}
+              onReset={runSimulation}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[460px]">
-              <div className="relative w-full max-w-3xl h-72 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                {/* Histogram Bars */}
-                <div className="absolute inset-x-6 bottom-8 top-6 flex items-end gap-1">
-                  {histogram.map((bin, i) => (
-                    <div
-                      key={i}
-                      style={{ height: `${bin.heightPercent}%` }}
-                      className="flex-1 bg-sky-400 dark:bg-sky-500 border border-slate-900/30 rounded-t-sm transition-all duration-150"
-                      title={`[${fmt(bin.x0, 2)} - ${fmt(bin.x1, 2)}]: ${bin.count} mẫu`}
-                    />
-                  ))}
-                </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <div className="relative w-full h-80 sm:h-96 flex items-end gap-1 pt-8 pb-8 px-4 sm:px-8 select-none">
+                {/* Histogram Bars sitting directly on the grid */}
+                {histogram.map((bin, i) => (
+                  <div
+                    key={i}
+                    className="flex-1 bg-sky-500/85 hover:bg-sky-600 dark:bg-sky-500 dark:hover:bg-sky-400 rounded-t-sm transition-all duration-150 border-t border-sky-600 dark:border-sky-300 shadow-xs"
+                    style={{ height: `${Math.max(2, bin.heightPercent)}%` }}
+                    title={`Khoảng: [${fmt(bin.x0, 2)}, ${fmt(bin.x1, 2)}] - Mẫu: ${bin.count}`}
+                  />
+                ))}
 
-                {/* SVG Theoretical Normal Overlay */}
-                <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-x-6 bottom-8 top-6 w-[calc(100%-3rem)] h-[calc(100%-3.5rem)] pointer-events-none">
+                {/* SVG Overlay: Desmos Gaussian Bell Curve directly on the grid */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none p-4 sm:p-8" viewBox="0 0 800 320" preserveAspectRatio="none">
                   {(() => {
-                    const pts = [];
-                    for (let x = 0; x <= 100; x += 1) {
-                      const realX = minVal + (x / 100) * (maxVal - minVal);
-                      const pdf = normalPdf(realX, trueMean, theoreticalStd);
-                      const maxPdf = normalPdf(trueMean, trueMean, theoreticalStd);
-                      const normY = 100 - (pdf / maxPdf) * 95;
-                      pts.push(`${x},${normY}`);
+                    const maxNorm = normalPdf(trueMean, trueMean, theoreticalStd);
+                    const points = [];
+                    for (let px = 0; px <= 800; px += 8) {
+                      const xVal = minVal + (px / 800) * (maxVal - minVal);
+                      const pdfVal = normalPdf(xVal, trueMean, theoreticalStd);
+                      const py = 300 - (pdfVal / maxNorm) * 260;
+                      points.push(`${px},${py}`);
                     }
                     return (
                       <polyline
-                        points={pts.join(' ')}
+                        points={points.join(' ')}
                         fill="none"
-                        stroke="#e11d48"
-                        strokeWidth="2.5"
+                        stroke="#EA580C"
+                        strokeWidth="4"
                         strokeLinecap="round"
                       />
                     );
                   })()}
                 </svg>
+              </div>
 
-                <div className="absolute bottom-2 inset-x-6 flex justify-between text-[11px] font-mono text-slate-500">
-                  <span>{fmt(minVal, 1)}</span>
-                  <span className="font-bold text-sky-600">μ = {fmt(trueMean, 2)}</span>
-                  <span>{fmt(maxVal, 1)}</span>
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-200">
+                    <span className="w-3 h-3 bg-sky-500 rounded-xs"></span>
+                    Histogram Mẫu (5,000 thực nghiệm)
+                  </span>
+                  <span className="flex items-center gap-1.5 font-semibold text-orange-600 dark:text-orange-400">
+                    <span className="w-4 h-1 bg-orange-600 rounded-full"></span>
+                    Chuông Gauss Chuẩn Hóa
+                  </span>
+                </div>
+                <div className="font-mono text-slate-500 text-[11px]">
+                  μ = {fmt(trueMean, 2)} | σ/√n = {fmt(theoreticalStd, 3)}
+                </div>
+              </div>
+            </div>
+          </ClayCard>
+
+          {/* Bottom Controls */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Phân bố biến gốc X
+              </h4>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setSourceDist('bimodal')}
+                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'bimodal' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  2 Đỉnh (Bimodal)
+                </button>
+                <button
+                  onClick={() => setSourceDist('exponential')}
+                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'exponential' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  Hàm mũ Exp(1)
+                </button>
+                <button
+                  onClick={() => setSourceDist('uniform')}
+                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'uniform' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  Phẳng Uniform[0,1]
+                </button>
+                <button
+                  onClick={() => setSourceDist('dice')}
+                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'dice' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  }`}
+                >
+                  Xúc xắc 6 mặt
+                </button>
+              </div>
+            </ClayCard>
+
+            <ClayCard glowColor="blue" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
+                Cỡ Mẫu n Quan Sát
+              </h4>
+              <ClaySlider
+                label="Cỡ mẫu n"
+                sublabel="Số biến độc lập được lấy trung bình"
+                value={sampleSizeN}
+                min={1}
+                max={40}
+                step={1}
+                color="blue"
+                onChange={setSampleSizeN}
+              />
+              <div className="mt-3 flex gap-2">
+                {[1, 2, 5, 15, 30].map((quickN) => (
+                  <button
+                    key={quickN}
+                    onClick={() => setSampleSizeN(quickN)}
+                    className="flex-1 py-1 rounded-lg text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 cursor-pointer"
+                  >
+                    n={quickN}
+                  </button>
+                ))}
+              </div>
+            </ClayCard>
+
+            <ClayCard glowColor="emerald" className="p-5">
+              <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-2">
+                Hội tụ Thống kê
+              </h4>
+              <div className="space-y-2 text-xs">
+                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Độ lệch chuẩn thu hẹp:</span>
+                  <span className="font-mono font-bold text-sky-600">{fmt(theoreticalStd, 3)}</span>
+                </div>
+                <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
+                  <span className="text-slate-500">Tốc độ co cụm:</span>
+                  <span className="font-mono font-bold text-emerald-600">O(1/√n) = {fmt(1 / Math.sqrt(sampleSizeN), 2)}</span>
+                </div>
+                <div className="flex justify-between py-1">
+                  <span className="text-slate-500">Trạng thái:</span>
+                  <span className="font-bold text-slate-800 dark:text-slate-200">
+                    {sampleSizeN < 5 ? 'Chưa chuẩn hóa' : sampleSizeN < 20 ? 'Bắt đầu thành chuông' : 'Chuẩn Gauss hoàn hảo!'}
+                  </span>
+                </div>
+              </div>
+            </ClayCard>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 2: LUẬT SỐ LỚN (LLN) (ORIGINAL LAB - DIRECTLY ON DESMOS GRID)
+         ========================================================================= */}
+      {activeTab === 'lln' && (
+        <div className="space-y-6">
+          <LabBriefing
+            question="Nếu ta tung một đồng xu cân bằng 1,000 lần, làm sao chắc chắn rằng tỷ lệ ra mặt ngửa sẽ dần dần ổn định quanh 0.5? Bản chất của Luật số lớn là gì?"
+            formula="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0 \quad (\forall \epsilon > 0)"
+            mathExplanation="Khi số phép thử n tăng lên, phương sai của trung bình mẫu Var(X̄_n) = σ²/n tiến về 0. Điều này ép toàn bộ các quỹ đạo thực nghiệm phải lọt vào và nằm im trong đường ống dung sai [-ε, +ε] quanh tâm μ."
+            howToInteract={[
+              "Kéo slider 'Dung sai Epsilon' để mở rộng hoặc bóp hẹp đường ống màu xanh dương.",
+              "Bấm nút 'Sinh 15 Quỹ đạo Mới' để tái tạo các ván tung đồng xu khác nhau.",
+              "Xem tỷ lệ bao nhiêu phần trăm quỹ đạo nằm trọn trong ống khi bước chạy n tiến đến 400."
+            ]}
+            whatToObserve="Ở những bước đầu (n < 50), các đường đi giật cục rất mạnh và bay ra ngoài ống. Nhưng càng về cuối (n > 200), tất cả các đường đều ngoan ngoãn hội tụ phẳng lì vào tâm 0.5!"
+            takeaway="Luật số lớn đảm bảo các nhà cái sòng bạc hay công ty bảo hiểm luôn có lãi ổn định khi phục vụ số lượng người chơi đủ lớn!"
+          />
+
+          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+            <DesmosStageHeader
+              title="15 Quỹ Đạo Hội Tụ Của Trung Bình Mẫu (Tung Đồng Xu μ = 0.5)"
+              formula="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0"
+              badge={`Ống ε = ±${fmt(epsilon, 2)}`}
+              onReset={generateLlnPaths}
+            />
+
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                {/* Grid lines */}
+                {[0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8].map((v) => {
+                  const py = 180 - (v - 0.5) * 320;
+                  return (
+                    <g key={`lln-y-${v}`}>
+                      <line x1="60" y1={py} x2="760" y2={py} stroke="rgba(148, 163, 184, 0.2)" strokeWidth="1" />
+                      <text x="50" y={py + 4} textAnchor="end" className="text-[11px] font-mono font-bold fill-slate-500">
+                        {v.toFixed(1)}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Epsilon corridor tube */}
+                <rect
+                  x="60"
+                  y={180 - epsilon * 320}
+                  width="700"
+                  height={epsilon * 640}
+                  fill="rgba(56, 189, 248, 0.18)"
+                  stroke="#0284C7"
+                  strokeWidth="1.5"
+                  strokeDasharray="4 2"
+                />
+
+                {/* Center target mu = 0.5 */}
+                <line x1="60" y1="180" x2="760" y2="180" stroke="#0F172A" strokeWidth="2.5" />
+                <text x="765" y="184" fill="#0F172A" fontSize="12" fontWeight="bold" fontFamily="monospace">
+                  μ = 0.5
+                </text>
+
+                {/* 15 Sample Paths */}
+                {llnPaths.map((path, pIdx) => {
+                  const pts = path.map((val, step) => {
+                    const px = 60 + (step / 400) * 700;
+                    const py = 180 - (val - 0.5) * 320;
+                    return `${px},${py}`;
+                  });
+                  const colors = ['#0284C7', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'];
+                  const color = colors[pIdx % colors.length];
+                  return (
+                    <path
+                      key={pIdx}
+                      d={`M ${pts.join(' L ')}`}
+                      fill="none"
+                      stroke={color}
+                      strokeWidth="1.5"
+                      opacity="0.8"
+                    />
+                  );
+                })}
+              </svg>
+
+              {/* HUD Footer Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs">
+                <div className="flex items-center gap-4">
+                  <span className="flex items-center gap-1.5 font-semibold text-sky-600">
+                    <span className="w-3 h-2 bg-sky-400/40 border border-sky-600"></span>
+                    Hành lang sai số [-ε, +ε]
+                  </span>
+                  <span className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
+                    <span className="w-4 h-0.5 bg-slate-900 dark:bg-white"></span>
+                    Kỳ vọng chân lý μ = 0.5
+                  </span>
+                </div>
+                <div className="font-mono text-slate-500 text-[11px]">
+                  Bước chạy: n = 1 đến 400
                 </div>
               </div>
             </div>
@@ -279,47 +484,20 @@ export const LimitTheoremsCLT: React.FC = () => {
             {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
               <div className="max-w-xl mx-auto space-y-4">
-                <div className="flex flex-wrap justify-center gap-2.5">
-                  <ClayButton
-                    variant={sourceDist === 'bimodal' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => setSourceDist('bimodal')}
-                  >
-                    Hai đỉnh (Bimodal)
-                  </ClayButton>
-                  <ClayButton
-                    variant={sourceDist === 'exponential' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => setSourceDist('exponential')}
-                  >
-                    Lệch (Exponential)
-                  </ClayButton>
-                  <ClayButton
-                    variant={sourceDist === 'dice' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => setSourceDist('dice')}
-                  >
-                    Xúc xắc rời rạc (1..6)
-                  </ClayButton>
-                  <ClayButton
-                    variant={sourceDist === 'uniform' ? 'primary' : 'outline'}
-                    size="sm"
-                    onClick={() => setSourceDist('uniform')}
-                  >
-                    Đều (Uniform)
-                  </ClayButton>
-                </div>
-
                 <ClaySlider
-                  label="Cỡ mẫu trung bình n"
-                  sublabel="Kéo n từ 1 đến 35 để thấy chuông Gauss hình thành"
-                  value={sampleSizeN}
-                  min={1}
-                  max={35}
-                  step={1}
+                  label="Độ rộng ống dung sai Epsilon (ε)"
+                  value={epsilon}
+                  min={0.02}
+                  max={0.2}
+                  step={0.01}
                   color="blue"
-                  onChange={setSampleSizeN}
+                  onChange={setEpsilon}
                 />
+                <div className="text-center pt-1">
+                  <ClayButton variant="primary" size="md" onClick={generateLlnPaths}>
+                    Sinh 15 Quỹ Đạo Mới
+                  </ClayButton>
+                </div>
               </div>
             </div>
           </ClayCard>
@@ -327,185 +505,136 @@ export const LimitTheoremsCLT: React.FC = () => {
       )}
 
       {/* =========================================================================
-          TAB 2: LLN SAMPLE PATHS
-         ========================================================================= */}
-      {activeTab === 'lln' && (
-        <div className="space-y-6">
-          <LabBriefing
-            question="Luật số lớn (LLN) nói rằng 'khi n tiến ra vô cùng, trung bình mẫu tiến về kỳ vọng thực mu'. Nhưng sự tiến về đó diễn ra như thế nào qua từng bước tung đồng xu?"
-            formula="P\left( \lim_{n \to \infty} |\bar{X}_n - \mu| < \epsilon \right) = 1 \quad (\text{Luật Số Lớn Mạnh - SLLN})"
-            mathExplanation="Mỗi đường kẻ trên đồ thị biểu diễn quỹ đạo của 1 người thực hiện 400 lần tung đồng xu liên tiếp. Lúc đầu (n nhỏ), sự may rủi khiến trung bình dao động dữ dội. Nhưng càng tung nhiều lần (n lớn), tất cả mọi quỹ đạo đều bị 'hút' vào dải hẹp epsilon quanh mu = 0.5."
-            howToInteract={[
-              "Kéo slider độ dung sai epsilon từ 0.02 đến 0.15.",
-              "Bấm nút 'Tung lại 15 chuỗi mới' để quan sát các đường ngẫu nhiên độc lập."
-            ]}
-            whatToObserve="Khu vực dải màu xanh chính là ống [mu - epsilon, mu + epsilon]. Khi bước n vượt qua 100-150, hầu như 100% các quỹ đạo đều chui vào trong ống và không bao giờ thoát ra ngoài nữa!"
-            takeaway="Luật số lớn là nguyên lý sống còn của các sòng bạc (Casino) và công ty bảo hiểm: Từng khách hàng có thể thắng lớn (dao động n nhỏ), nhưng với hàng triệu giao dịch (n lớn), lợi nhuận trung bình chắc chắn hội tụ về kỳ vọng của nhà cái!"
-          />
-
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
-            <DesmosStageHeader
-              title="Mô phỏng Quỹ đạo Mẫu Luật Số Lớn: Tung đồng xu X_i in {0, 1}"
-              formula={`\\mu = 0.5 \\quad \\text{Dải dung sai: } [0.5 - ${fmt(epsilon, 2)}, 0.5 + ${fmt(epsilon, 2)}]`}
-              badge="15 Quỹ đạo mẫu song song"
-              onReset={() => { setEpsilon(0.08); generateLlnPaths(); }}
-            />
-
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[440px]">
-              <div className="relative w-full max-w-3xl h-80 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                <svg viewBox="0 0 400 200" className="w-full h-full">
-                  {/* Dải Epsilon Tube */}
-                  <rect
-                    x="0"
-                    y={100 - epsilon * 180}
-                    width="400"
-                    height={epsilon * 360}
-                    fill="#38bdf8"
-                    fillOpacity="0.2"
-                  />
-                  {/* Đường kỳ vọng mu = 0.5 */}
-                  <line x1="0" y1="100" x2="400" y2="100" stroke="#0284c7" strokeWidth="1.5" strokeDasharray="4 4" />
-
-                  {/* 15 Paths */}
-                  {llnPaths.map((path, pIdx) => {
-                    const pts = path.map((val, step) => `${step},${200 - val * 200}`).join(' ');
-                    return (
-                      <polyline
-                        key={pIdx}
-                        points={pts}
-                        fill="none"
-                        stroke={`hsl(${(pIdx * 24) % 360}, 65%, 45%)`}
-                        strokeWidth="1.2"
-                        strokeOpacity="0.8"
-                      />
-                    );
-                  })}
-                </svg>
-
-                <div className="absolute top-3 left-4 text-xs font-mono font-bold text-sky-700 dark:text-sky-300 bg-white/90 dark:bg-slate-900/90 p-1.5 rounded-lg border border-slate-300 dark:border-slate-700">
-                  Kỳ vọng thực μ = 0.50
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Controls */}
-            <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto flex flex-col sm:flex-row items-center gap-4">
-                <div className="flex-1 w-full">
-                  <ClaySlider
-                    label="Độ dung sai ε"
-                    sublabel="Độ rộng ống bao quanh μ"
-                    value={epsilon}
-                    min={0.02}
-                    max={0.15}
-                    step={0.01}
-                    color="blue"
-                    onChange={setEpsilon}
-                  />
-                </div>
-                <ClayButton variant="primary" size="md" onClick={generateLlnPaths}>
-                  🎲 Tung lại 15 chuỗi mới
-                </ClayButton>
-              </div>
-            </div>
-          </ClayCard>
-        </div>
-      )}
-
-      {/* =========================================================================
-          TAB 3: TAIL BOUNDS (MARKOV VS CHEBYSHEV VS CHERNOFF)
+          TAB 3: SO TÀI CẬN ĐUÔI (CHERNOFF VS CHEBYSHEV) - TRÊN Ô GRID TRỰC TIẾP
          ========================================================================= */}
       {activeTab === 'bounds' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Khi ta cần ước lượng xác suất xảy ra biến cố cực đoan (đuôi phân phối P(|X| >= k)) mà không biết chính xác phân phối, 3 bất đẳng thức Markov, Chebyshev và Chernoff giúp chặn trên xác suất như thế nào?"
-            formula="P(|X| \ge k) \le \text{Markov} \le \text{Chebyshev} \left(\frac{1}{k^2}\right) \le \text{Chernoff} \left(2e^{-k^2/2}\right)"
-            mathExplanation="Markov chỉ cần biết Kỳ vọng (yếu nhất). Chebyshev cần biết thêm Phương sai (siết chặt theo 1/k^2). Chernoff tận dụng toàn bộ hàm sinh Moment MGF (siết chặt theo hàm mũ cực nhanh e^{-ck^2})!"
+            question="Trong lý thuyết tính toán và máy học, ta rất hay cần chặn cận xác suất xảy ra biến cố cực đoan P(X >= a) khi không biết chính xác hàm phân phối. Tại sao cận Chernoff lại vượt trội hoàn toàn so với Markov và Chebyshev?"
+            formula="\text{Markov: } \frac{\mathbb{E}[X]}{a}, \quad \text{Chebyshev: } \frac{\sigma^2}{a^2}, \quad \text{Chernoff: } \inf_{s > 0} e^{-s a} M_X(s)"
+            mathExplanation="Markov chỉ dùng thông tin bậc 1 (kỳ vọng), cho cận giảm chậm theo O(1/a). Chebyshev dùng thông tin bậc 2 (phương sai), cho cận O(1/a²). Nhưng Chernoff tận dụng toàn bộ hàm sinh moment MGF (toàn bộ mọi bậc moment), cho cận giảm nhanh theo hàm mũ O(e^{-a²})!"
             howToInteract={[
-              "Kéo slider độ lệch k từ 1.5 đến 4.5 độ lệch chuẩn.",
-              "Xem bảng so sánh giá trị chặn trên của 3 định lý đặt cạnh Xác suất thực tế."
+              "Kéo slider 'Khoảng cách k (số độ lệch chuẩn)' từ 1.5 đến 4.0.",
+              "Xem diện tích đuôi xác suất thật màu xanh lá.",
+              "So sánh độ thắt chặt giữa cận Chebyshev (O(1/k²)) và cận Chernoff (O(e^{-k²/2}))."
             ]}
-            whatToObserve="Ở k = 4.0: Cận Chebyshev cho ta P <= 1/16 = 6.25% (vẫn khá lớn). Nhưng cận Chernoff siết xuống chỉ còn 0.067%, gần sát với xác suất thực tế 0.0063%! Cận Chernoff có sức mạnh vượt trội ở vùng đuôi xa."
-            takeaway="Trong đề thi: Nếu đề bài chỉ cho kỳ vọng $\implies$ dùng Markov. Cho cả kỳ vọng và phương sai $\implies$ dùng Chebyshev. Hỏi xác suất đuôi cấp số mũ $\implies$ dùng Chernoff!"
+            whatToObserve="Khi k = 3 hoặc 4, Chebyshev chặn cận rất lỏng lẻo (chỉ biết xác suất <= 6.25%), trong khi Chernoff thắt chặt xuống dưới 0.05%, cực kỳ sát với xác suất thực tế!"
+            takeaway="Chernoff Bound là vũ khí số 1 trong chứng minh bảo mật mật mã và lý thuyết độ phức tạp tính toán (PAC Learning)!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="So Tài 3 Cận Xác Suất Đuôi: P(|X| >= k) với X ~ N(0, 1)"
-              formula={`k = ${fmt(boundK, 1)} \\sigma`}
-              badge={`Chernoff: P \\le ${fmt(chernoffBound * 100, 3)}%`}
+              title="So Sánh Độ Thắt Chặt Của Cận Đuôi Xác Suất (N(0, 1))"
+              formula="P(|X| \ge k) \le \text{Chernoff} \le \text{Chebyshev}"
+              badge={`k = ${fmt(boundK, 2)}σ`}
               onReset={() => setBoundK(2.5)}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[420px]">
-              <div className="w-full max-w-2xl space-y-4">
-                {/* 4 Cards So sánh */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className="p-4 bg-amber-50 dark:bg-slate-800 rounded-2xl border-2 border-amber-300 dark:border-amber-800 text-center">
-                    <span className="text-[11px] font-heading font-black text-amber-800 dark:text-amber-300 uppercase">
-                      1. Cận Chebyshev (1/k²)
-                    </span>
-                    <div className="text-xl font-mono font-extrabold text-amber-600 mt-1">
-                      ≤ {fmt(chebyshevBound * 100, 2)}%
-                    </div>
-                    <span className="text-[10px] text-slate-500">Giảm theo bậc 2</span>
-                  </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <defs>
+                  <marker id="arrow-bnd-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+                  </marker>
+                  <marker id="arrow-bnd-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+                  </marker>
+                </defs>
 
-                  <div className="p-4 bg-purple-50 dark:bg-slate-800 rounded-2xl border-2 border-purple-300 dark:border-purple-800 text-center">
-                    <span className="text-[11px] font-heading font-black text-purple-800 dark:text-purple-300 uppercase">
-                      2. Cận Chernoff (MGF)
-                    </span>
-                    <div className="text-xl font-mono font-extrabold text-purple-600 mt-1">
-                      ≤ {fmt(chernoffBound * 100, 3)}%
-                    </div>
-                    <span className="text-[10px] text-purple-600 font-bold">Giảm theo hàm mũ</span>
-                  </div>
+                {/* Cartesian Axes */}
+                <line x1="60" y1="300" x2="740" y2="300" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-bnd-x)" />
+                <line x1="400" y1="330" x2="400" y2="40" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-bnd-y)" />
+                <text x="750" y="304" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
+                <text x="400" y="30" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
 
-                  <div className="p-4 bg-emerald-50 dark:bg-slate-800 rounded-2xl border-2 border-emerald-300 dark:border-emerald-800 text-center">
-                    <span className="text-[11px] font-heading font-black text-emerald-800 dark:text-emerald-300 uppercase">
-                      3. Xác suất Thực tế
-                    </span>
-                    <div className="text-xl font-mono font-extrabold text-emerald-600 mt-1">
-                      = {fmt(exactProb * 100, 3)}%
-                    </div>
-                    <span className="text-[10px] text-emerald-600 font-bold">Tích phân chuẩn</span>
-                  </div>
+                {/* Normal Bell Curve */}
+                {(() => {
+                  const pts = [];
+                  for (let x = -4; x <= 4; x += 0.1) {
+                    const px = 400 + (x / 4) * 320;
+                    const py = 300 - normalPdf(x, 0, 1) * 600;
+                    pts.push(`${px},${py}`);
+                  }
+                  return (
+                    <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#0284C7" strokeWidth="3" />
+                  );
+                })()}
+
+                {/* Shaded Tail Area for |X| >= k */}
+                {(() => {
+                  const rightPts = [];
+                  for (let x = boundK; x <= 4; x += 0.05) {
+                    const px = 400 + (x / 4) * 320;
+                    const py = 300 - normalPdf(x, 0, 1) * 600;
+                    rightPts.push(`${px},${py}`);
+                  }
+                  const leftPts = [];
+                  for (let x = -4; x <= -boundK; x += 0.05) {
+                    const px = 400 + (x / 4) * 320;
+                    const py = 300 - normalPdf(x, 0, 1) * 600;
+                    leftPts.push(`${px},${py}`);
+                  }
+                  const pxRightK = 400 + (boundK / 4) * 320;
+                  const pxLeftK = 400 - (boundK / 4) * 320;
+                  return (
+                    <g>
+                      {rightPts.length > 0 && (
+                        <path
+                          d={`M ${pxRightK},300 L ${rightPts.join(' L ')} L ${400 + 320},300 Z`}
+                          fill="rgba(16, 185, 129, 0.4)"
+                        />
+                      )}
+                      {leftPts.length > 0 && (
+                        <path
+                          d={`M ${400 - 320},300 L ${leftPts.join(' L ')} L ${pxLeftK},300 Z`}
+                          fill="rgba(16, 185, 129, 0.4)"
+                        />
+                      )}
+                    </g>
+                  );
+                })()}
+
+                {/* Cutoff markers at +k and -k */}
+                <line x1={400 + (boundK / 4) * 320} y1="60" x2={400 + (boundK / 4) * 320} y2="300" stroke="#EF4444" strokeWidth="2" strokeDasharray="4 3" />
+                <line x1={400 - (boundK / 4) * 320} y1="60" x2={400 - (boundK / 4) * 320} y2="300" stroke="#EF4444" strokeWidth="2" strokeDasharray="4 3" />
+                <text x={400 + (boundK / 4) * 320} y="50" fill="#EF4444" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                  +k = +{fmt(boundK, 1)}
+                </text>
+                <text x={400 - (boundK / 4) * 320} y="50" fill="#EF4444" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
+                  -k = -{fmt(boundK, 1)}
+                </text>
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
+                    <span className="w-3 h-3 bg-emerald-500 rounded-xs"></span> Xác suất thực P(|X| ≥ k): {fmt(exactProb * 100, 3)}%
+                  </span>
+                  <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
+                    <span className="w-3 h-3 bg-amber-500 rounded-xs"></span> Cận Chernoff: ≤ {fmt(chernoffBound * 100, 3)}%
+                  </span>
+                  <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                    <span className="w-3 h-3 bg-rose-500 rounded-xs"></span> Cận Chebyshev: ≤ {fmt(chebyshevBound * 100, 3)}%
+                  </span>
                 </div>
-
-                {/* Thanh trực quan so sánh độ siết */}
-                <div className="p-4 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-900 dark:border-slate-700 space-y-2">
-                  <div className="flex justify-between text-xs font-mono font-bold">
-                    <span>Độ chặt chẽ của cận trên tại k = {fmt(boundK, 1)}σ:</span>
-                  </div>
-                  <div className="space-y-1.5 text-xs font-mono">
-                    <div className="flex items-center gap-2">
-                      <span className="w-20 text-slate-500">Chebyshev:</span>
-                      <div className="flex-1 bg-slate-200 dark:bg-slate-700 h-4 rounded-md overflow-hidden">
-                        <div style={{ width: `${chebyshevBound * 100}%` }} className="h-full bg-amber-500" />
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-20 text-purple-600 font-bold">Chernoff:</span>
-                      <div className="flex-1 bg-slate-200 dark:bg-slate-700 h-4 rounded-md overflow-hidden">
-                        <div style={{ width: `${chernoffBound * 100}%` }} className="h-full bg-purple-500" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  Chernoff thắt chặt hơn Chebyshev {fmt(chebyshevBound / Math.max(1e-5, chernoffBound), 1)} lần!
+                </span>
               </div>
             </div>
 
             {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto">
+              <div className="max-w-xl mx-auto space-y-4">
                 <ClaySlider
-                  label="Độ lệch k (Số lần độ lệch chuẩn σ)"
-                  sublabel="Kéo k từ 1.5 lên 4.5 để thấy Chernoff bỏ xa Chebyshev"
+                  label="Độ lệch ngưỡng k (số độ lệch chuẩn)"
                   value={boundK}
                   min={1.5}
-                  max={4.5}
+                  max={4.0}
                   step={0.1}
-                  color="purple"
+                  color="rose"
+                  formatValue={(v) => `${fmt(v, 1)}σ`}
                   onChange={setBoundK}
                 />
               </div>
@@ -515,90 +644,125 @@ export const LimitTheoremsCLT: React.FC = () => {
       )}
 
       {/* =========================================================================
-          TAB 4: CAUCHY BREAKDOWN (WHEN CLT FAILS)
+          TAB 4: KHI CLT THẤT BẠI (PHÂN PHỐI CAUCHY) - TRÊN Ô GRID TRỰC TIẾP
          ========================================================================= */}
       {activeTab === 'cauchy' && (
         <div className="space-y-6">
           <LabBriefing
-            question="Định lý Giới hạn Trung tâm (CLT) có luôn luôn đúng cho mọi phân phối xác suất trên đời không? Khi nào CLT bị phá vỡ hoàn toàn?"
-            formula="\text{Điều kiện tiên quyết của CLT: } \sigma^2 < \infty. \quad \text{Phân phối Cauchy: } \mathbb{E}[X] = \text{không tồn tại}, \, \sigma^2 = \infty"
-            mathExplanation="Phân phối Cauchy có đuôi cực dày (Fat Tails). Xác suất xuất hiện các giá trị cực đoan khổng lồ (Black Swan) cao đến mức trung bình mẫu X̄_n của 1,000 biến Cauchy VẪN CỨ LÀ MỘT BIẾN CAUCHY với độ phân tán y nguyên, không bao giờ co hẹp lại!"
+            question="Liệu định lý giới hạn trung tâm CLT có luôn luôn đúng cho mọi biến ngẫu nhiên không? Khi nào thì việc lấy trung bình mẫu KHÔNG THỂ triệt tiêu được rủi ro?"
+            formula="X \sim \text{Cauchy}(0, 1) \implies \mathbb{E}[|X|] = \infty, \quad \bar{X}_n = \frac{1}{n}\sum_{i=1}^n X_i \sim \text{Cauchy}(0, 1)"
+            mathExplanation="Phân phối Cauchy có đuôi cực dày (Fat Tails) khiến tích phân kỳ vọng và phương sai phân kỳ ra vô hạn. Kỳ lạ thay: Trung bình mẫu của n biến Cauchy độc lập vẫn tuân theo đúng phân phối Cauchy ban đầu! Việc lấy thêm dữ liệu hoàn toàn vô dụng để giảm phương sai!"
             howToInteract={[
-              "Kéo slider cỡ mẫu n từ 2 lên 50.",
-              "So sánh 2 đồ thị: Bên trái là Phân phối Chuẩn (Gauss) - dao động co hẹp mượt mà. Bên phải là Phân phối Cauchy - liên tục bị các cú nhảy vọt làm vỡ vụn!"
+              "Kéo slider 'Cỡ mẫu n' từ 1 đến 50.",
+              "Xem hai đường chạy trung bình mẫu: Đường xanh dương (Gaussian) vs Đường đỏ (Cauchy).",
+              "Bấm nút 'Lấy 150 Mẫu Mới' để quan sát các cú sốc cực đoan (Black Swan)."
             ]}
-            whatToObserve="Nhìn đồ thị Cauchy: Dù bạn tăng n lên bao nhiêu, đồ thị vẫn bị những mũi kim giật bắn ra ngoài biên tọa độ. Đây chính là hiện tượng sụp đổ thị trường tài chính hoặc rủi ro thiên nga đen!"
-            takeaway="Điểm ăn điểm tuyệt đối trong bài thi: CLT CHỈ ÁP DỤNG khi các biến ngẫu nhiên có PHƯƠNG SAI HỮU HẠN (\sigma^2 < \infty). Nếu phương sai vô hạn (như Cauchy hay Pareto đuôi nặng), CLT hoàn toàn vô hiệu!"
+            whatToObserve="Trong khi đường Gaussian co cụm phẳng lì quanh trục 0, đường Cauchy liên tục bị những cú giật vọt lên hàng chục đơn vị do xuất hiện các ngoại lai cực đoan!"
+            takeaway="Trong tài chính và quản trị rủi ro: Nếu dữ liệu có hiện tượng đuôi dày (Fat Tails - phân phối Pareto/Cauchy), không được áp dụng CLT mù quáng kẻo dẫn tới sụp đổ danh mục!"
           />
 
           <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
             <DesmosStageHeader
-              title="So Sánh: Phân phối Chuẩn (CLT thành công) vs Phân phối Cauchy (CLT thất bại)"
-              formula="\text{Cauchy: } f(x) = \frac{1}{\pi (1 + x^2)} \implies \sigma^2 = \infty"
-              badge={`n = ${cauchyN} mẫu`}
+              title="So Sánh Hội Tụ Trung Bình Mẫu: Gaussian Chuẩn vs Cauchy Đuôi Dày"
+              formula="\text{Gaussian: } \text{Var}(\bar{X}_n) = \frac{\sigma^2}{n} \to 0 \quad \text{vs} \quad \text{Cauchy: } \bar{X}_n \sim \text{Cauchy}"
+              badge={`n = ${cauchyN} quan sát / mẫu`}
               onReset={() => { setCauchyN(10); runCauchySim(); }}
             />
 
-            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col items-center justify-center min-h-[440px]">
-              <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Đồ thị 1: Chuẩn (Gauss) */}
-                <div className="flex flex-col items-center">
-                  <span className="text-xs font-heading font-black text-emerald-700 dark:text-emerald-300 uppercase tracking-wider mb-2">
-                    1. Phân phối Chuẩn: X̄_n co cụm tuyệt đối về 0
-                  </span>
-                  <div className="relative w-full h-64 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner">
-                    <svg viewBox="0 0 150 100" className="w-full h-full">
-                      <line x1="0" y1="50" x2="150" y2="50" stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
-                      {(() => {
-                        const pts = cauchyPaths.normalAvg.map((v, idx) => `${idx},${50 - v * 25}`).join(' ');
-                        return <polyline points={pts} fill="none" stroke="#10b981" strokeWidth="1.5" />;
-                      })()}
-                    </svg>
-                    <div className="absolute bottom-2 right-3 text-[11px] font-mono text-emerald-600 font-bold">
-                      Hội tụ mượt mà theo CLT ✓
-                    </div>
-                  </div>
-                </div>
+            <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
+              <svg viewBox="0 0 800 360" className="w-full h-auto select-none">
+                <defs>
+                  <marker id="arrow-cy-x" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" />
+                  </marker>
+                  <marker id="arrow-cy-y" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+                    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" />
+                  </marker>
+                </defs>
 
-                {/* Đồ thị 2: Cauchy */}
-                <div className="flex flex-col items-center">
-                  <span className="text-xs font-heading font-black text-rose-700 dark:text-rose-300 uppercase tracking-wider mb-2">
-                    2. Phân phối Cauchy: X̄_n nhảy vọt giật cục (Fat Tails)
+                {/* Axes */}
+                <line x1="60" y1="180" x2="740" y2="180" stroke="#EF4444" strokeWidth="2" markerEnd="url(#arrow-cy-x)" />
+                <line x1="80" y1="330" x2="80" y2="30" stroke="#10B981" strokeWidth="2" markerEnd="url(#arrow-cy-y)" />
+                <text x="750" y="184" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">Mẫu thứ i</text>
+                <text x="80" y="22" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">X̄_n</text>
+
+                {/* Y ticks at -10, -5, 0, 5, 10 */}
+                {[-10, -5, 0, 5, 10].map((v) => {
+                  const py = 180 - (v / 15) * 140;
+                  return (
+                    <g key={`cy-tick-${v}`}>
+                      <line x1="76" y1={py} x2="84" y2={py} stroke="#64748B" strokeWidth="1.5" />
+                      <text x="70" y={py + 4} fill="#64748B" fontSize="11" textAnchor="end" fontWeight="bold" fontFamily="monospace">
+                        {v}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Gaussian Running Mean (Clean Blue Line) */}
+                {(() => {
+                  const pts = cauchyPaths.normalAvg.map((val, idx) => {
+                    const px = 80 + (idx / 150) * 640;
+                    const py = 180 - (val / 15) * 140;
+                    return `${px},${py}`;
+                  });
+                  return (
+                    pts.length > 0 && (
+                      <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#0284C7" strokeWidth="2.5" />
+                    )
+                  );
+                })()}
+
+                {/* Cauchy Running Mean (Erratic Rose Line with Wild Spikes) */}
+                {(() => {
+                  const pts = cauchyPaths.cauchyAvg.map((val, idx) => {
+                    const px = 80 + (idx / 150) * 640;
+                    const clampedVal = Math.max(-15, Math.min(15, val));
+                    const py = 180 - (clampedVal / 15) * 140;
+                    return `${px},${py}`;
+                  });
+                  return (
+                    pts.length > 0 && (
+                      <path d={`M ${pts.join(' L ')}`} fill="none" stroke="#F43F5E" strokeWidth="2" strokeDasharray="3 2" />
+                    )
+                  );
+                })()}
+              </svg>
+
+              {/* Bottom Stage Legend */}
+              <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
+                <div className="flex items-center gap-4 flex-wrap">
+                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
+                    <span className="w-4 h-0.5 bg-sky-500"></span> Gaussian: Hội tụ êm ả về 0 (CLT hoạt động)
                   </span>
-                  <div className="relative w-full h-64 bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900 dark:border-slate-600 rounded-2xl p-2 shadow-inner overflow-hidden">
-                    <svg viewBox="0 0 150 100" className="w-full h-full">
-                      <line x1="0" y1="50" x2="150" y2="50" stroke="#94a3b8" strokeWidth="0.8" strokeDasharray="2 2" />
-                      {(() => {
-                        const pts = cauchyPaths.cauchyAvg.map((v, idx) => `${idx},${Math.max(5, Math.min(95, 50 - v * 8))}`).join(' ');
-                        return <polyline points={pts} fill="none" stroke="#e11d48" strokeWidth="1.5" />;
-                      })()}
-                    </svg>
-                    <div className="absolute bottom-2 right-3 text-[11px] font-mono text-rose-600 font-bold">
-                      CLT bị phá vỡ hoàn toàn ✗
-                    </div>
-                  </div>
+                  <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
+                    <span className="w-4 h-0.5 bg-rose-500 border-dashed"></span> Cauchy: Nổ gai cực đoan bất thường (CLT sụp đổ hoàn toàn)
+                  </span>
                 </div>
+                <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
+                  Phương sai Cauchy: Var = ∞
+                </span>
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Bottom Controls */}
             <div className="border-t-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 p-5">
-              <div className="max-w-xl mx-auto flex flex-col sm:flex-row items-center gap-4">
-                <div className="flex-1 w-full">
-                  <ClaySlider
-                    label="Cỡ mẫu n"
-                    sublabel="Tăng n lên 50, Cauchy vẫn giật tung tóe"
-                    value={cauchyN}
-                    min={2}
-                    max={50}
-                    step={2}
-                    color="rose"
-                    onChange={setCauchyN}
-                  />
+              <div className="max-w-xl mx-auto space-y-4">
+                <ClaySlider
+                  label="Cỡ mẫu n"
+                  sublabel="Tăng n không giúp Cauchy hội tụ"
+                  value={cauchyN}
+                  min={1}
+                  max={50}
+                  step={1}
+                  color="blue"
+                  onChange={setCauchyN}
+                />
+                <div className="text-center pt-1">
+                  <ClayButton variant="primary" size="md" onClick={runCauchySim}>
+                    Lấy 150 Mẫu Mới
+                  </ClayButton>
                 </div>
-                <ClayButton variant="primary" size="md" onClick={runCauchySim}>
-                  🎲 Lấy mẫu mới
-                </ClayButton>
               </div>
             </div>
           </ClayCard>
