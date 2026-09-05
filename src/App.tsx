@@ -29,13 +29,19 @@ export const App: React.FC = () => {
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6">
         {/* Back Button when viewing a specific module */}
         {currentChapter !== 'overview' && (
-          <div className="mb-4">
+          <div className="mb-4 flex items-center justify-between gap-3">
             <button
               onClick={() => setCurrentChapter('overview')}
-              className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] text-xs font-heading font-bold text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] text-xs font-heading font-bold text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
             >
-              Quay lại danh sách bài học
+              <span>←</span>
+              <span>Quay lại danh sách bài học</span>
             </button>
+
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-xl shadow-[2px_2px_0px_#0f172a] text-[11px] font-heading font-bold text-slate-700 dark:text-slate-200">
+              <img src="/roxy/roxy_avatar_wink.png" alt="Roxy" className="w-5 h-5 rounded-full object-cover" />
+              <span>Roxy Cố Vấn: Chúc bạn làm thí nghiệm vui vẻ!</span>
+            </div>
           </div>
         )}
 
@@ -57,9 +63,15 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t-2 border-slate-900/15 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
+      <footer className="w-full border-t-2 border-slate-900/15 dark:border-slate-800 bg-white dark:bg-slate-900 py-5 text-center text-xs text-slate-500 dark:text-slate-400">
         <div className="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 font-medium">
+          <div className="flex items-center gap-2.5 font-medium">
+            <img 
+              src="/roxy/roxy_chibi_sleep.png" 
+              alt="Roxy sleeping with cat" 
+              className="w-8 h-8 object-contain select-none" 
+              title="Học tập chăm chỉ rồi, nghỉ ngơi chút nhé!"
+            />
             <span>Probability & Statistics Visualizer — MAT1101 (VNU-UET)</span>
           </div>
           <div className="flex items-center gap-4">

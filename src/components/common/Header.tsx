@@ -17,13 +17,22 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-3 z-40 w-full px-4 sm:px-6 transition-colors">
       <div className="max-w-6xl mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[3px_3px_0px_#0f172a] dark:hover:shadow-[3px_3px_0px_#0284c7] flex items-center justify-between transition-all duration-150">
         
-        {/* Brand & Logo */}
+        {/* Brand & Logo with Roxy Mascot */}
         <div 
           onClick={() => onSelectChapter('overview')} 
           className="flex items-center gap-3 cursor-pointer select-none group"
         >
-          <div className="w-9 h-9 rounded-xl bg-sky-600 border-2 border-slate-900 flex items-center justify-center text-white font-heading font-black text-sm shadow-[2px_2px_0px_#0f172a] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-none transition-all duration-100">
-            PS
+          <div className="relative">
+            <div className="w-10 h-10 rounded-full border-2 border-slate-900 dark:border-sky-400 bg-sky-100 dark:bg-slate-800 flex items-center justify-center shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] group-hover:scale-110 group-hover:-rotate-6 transition-all duration-150 overflow-hidden">
+              <img 
+                src="/roxy/roxy_avatar_smile.png" 
+                alt="Roxy Migurdia Mascot" 
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-sky-500 border border-slate-900 rounded-full flex items-center justify-center text-[8px] font-black text-white shadow-xs">
+              ✦
+            </span>
           </div>
           <div>
             <div className="flex items-center gap-2">

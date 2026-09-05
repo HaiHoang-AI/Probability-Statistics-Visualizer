@@ -8,121 +8,88 @@ interface LandingPageProps {
   onSelectChapter: (id: ChapterId) => void;
 }
 
-const getChapterIcon = (id: ChapterId) => {
-  switch (id) {
-    case 'ch7-1-derived':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-sky-100 dark:bg-sky-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-sky-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2 18c4 0 4-12 8-12s4 12 8 12 4-6 4-6" />
-          </svg>
-        </div>
-      );
-    case 'ch7-2-mgf':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-purple-100 dark:bg-purple-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-purple-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 20c4-1 8-5 11-10 2-3.5 3-5 5-6" />
-            <path d="M2 20h20" />
-            <path d="M8 20v-5" />
-          </svg>
-        </div>
-      );
-    case 'ch8-limit-theorems':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-emerald-100 dark:bg-emerald-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-emerald-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2 20h20" />
-            <path d="M4 20c3 0 5-14 8-14s5 14 8 14" />
-          </svg>
-        </div>
-      );
-    case 'ch9-bayesian':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-indigo-100 dark:bg-indigo-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-indigo-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M12 3v18" />
-            <path d="M6 7l6-2 6 2" />
-            <path d="m3 13 3-6 3 6a3 3 0 0 1-6 0Z" />
-            <path d="m15 15 3-6 3 6a3 3 0 0 1-6 0Z" />
-          </svg>
-        </div>
-      );
-    case 'ch10-1-estimation':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-rose-100 dark:bg-rose-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-rose-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 3v18" />
-            <path d="M3 12h18" />
-          </svg>
-        </div>
-      );
-    case 'ch10-2-hypothesis':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-amber-100 dark:bg-amber-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-amber-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 20h18" />
-            <path d="M3 20c2 0 4-10 6-10s4 10 6 10" />
-            <path d="M12 20c2 0 4-10 6-10s2 7 3 10" strokeDasharray="2 2" />
-            <line x1="14" y1="5" x2="14" y2="20" strokeWidth="1.5" />
-          </svg>
-        </div>
-      );
-    case 'ch11-regression':
-      return (
-        <div className="w-11 h-11 rounded-2xl border-2 border-slate-900 dark:border-slate-700 bg-sky-100 dark:bg-sky-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-6 h-6 stroke-slate-900 dark:stroke-sky-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 3v18h18" />
-            <path d="m7 17 12-12" />
-            <circle cx="8" cy="12" r="1.5" fill="currentColor" />
-            <circle cx="12" cy="15" r="1.5" fill="currentColor" />
-            <circle cx="16" cy="7" r="1.5" fill="currentColor" />
-          </svg>
-        </div>
-      );
-    case 'ch1-foundations':
-      return (
-        <div className="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-5 h-5 stroke-slate-900 dark:stroke-slate-200" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="9" cy="12" r="5" />
-            <circle cx="15" cy="12" r="5" />
-          </svg>
-        </div>
-      );
-    case 'ch2-basic-prob':
-      return (
-        <div className="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-teal-100 dark:bg-teal-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-5 h-5 stroke-slate-900 dark:stroke-teal-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <rect width="16" height="16" x="4" y="4" rx="3" />
-            <circle cx="8.5" cy="8.5" r="1" fill="currentColor" />
-            <circle cx="15.5" cy="15.5" r="1" fill="currentColor" />
-            <circle cx="12" cy="12" r="1" fill="currentColor" />
-          </svg>
-        </div>
-      );
-    case 'ch3-discrete-rv':
-      return (
-        <div className="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-violet-100 dark:bg-violet-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-5 h-5 stroke-slate-900 dark:stroke-violet-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M18 20V10" />
-            <path d="M12 20V4" />
-            <path d="M6 20v-6" />
-            <path d="M2 20h20" />
-          </svg>
-        </div>
-      );
-    case 'ch4-continuous-rv':
-    default:
-      return (
-        <div className="w-10 h-10 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-cyan-100 dark:bg-cyan-950/60 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0">
-          <svg className="w-5 h-5 stroke-slate-900 dark:stroke-cyan-300" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M2 18c3-2 6-12 10-12s7 10 10 12" />
-            <path d="M2 20h20" />
-          </svg>
-        </div>
-      );
-  }
+const CHAPTER_MASCOTS: Partial<Record<ChapterId, { src: string; bg: string; border: string }>> = {
+  'overview': {
+    src: '/roxy/roxy_hero.png',
+    bg: 'bg-sky-100 dark:bg-sky-950/60',
+    border: 'border-sky-300 dark:border-sky-800',
+  },
+  'ch7-1-derived': {
+    src: '/roxy/roxy_chibi_magic.png',
+    bg: 'bg-sky-100 dark:bg-sky-950/60',
+    border: 'border-sky-300 dark:border-sky-800',
+  },
+  'ch7-2-mgf': {
+    src: '/roxy/roxy_grimoire.png',
+    bg: 'bg-purple-100 dark:bg-purple-950/60',
+    border: 'border-purple-300 dark:border-purple-800',
+  },
+  'ch8-limit-theorems': {
+    src: '/roxy/roxy_teacher.png',
+    bg: 'bg-emerald-100 dark:bg-emerald-950/60',
+    border: 'border-emerald-300 dark:border-emerald-800',
+  },
+  'ch9-bayesian': {
+    src: '/roxy/roxy_thinking.png',
+    bg: 'bg-indigo-100 dark:bg-indigo-950/60',
+    border: 'border-indigo-300 dark:border-indigo-800',
+  },
+  'ch10-1-estimation': {
+    src: '/roxy/roxy_chibi_teaching.png',
+    bg: 'bg-rose-100 dark:bg-rose-950/60',
+    border: 'border-rose-300 dark:border-rose-800',
+  },
+  'ch10-2-hypothesis': {
+    src: '/roxy/roxy_potion.png',
+    bg: 'bg-amber-100 dark:bg-amber-950/60',
+    border: 'border-amber-300 dark:border-amber-800',
+  },
+  'ch11-regression': {
+    src: '/roxy/roxy_thinking.png',
+    bg: 'bg-sky-100 dark:bg-sky-950/60',
+    border: 'border-sky-300 dark:border-sky-800',
+  },
+  'ch1-foundations': {
+    src: '/roxy/roxy_chibi_reading.png',
+    bg: 'bg-slate-100 dark:bg-slate-800',
+    border: 'border-slate-300 dark:border-slate-700',
+  },
+  'ch2-basic-prob': {
+    src: '/roxy/roxy_chibi_dice.png',
+    bg: 'bg-teal-100 dark:bg-teal-950/60',
+    border: 'border-teal-300 dark:border-teal-800',
+  },
+  'ch3-discrete-rv': {
+    src: '/roxy/roxy_chibi_wink.png',
+    bg: 'bg-violet-100 dark:bg-violet-950/60',
+    border: 'border-violet-300 dark:border-violet-800',
+  },
+  'ch4-continuous-rv': {
+    src: '/roxy/roxy_chibi_teaching.png',
+    bg: 'bg-cyan-100 dark:bg-cyan-950/60',
+    border: 'border-cyan-300 dark:border-cyan-800',
+  },
+};
+
+const getChapterMascotBox = (id: ChapterId, isLarge = true) => {
+  const item = CHAPTER_MASCOTS[id] || {
+    src: '/roxy/roxy_avatar_smile.png',
+    bg: 'bg-sky-100 dark:bg-slate-800',
+    border: 'border-sky-300 dark:border-sky-700',
+  };
+  const size = isLarge ? 'w-12 h-12 rounded-2xl' : 'w-10 h-10 rounded-xl';
+  return (
+    <div
+      className={`${size} border-2 border-slate-900 dark:border-slate-700 ${item.bg} shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] flex items-center justify-center shrink-0 overflow-hidden group-hover:scale-105 transition-transform p-1`}
+    >
+      <img
+        src={item.src}
+        alt="Roxy mascot"
+        className="w-full h-full object-contain select-none pointer-events-none"
+        loading="lazy"
+      />
+    </div>
+  );
 };
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => {
@@ -131,60 +98,96 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
 
   return (
     <div className="space-y-12 pb-16">
-      {/* HERO SECTION (Page 1 Style) */}
-      <section className="pt-6 pb-2 text-center space-y-5 max-w-4xl mx-auto">
-        {/* Tagline Badge */}
-        <div className="inline-block">
-          <span className="px-4 py-1.5 rounded-full text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all duration-150 inline-block cursor-default select-none">
-            MAT1101 — Xác suất Thống kê Tương tác (VNU-UET)
-          </span>
-        </div>
+      {/* HERO SECTION WITH ROXY MASCOT */}
+      <section className="pt-4 pb-2 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          {/* Left Column: Heading, Dialogue Bubble & CTAs */}
+          <div className="lg:col-span-7 text-center lg:text-left space-y-5">
+            {/* Tagline Badge */}
+            <div className="inline-block">
+              <span className="px-4 py-1.5 rounded-full text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-none transition-all duration-150 inline-block cursor-default select-none">
+                MAT1101 — Xác suất Thống kê Tương tác (VNU-UET)
+              </span>
+            </div>
 
-        {/* Main 2D Cartoon Title (Single Line, No Scrollbar) */}
-        <div className="py-2">
-          <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl lg:text-[46px] text-slate-900 dark:text-white tracking-tight leading-tight">
-            Trực Quan Hóa <span className="text-sky-600 dark:text-sky-400">Xác Suất Thống Kê</span>
-          </h1>
-        </div>
+            {/* Main Title (Single Line) */}
+            <div>
+              <h1 className="font-heading font-black text-2xl sm:text-3xl md:text-4xl lg:text-[42px] text-slate-900 dark:text-white tracking-tight leading-tight">
+                Trực Quan Hóa <span className="text-sky-600 dark:text-sky-400">Xác Suất Thống Kê</span>
+              </h1>
+            </div>
 
-        {/* Dual CTA Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-          <ClayButton
-            variant="primary"
-            size="lg"
-            onClick={() => onSelectChapter('ch8-limit-theorems')}
-          >
-            Bắt đầu học ngay (Bài 7 - 11)
-          </ClayButton>
+            {/* Roxy Mascot Dialogue Bubble */}
+            <div className="relative bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl p-4 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] text-left max-w-lg mx-auto lg:mx-0">
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse"></span>
+                <span className="text-[11px] font-heading font-black uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                  Roxy Migurdia — Cố Vấn Học Tập
+                </span>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
+                &ldquo;Chào bạn! Cùng mình khám phá ma thuật của Tích chập biến ngẫu nhiên, Định lý Giới hạn CLT và Hồi quy OLS qua các mô phỏng trực quan 2D nhé!&rdquo;
+              </p>
+            </div>
 
-          <ClayButton
-            variant="outline"
-            size="lg"
-            onClick={() => onSelectChapter('ch1-foundations')}
-          >
-            Phần cơ sở (Bài 1 - 6)
-          </ClayButton>
-        </div>
+            {/* Dual CTA Buttons */}
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 pt-1">
+              <ClayButton
+                variant="primary"
+                size="lg"
+                onClick={() => onSelectChapter('ch8-limit-theorems')}
+              >
+                Bắt đầu học ngay (Bài 7 - 11)
+              </ClayButton>
 
-        {/* Stats Row */}
-        <div className="pt-4 flex justify-center gap-8 sm:gap-16 font-mono text-center border-t-2 border-slate-900/10 dark:border-slate-800 max-w-md mx-auto">
-          <div>
-            <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">11</div>
-            <div className="text-xs font-sans text-slate-500 dark:text-slate-400 font-bold mt-0.5">Bài học</div>
+              <ClayButton
+                variant="outline"
+                size="lg"
+                onClick={() => onSelectChapter('ch1-foundations')}
+              >
+                Phần cơ sở (Bài 1 - 6)
+              </ClayButton>
+            </div>
+
+            {/* Stats Row */}
+            <div className="pt-3 flex justify-center lg:justify-start gap-8 sm:gap-12 font-mono border-t-2 border-slate-900/10 dark:border-slate-800 max-w-md mx-auto lg:mx-0">
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">11</div>
+                <div className="text-xs font-sans text-slate-500 dark:text-slate-400 font-bold mt-0.5">Bài học</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-sky-600 dark:text-sky-400">20+</div>
+                <div className="text-xs font-sans text-slate-500 dark:text-slate-400 font-bold mt-0.5">Mô phỏng</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">100%</div>
+                <div className="text-xs font-sans text-slate-500 dark:text-slate-400 font-bold mt-0.5">Trực quan 2D</div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-black text-sky-600 dark:text-sky-400">20+</div>
-            <div className="text-xs font-sans text-slate-500 dark:text-slate-400 font-bold mt-0.5">Mô phỏng</div>
+
+          {/* Right Column: Hero Mascot Artwork */}
+          <div className="lg:col-span-5 flex justify-center select-none">
+            <div className="relative max-w-[320px] sm:max-w-[360px] w-full">
+              <div className="relative bg-gradient-to-b from-sky-50 to-sky-100/60 dark:from-slate-800 dark:to-slate-900/90 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-3xl p-3 shadow-[6px_6px_0px_#0f172a] dark:shadow-[6px_6px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[4px_4px_0px_#0f172a] dark:hover:shadow-[4px_4px_0px_#0284c7] transition-all duration-150 group">
+                <img
+                  src="/roxy/roxy_hero.png"
+                  alt="Roxy Migurdia - Đại Pháp Sư Xác Suất Thống Kê"
+                  className="w-full h-auto object-contain rounded-2xl group-hover:scale-[1.02] transition-transform duration-200"
+                />
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-full shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] text-[11px] font-heading font-black text-slate-800 dark:text-slate-100 whitespace-nowrap">
+                  Thủy Thần Cấp Pháp Sư ✦
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">100%</div>
-            <div className="text-xs font-sans text-slate-500 dark:text-slate-400 font-bold mt-0.5">Trực quan 2D</div>
-          </div>
+
         </div>
       </section>
 
-      {/* 4 FEATURE CARDS WITH PASTEL ICON BOXES (Matching media_1788535946795.png) */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+      {/* 4 FEATURE CARDS */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
         <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7] active:translate-x-[3px] active:translate-y-[3px] active:shadow-none rounded-2xl p-4 text-center flex flex-col items-center gap-2.5 transition-all duration-150 cursor-pointer select-none">
           <div className="w-12 h-12 rounded-2xl bg-rose-200 dark:bg-rose-950/80 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] flex items-center justify-center">
             <svg className="w-6 h-6 stroke-slate-900 dark:stroke-rose-200" fill="none" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -238,16 +241,23 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
         </div>
       </section>
 
-      {/* CURRICULUM SECTION 1: PRIORITY CHAPTERS (Page 2 Card Grid) */}
+      {/* CURRICULUM SECTION 1: PRIORITY CHAPTERS */}
       <section className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b-2 border-slate-900/20 dark:border-slate-800 gap-1">
-          <div>
-            <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
-              Phần Trọng Tâm (Bài 7 — Bài 11)
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Các bài học trọng điểm thi cuối kỳ: Tích chập, MGF, CLT, Bayes, Ước lượng & Hồi quy.
-            </p>
+          <div className="flex items-center gap-3">
+            <img
+              src="/roxy/roxy_teacher.png"
+              alt="Roxy Teacher Mascot"
+              className="w-10 h-10 object-contain rounded-xl border border-slate-900 bg-emerald-50 dark:bg-slate-800 p-0.5"
+            />
+            <div>
+              <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
+                Phần Trọng Tâm (Bài 7 — Bài 11)
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Các bài học trọng điểm thi cuối kỳ: Tích chập, MGF, CLT, Bayes, Ước lượng & Hồi quy.
+              </p>
+            </div>
           </div>
           <span className="text-xs font-bold text-sky-600 dark:text-sky-400 font-mono">
             {priorityChapters.length} Bài học ưu tiên
@@ -261,6 +271,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
               key={chapter.id}
               onClick={() => onSelectChapter(chapter.id)}
               className="
+                group
                 bg-white dark:bg-slate-900 
                 border-2 border-slate-900 dark:border-slate-700 
                 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] 
@@ -271,10 +282,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
               "
             >
               <div className="space-y-3">
-                {/* Header Row: Icon box + number badge + Priority badge */}
+                {/* Header Row: Mascot Box + Number Badge + Priority Badge */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    {getChapterIcon(chapter.id)}
+                    {getChapterMascotBox(chapter.id, true)}
                     <span className="px-2.5 py-0.5 rounded-lg text-xs font-heading font-extrabold bg-sky-600 text-white border border-slate-900">
                       {chapter.number}
                     </span>
@@ -286,7 +297,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
 
                 {/* Title */}
                 <div>
-                  <h3 className="font-heading font-black text-base sm:text-lg text-slate-900 dark:text-white leading-snug">
+                  <h3 className="font-heading font-black text-base sm:text-lg text-slate-900 dark:text-white leading-snug group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                     {chapter.titleVi}
                   </h3>
                   <p className="text-xs font-mono text-slate-500 dark:text-slate-400 mt-0.5">
@@ -294,7 +305,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
                   </p>
                 </div>
 
-                {/* Mini Lab Tags (No long wordy subtitle!) */}
+                {/* Mini Lab Tags */}
                 <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-wrap gap-1.5">
                   {chapter.modules.map((m) => (
                     <span 
@@ -312,8 +323,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
                 <span className="text-[11px] font-mono text-slate-400">
                   {chapter.modules.length} Phòng thí nghiệm
                 </span>
-                <span className="text-xs font-heading font-bold text-sky-600 dark:text-sky-400 hover:underline">
-                  Vào học
+                <span className="text-xs font-heading font-bold text-sky-600 dark:text-sky-400 group-hover:underline">
+                  Vào học →
                 </span>
               </div>
             </div>
@@ -324,13 +335,20 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
       {/* CURRICULUM SECTION 2: FOUNDATION CHAPTERS */}
       <section className="space-y-4 pt-2">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b-2 border-slate-900/20 dark:border-slate-800 gap-1">
-          <div>
-            <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
-              Phần Cơ Sở (Bài 1 — Bài 6)
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Nền tảng xác suất cổ điển, biến ngẫu nhiên rời rạc và liên tục.
-            </p>
+          <div className="flex items-center gap-3">
+            <img
+              src="/roxy/roxy_chibi_reading.png"
+              alt="Roxy Reading Mascot"
+              className="w-9 h-9 object-contain rounded-xl border border-slate-900 bg-slate-100 dark:bg-slate-800 p-0.5"
+            />
+            <div>
+              <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
+                Phần Cơ Sở (Bài 1 — Bài 6)
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Nền tảng xác suất cổ điển, biến ngẫu nhiên rời rạc và liên tục.
+              </p>
+            </div>
           </div>
           <span className="text-xs font-bold text-slate-500 font-mono">
             {foundationChapters.length} Bài học cơ sở
@@ -343,6 +361,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
               key={chapter.id}
               onClick={() => onSelectChapter(chapter.id)}
               className="
+                group
                 bg-white dark:bg-slate-900 
                 border-2 border-slate-900 dark:border-slate-700 
                 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] 
@@ -355,7 +374,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {getChapterIcon(chapter.id)}
+                    {getChapterMascotBox(chapter.id, false)}
                     <span className="px-2 py-0.5 rounded-lg text-xs font-heading font-bold bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-300 dark:border-slate-700">
                       {chapter.number}
                     </span>
@@ -366,7 +385,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
                 </div>
 
                 <div>
-                  <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white">
+                  <h3 className="font-heading font-bold text-sm text-slate-900 dark:text-white group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                     {chapter.titleVi}
                   </h3>
                   <p className="text-[11px] font-mono text-slate-400 truncate">
@@ -376,8 +395,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
               </div>
 
               <div className="pt-3 mt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
-                <span className="text-xs font-heading font-bold text-sky-600 dark:text-sky-400 hover:underline">
-                  Mở Lab
+                <span className="text-xs font-heading font-bold text-sky-600 dark:text-sky-400 group-hover:underline">
+                  Mở Lab →
                 </span>
               </div>
             </div>
@@ -385,29 +404,43 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
         </div>
       </section>
 
-      {/* ENROLLMENT / LEARNING CTA BANNER (Page 5 Flat Style) */}
-      <section className="p-6 sm:p-8 rounded-3xl bg-sky-600 border-[2.5px] border-slate-900 text-white shadow-[6px_6px_0px_#0f172a] dark:shadow-[6px_6px_0px_#0284c7] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0px_#0f172a] dark:hover:shadow-[3px_3px_0px_#0284c7] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 text-center space-y-3 max-w-3xl mx-auto">
-        <h3 className="font-heading font-black text-2xl sm:text-3xl">
-          Sẵn sàng khám phá phòng thí nghiệm?
-        </h3>
-        <p className="text-xs sm:text-sm text-sky-100 max-w-lg mx-auto">
-          Lựa chọn một trong các thí nghiệm trực quan nổi bật bên dưới để bắt đầu tương tác ngay:
-        </p>
-        <div className="pt-2 flex flex-wrap justify-center gap-3">
-          <ClayButton
-            variant="secondary"
-            size="md"
-            onClick={() => onSelectChapter('ch8-limit-theorems')}
-          >
-            Định lý Giới hạn CLT
-          </ClayButton>
-          <ClayButton
-            variant="outline"
-            size="md"
-            onClick={() => onSelectChapter('ch11-regression')}
-          >
-            Hồi quy Tuyến tính OLS
-          </ClayButton>
+      {/* ENROLLMENT / LEARNING CTA BANNER WITH ROXY */}
+      <section className="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-sky-600 border-[2.5px] border-slate-900 text-white shadow-[6px_6px_0px_#0f172a] dark:shadow-[6px_6px_0px_#0284c7] hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[3px_3px_0px_#0f172a] dark:hover:shadow-[3px_3px_0px_#0284c7] active:translate-x-[6px] active:translate-y-[6px] active:shadow-none transition-all duration-150 max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-center md:text-left space-y-2 max-w-xl">
+            <span className="inline-block px-3 py-0.5 rounded-full bg-sky-700/90 border border-sky-300/40 text-[10px] font-heading font-extrabold tracking-wider uppercase">
+              Thực Hành Tương Tác
+            </span>
+            <h3 className="font-heading font-black text-2xl sm:text-3xl">
+              Sẵn sàng khám phá phòng thí nghiệm?
+            </h3>
+            <p className="text-xs sm:text-sm text-sky-100">
+              Lựa chọn một trong các thí nghiệm trực quan nổi bật bên dưới để bắt đầu tương tác ngay:
+            </p>
+            <div className="pt-2 flex flex-wrap justify-center md:justify-start gap-3">
+              <ClayButton
+                variant="secondary"
+                size="md"
+                onClick={() => onSelectChapter('ch8-limit-theorems')}
+              >
+                Định lý Giới hạn CLT
+              </ClayButton>
+              <ClayButton
+                variant="outline"
+                size="md"
+                onClick={() => onSelectChapter('ch11-regression')}
+              >
+                Hồi quy Tuyến tính OLS
+              </ClayButton>
+            </div>
+          </div>
+          <div className="shrink-0 select-none">
+            <img
+              src="/roxy/roxy_chibi_magic.png"
+              alt="Roxy Water Magic"
+              className="w-32 sm:w-40 h-auto object-contain drop-shadow-lg"
+            />
+          </div>
         </div>
       </section>
     </div>
