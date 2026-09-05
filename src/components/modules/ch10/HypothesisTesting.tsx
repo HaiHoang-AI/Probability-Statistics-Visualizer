@@ -350,14 +350,14 @@ export const HypothesisTesting: React.FC = () => {
           <LabBriefing
             question="Trong kiểm định giả thuyết, tại sao ta không thể giảm cả Sai lầm loại I (kết tội oan người vô tội) và Sai lầm loại II (bỏ lọt kẻ có tội) về 0 cùng một lúc? Làm sao để tăng Lực kiểm định (Power)?"
             formula="\alpha = P(\text{Bác bỏ } H_0 \mid H_0 \text{ đúng}), \quad \beta = P(\text{Chấp nhận } H_0 \mid H_1 \text{ đúng}), \quad \text{Power} = 1 - \beta"
-            mathExplanation="Ngưỡng quyết định x_c là một ranh giới cắt đôi không gian: Dịch x_c sang phải sẽ giảm α (bớt kết tội oan), nhưng lại làm phình to diện tích β (bỏ lọt tội phạm)! Cách DUY NHẤT để giảm cả 2 sai lầm cùng lúc là TĂNG CỠ MẪU n để 2 quả chuông cùng co thắt lại!"
+            mathExplanation="Ngưỡng quyết định $x_c$ là một ranh giới cắt đôi không gian: Dịch $x_c$ sang phải sẽ giảm $\alpha$ (bớt kết tội oan), nhưng lại làm phình to diện tích $\beta$ (bỏ lọt tội phạm)! Cách DUY NHẤT để giảm cả 2 sai lầm cùng lúc là TĂNG CỠ MẪU $n$ để 2 quả chuông cùng co thắt lại!"
             howToInteract={[
-              "Kéo slider 'Vị trí ngưỡng bác bỏ x_c' sang trái và sang phải.",
-              "Xem diện tích màu đỏ (α) và diện tích màu vàng (β) giằng co bù trừ nhau.",
-              "Kéo slider 'Cỡ mẫu n' tăng lên 36 hoặc 64 để thấy 2 quả chuông co hẹp và tách rời nhau ra."
+              "Kéo slider 'Vị trí ngưỡng bác bỏ $x_c$' sang trái và sang phải.",
+              "Xem diện tích màu đỏ ($\alpha$) và diện tích màu vàng ($\beta$) giằng co bù trừ nhau.",
+              "Kéo slider 'Cỡ mẫu $n$' tăng lên 36 hoặc 64 để thấy 2 quả chuông co hẹp và tách rời nhau ra."
             ]}
-            whatToObserve="Khi kéo ngưỡng x_c sang phải: α giảm xuống nhưng β lập tức tăng vọt. Chỉ khi kéo n tăng lên (độ lệch chuẩn thu hẹp), cả α và β mới cùng co bé lại, đưa Lực kiểm định (Power = 1 - β) lên sát 100%!"
-            takeaway="Muốn kiểm định vừa nghiêm ngặt (α bé) vừa nhạy bén (Power cao) $\implies$ BẮT BUỘC PHẢI THU THẬP THÊM MẪU n!"
+            whatToObserve="Khi kéo ngưỡng $x_c$ sang phải: $\alpha$ giảm xuống nhưng $\beta$ lập tức tăng vọt. Chỉ khi kéo $n$ tăng lên (độ lệch chuẩn thu hẹp), cả $\alpha$ và $\beta$ mới cùng co bé lại, đưa Lực kiểm định ($\text{Power} = 1 - \beta$) lên sát 100%!"
+            takeaway="Muốn kiểm định vừa nghiêm ngặt ($\alpha$ bé) vừa nhạy bén ($\text{Power}$ cao) $\implies$ BẮT BUỘC PHẢI THU THẬP THÊM MẪU $n$!"
           />
         </div>
       )}
@@ -632,16 +632,16 @@ export const HypothesisTesting: React.FC = () => {
           </ClayCard>
 
           <LabBriefing
-            question="Trị số p (p-value) thực chất là gì? Tại sao quy tắc quyết định luôn là: 'Nếu p-value <= alpha thì BÁC BỎ H_0'?"
+            question="Trị số $p$ ($p\text{-value}$) thực chất là gì? Tại sao quy tắc quyết định luôn là: 'Nếu $p\text{-value} \le \alpha$ thì BÁC BỎ $H_0$'?"
             formula="p\text{-value} = P(\text{Thống kê mẫu cực đoan hơn hoặc bằng giá trị quan sát được} \mid H_0 \text{ đúng})"
-            mathExplanation="p-value đo 'mức độ ngạc nhiên' của dữ liệu nếu giả định H_0 là đúng. Nếu p-value cực nhỏ (ví dụ 0.01), nghĩa là nếu H_0 đúng thì cơ hội xảy ra dữ liệu mẫu như vậy chỉ là 1% $\implies$ quá phi lý $\implies$ H_0 sai $\implies$ BÁC BỎ H_0!"
+            mathExplanation="$p\text{-value}$ đo 'mức độ ngạc nhiên' của dữ liệu nếu giả định $H_0$ là đúng. Nếu $p\text{-value}$ cực nhỏ (ví dụ 0.01), nghĩa là nếu $H_0$ đúng thì cơ hội xảy ra dữ liệu mẫu như vậy chỉ là 1% $\implies$ quá phi lý $\implies H_0$ sai $\implies$ BÁC BỎ $H_0$!"
             howToInteract={[
               "Chọn loại kiểm định: Phía phải, Phía trái, hoặc Hai phía.",
-              "Kéo slider giá trị thống kê mẫu Z quan sát từ -3.5 đến +3.5.",
-              "Xem diện tích quét màu đỏ (p-value) co giãn và thẻ trạng thái BÁC BỎ / CHƯA ĐỦ CƠ SỞ đổi màu tương ứng."
+              "Kéo slider giá trị thống kê mẫu $Z$ quan sát từ -3.5 đến +3.5.",
+              "Xem diện tích quét màu đỏ ($p\text{-value}$) co giãn và thẻ trạng thái BÁC BỎ / CHƯA ĐỦ CƠ SỞ đổi màu tương ứng."
             ]}
-            whatToObserve="Khi Z quan sát vượt qua vạch tới hạn Z_crit (vạch xám/đen), diện tích p-value lập tức nhỏ hơn alpha (0.05) $\implies$ Thẻ kết luận chuyển sang màu đỏ: 'BÁC BỎ H₀, CÓ Ý NGHĨA THỐNG KÊ'!"
-            takeaway="Câu thần chú ôn thi: 'p-value nhỏ hơn alpha thì BÁC BỎ H_0, lớn hơn alpha thì CHƯA ĐỦ BẰNG CHỨNG để bác bỏ'!"
+            whatToObserve="Khi $Z$ quan sát vượt qua vạch tới hạn $Z_{\text{crit}}$ (vạch xám/đen), diện tích $p\text{-value}$ lập tức nhỏ hơn $\alpha$ ($0.05$) $\implies$ Thẻ kết luận chuyển sang màu đỏ: 'BÁC BỎ $H_0$, CÓ Ý NGHĨA THỐNG KÊ'!"
+            takeaway="Câu thần chú ôn thi: 'Nếu $p\text{-value} \le \alpha$ thì BÁC BỎ $H_0$, nếu $p\text{-value} > \alpha$ thì CHƯA ĐỦ BẰNG CHỨNG để bác bỏ'!"
           />
         </div>
       )}
@@ -945,16 +945,16 @@ export const HypothesisTesting: React.FC = () => {
           </ClayCard>
 
           <LabBriefing
-            question="Một công ty công nghệ muốn thử nghiệm A/B tính năng mới. Họ cần lấy mẫu tối thiểu bao nhiêu người dùng n để chắc chắn (với xác suất 80% trở lên) phát hiện ra sự cải tiến nếu tính năng đó thực sự hiệu quả?"
+            question="Một công ty công nghệ muốn thử nghiệm A/B tính năng mới. Họ cần lấy mẫu tối thiểu bao nhiêu người dùng $n$ để chắc chắn (với xác suất 80% trở lên) phát hiện ra sự cải tiến nếu tính năng đó thực sự hiệu quả?"
             formula="\text{Power}(n) = 1 - \beta = \Phi\left( d\sqrt{n} - Z_{\alpha/2} \right) \quad \text{với } d = \frac{\mu_1 - \mu_0}{\sigma}"
-            mathExplanation="Đường cong Lực kiểm định (Power Curve) biểu diễn quan hệ phi tuyến giữa cỡ mẫu n và xác suất phát hiện hiệu ứng thực sự. Ngưỡng chuẩn vàng trong khoa học luôn là 80% (0.80). Điểm giao cắt giữa đường cong với vạch 80% chính là cỡ mẫu tối thiểu n cần thiết!"
+            mathExplanation="Đường cong Lực kiểm định (Power Curve) biểu diễn quan hệ phi tuyến giữa cỡ mẫu $n$ và xác suất phát hiện hiệu ứng thực sự. Ngưỡng chuẩn vàng trong khoa học luôn là 80% (0.80). Điểm giao cắt giữa đường cong với vạch 80% chính là cỡ mẫu tối thiểu $n$ cần thiết!"
             howToInteract={[
-              "Kéo slider 'Effect Size d' (độ chênh lệch chuẩn hóa) từ 0.2 (hiệu ứng yếu) đến 0.8 (hiệu ứng mạnh).",
-              "Kéo slider 'Cỡ mẫu n' từ 5 đến 120 quan sát.",
+              "Kéo slider 'Effect Size $d$' (độ chênh lệch chuẩn hóa) từ 0.2 (hiệu ứng yếu) đến 0.8 (hiệu ứng mạnh).",
+              "Kéo slider 'Cỡ mẫu $n$' từ 5 đến 120 quan sát.",
               "Quan sát điểm chấm tím di chuyển dọc theo đường cong Power và vượt qua vạch chuẩn vàng 80%."
             ]}
-            whatToObserve="Nếu hiệu ứng d rất nhỏ (0.2), bạn cần cỡ mẫu n > 100 mới đạt 80% Power! Nhưng nếu hiệu ứng rất rõ nét (d = 0.8), chỉ cần n = 25 là đủ để kiểm định thành công."
-            takeaway="Phân tích lực kiểm định là bước đầu tiên của mọi dự án Data Science & thử nghiệm lâm sàng: Tính toán trước cỡ mẫu n cần thiết trước khi bắt đầu thu thập dữ liệu!"
+            whatToObserve="Nếu hiệu ứng $d$ rất nhỏ (0.2), bạn cần cỡ mẫu $n > 100$ mới đạt 80% Power! Nhưng nếu hiệu ứng rất rõ nét ($d = 0.8$), chỉ cần $n = 25$ là đủ để kiểm định thành công."
+            takeaway="Phân tích lực kiểm định là bước đầu tiên của mọi dự án Data Science & thử nghiệm lâm sàng: Tính toán trước cỡ mẫu $n$ cần thiết trước khi bắt đầu thu thập dữ liệu!"
           />
         </div>
       )}

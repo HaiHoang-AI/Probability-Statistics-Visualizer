@@ -18,7 +18,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Mô phỏng Phép Tích chập trực quan',
         chapterId: 'ch7-1-derived',
         lectureRef: 'Slide 14 - 17',
-        descriptionVi: 'Trực quan hóa hoạt ảnh lật ngược và trượt của f_Y(z-x) trên f_X(x) để tạo nên hàm mật độ tổng f_Z(z).',
+        descriptionVi: 'Trực quan hóa hoạt ảnh lật ngược và trượt của $f_Y(z-x)$ trên $f_X(x)$ để tạo nên hàm mật độ tổng $f_Z(z)$.',
         tag: 'Convolution',
         badgeColor: 'bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300',
         isPriority: true
@@ -29,7 +29,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Đổi biến Hàm Mật độ Liên tục',
         chapterId: 'ch7-1-derived',
         lectureRef: 'Slide 6 - 13',
-        descriptionVi: 'Trực quan hóa công thức f_Y(y) = f_X(x) / |g\'(x)|. Giải thích vì sao đoạn nào hàm g phẳng thì mật độ f_Y vọt lên cực đại.',
+        descriptionVi: 'Trực quan hóa công thức $f_Y(y) = f_X(x) / |g\'(x)|$. Giải thích vì sao đoạn nào hàm $g$ phẳng thì mật độ $f_Y$ vọt lên cực đại.',
         tag: 'Jacobian',
         badgeColor: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
         isPriority: true
@@ -74,7 +74,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
     number: 'Bài 7.2',
     titleEn: 'Moment Generating Functions (MGF)',
     titleVi: 'Hàm sinh Moment & Phép cộng Độc lập',
-    subtitle: 'Định nghĩa M_X(s) = E[e^{sX}], đạo hàm bậc cao tại 0 sinh ra Moment, biến tích chập thành phép nhân',
+    subtitle: 'Định nghĩa $M_X(s) = E[e^{sX}]$, đạo hàm bậc cao tại 0 sinh ra Moment, biến tích chập thành phép nhân',
     lecturePdf: 'MAT1101 Bài 7.2 -- Hàm sinh moment.pdf',
     iconName: 'Sparkles',
     color: 'from-orange-500 to-rose-500',
@@ -86,7 +86,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Độ dốc & Độ cong Hàm sinh Moment',
         chapterId: 'ch7-2-mgf',
         lectureRef: 'Slide 6 - 13',
-        descriptionVi: 'Xem tiếp tuyến tại s=0 (kỳ vọng E[X]) và parabol xấp xỉ (moment bậc 2 E[X^2]) của các phân bố Poisson, Exponential, Normal.',
+        descriptionVi: 'Xem tiếp tuyến tại $s=0$ (kỳ vọng $E[X]$) và parabol xấp xỉ (moment bậc 2 $E[X^2]$) của các phân bố Poisson, Exponential, Normal.',
         tag: 'MGF',
         badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
         isPriority: true
@@ -108,7 +108,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Tổng số Ngẫu nhiên các Biến & Định lý Wald',
         chapterId: 'ch7-2-mgf',
         lectureRef: 'Slide 23 - 28',
-        descriptionVi: 'Mô phỏng Monte Carlo kiểm chứng công thức Wald: E[S] = E[N]E[X] và Var(S) khi cả số lượng phần tử N cũng là biến ngẫu nhiên.',
+        descriptionVi: 'Mô phỏng Monte Carlo kiểm chứng công thức Wald: $E[S] = E[N]E[X]$ và $\\text{Var}(S)$ khi cả số lượng phần tử $N$ cũng là biến ngẫu nhiên.',
         tag: 'Wald Identity',
         badgeColor: 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300',
         isPriority: true
@@ -143,7 +143,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Mô phỏng Quỹ đạo Luật số lớn',
         chapterId: 'ch8-limit-theorems',
         lectureRef: 'Slide 16 - 34',
-        descriptionVi: 'Tung 15 chuỗi mẫu X_bar_n theo n, quan sát chúng chui hết vào ống epsilon quanh mu khi n tiến ra vô cùng.',
+        descriptionVi: 'Tung 15 chuỗi mẫu $\\bar{X}_n$ theo $n$, quan sát chúng chui hết vào ống $\\varepsilon$ quanh $\\mu$ khi $n$ tiến ra vô cùng.',
         tag: 'LLN Convergence',
         badgeColor: 'bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300',
         isPriority: true
@@ -154,7 +154,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'So tài 3 Cận Xác suất Đuôi',
         chapterId: 'ch8-limit-theorems',
         lectureRef: 'Slide 6 - 15',
-        descriptionVi: 'Đồ thị so sánh tốc độ siết cận của Markov, Chebyshev (1/k^2) và Chernoff (hàm mũ e^{-ck^2}).',
+        descriptionVi: 'Đồ thị so sánh tốc độ siết cận của Markov, Chebyshev ($1/k^2$) và Chernoff (hàm mũ $e^{-ck^2}$).',
         tag: 'Tail Bounds',
         badgeColor: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
         isPriority: true
@@ -165,7 +165,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Khi CLT Thất bại: Phân phối Cauchy & Đuôi dày',
         chapterId: 'ch8-limit-theorems',
         lectureRef: 'Slide 56 - 60',
-        descriptionVi: 'Mô phỏng phân phối Cauchy có phương sai vô hạn. Tăng n nhưng trung bình mẫu vẫn giật tung tóe, không bao giờ hóa thành chuông Gauss!',
+        descriptionVi: 'Mô phỏng phân phối Cauchy có phương sai vô hạn. Tăng $n$ nhưng trung bình mẫu vẫn giật tung tóe, không bao giờ hóa thành chuông Gauss!',
         tag: 'Fat Tails',
         badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
         isPriority: true
@@ -246,7 +246,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Mô phỏng Độ phủ 100 Khoảng tin cậy',
         chapterId: 'ch10-1-estimation',
         lectureRef: 'Slide 18 - 30',
-        descriptionVi: 'Sinh 100 mẫu lặp lại. Khoảng nào cắt qua mu thật tô xanh lá, khoảng nào trượt tô đỏ. Hiểu sâu sắc bản chất tần suất!',
+        descriptionVi: 'Sinh 100 mẫu lặp lại. Khoảng nào cắt qua $\\mu$ thật tô xanh lá, khoảng nào trượt tô đỏ. Hiểu sâu sắc bản chất tần suất!',
         tag: '95% Coverage',
         badgeColor: 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300',
         isPriority: true
@@ -257,7 +257,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Phân bố Student t tiệm cận Phân bố Chuẩn',
         chapterId: 'ch10-1-estimation',
         lectureRef: 'Slide 27 - 34',
-        descriptionVi: 'Kéo slider bậc tự do nu từ 1 đến 35. Quan sát đuôi dày của Student xẹp dần và trùng khít hoàn hảo với đường chuẩn Gauss khi nu >= 30.',
+        descriptionVi: 'Kéo slider bậc tự do $\\nu$ từ 1 đến 35. Quan sát đuôi dày của Student xẹp dần và trùng khít hoàn hảo với đường chuẩn Gauss khi $\\nu \\ge 30$.',
         tag: 'Student t',
         badgeColor: 'bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300',
         isPriority: true
@@ -268,7 +268,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Bí ẩn Hiệu chỉnh Bessel: Chia n-1 hay n?',
         chapterId: 'ch10-1-estimation',
         lectureRef: 'Slide 14 - 17',
-        descriptionVi: 'Mô phỏng 2,500 mẫu nhỏ. Xem công thức chia n luôn ước lượng non, còn chia n-1 triệt tiêu hoàn toàn độ chệch!',
+        descriptionVi: 'Mô phỏng 2,500 mẫu nhỏ. Xem công thức chia $n$ luôn ước lượng non, còn chia $n-1$ triệt tiêu hoàn toàn độ chệch!',
         tag: 'Unbiasedness',
         badgeColor: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300',
         isPriority: true
@@ -279,7 +279,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Đường cong Hàm Hợp lý Cực đại',
         chapterId: 'ch10-1-estimation',
         lectureRef: 'Slide 6 - 13',
-        descriptionVi: 'Thêm bớt điểm dữ liệu trên trục số, quan sát đường cong Likelihood L(theta) đạt đỉnh cực đại tại trung bình mẫu.',
+        descriptionVi: 'Thêm bớt điểm dữ liệu trên trục số, quan sát đường cong Likelihood $L(\\theta)$ đạt đỉnh cực đại tại trung bình mẫu.',
         tag: 'MLE',
         badgeColor: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',
         isPriority: true
@@ -291,7 +291,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
     number: 'Bài 10.2',
     titleEn: 'Classical Hypothesis Testing',
     titleVi: 'Kiểm tra Giả thuyết Thống kê Cổ điển',
-    subtitle: 'Giả thuyết H0 vs H1, Sai lầm loại I (alpha) & loại II (beta), Lực kiểm định (Power), Z-test, T-test, p-value',
+    subtitle: 'Giả thuyết $H_0$ vs $H_1$, Sai lầm loại I ($\\alpha$) & loại II ($\\beta$), Lực kiểm định (Power), Z-test, T-test, p-value',
     lecturePdf: 'MAT1101 Bài 10.2 -- Kiểm tra giả thuyết thống kê theo trường phái cổ điển.pdf',
     iconName: 'Scale',
     color: 'from-red-500 to-rose-600',
@@ -303,7 +303,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Đánh đổi Sai lầm Loại I, Loại II & Lực kiểm định',
         chapterId: 'ch10-2-hypothesis',
         lectureRef: 'Slide 8 - 16',
-        descriptionVi: 'Hai quả chuông H0 và H1 cùng ngưỡng cắt di động. Kéo ngưỡng để thấy alpha và beta đánh đổi, tăng n để cả 2 lỗi cùng giảm mạnh!',
+        descriptionVi: 'Hai quả chuông $H_0$ và $H_1$ cùng ngưỡng cắt di động. Kéo ngưỡng để thấy $\\alpha$ và $\\beta$ đánh đổi, tăng $n$ để cả 2 lỗi cùng giảm mạnh!',
         tag: 'Error Tradeoff',
         badgeColor: 'bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300',
         isPriority: true
@@ -314,7 +314,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Trực quan hóa Trị số p (p-value) & Vùng Bác bỏ',
         chapterId: 'ch10-2-hypothesis',
         lectureRef: 'Slide 17 - 25',
-        descriptionVi: 'Chọn kiểm định 1 phía trái, 1 phía phải hoặc 2 phía. Nhập giá trị mẫu, xem diện tích p-value quét đuôi và so sánh với mức ý nghĩa alpha.',
+        descriptionVi: 'Chọn kiểm định 1 phía trái, 1 phía phải hoặc 2 phía. Nhập giá trị mẫu, xem diện tích $p\\text{-value}$ quét đuôi và so sánh với mức ý nghĩa $\\alpha$.',
         tag: 'P-Value Engine',
         badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
         isPriority: true
@@ -325,7 +325,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Hoạch định Cỡ mẫu & Phân tích Lực Kiểm Định',
         chapterId: 'ch10-2-hypothesis',
         lectureRef: 'Slide 26 - 32',
-        descriptionVi: 'Kéo Effect Size d và cỡ mẫu n để xác định xem cần bao nhiêu quan sát thì đạt chuẩn vàng 80% Power trong A/B Testing.',
+        descriptionVi: 'Kéo Effect Size $d$ và cỡ mẫu $n$ để xác định xem cần bao nhiêu quan sát thì đạt chuẩn vàng 80% Power trong A/B Testing.',
         tag: 'Power Curve',
         badgeColor: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300',
         isPriority: true
@@ -337,7 +337,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
     number: 'Bài 11',
     titleEn: 'Linear Regression & Least Squares',
     titleVi: 'Hồi quy Tuyến tính & Bình phương Tối thiểu',
-    subtitle: 'Ước lượng OLS, Hình vuông phần dư (Residual Squares), Điểm ngoại lai đòn bẩy, Phân rã TSS = MSS + RSS & R²',
+    subtitle: 'Ước lượng OLS, Hình vuông phần dư (Residual Squares), Điểm ngoại lai đòn bẩy, Phân rã $\\text{TSS} = \\text{MSS} + \\text{RSS}$ & $R^2$',
     lecturePdf: 'MAT1101 Bài 11 -- Hồi quy tuyến tính.pdf',
     iconName: 'LineChart',
     color: 'from-blue-600 to-cyan-500',
@@ -360,7 +360,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Phân rã Phương sai & Bản chất của R²',
         chapterId: 'ch11-regression',
         lectureRef: 'Slide 33 - 38',
-        descriptionVi: 'Trực quan hóa đoạn sai số đỏ (chưa giải thích) và xanh (đã giải thích), thấy rõ vì sao R^2 đo lường tỷ lệ biến thiên.',
+        descriptionVi: 'Trực quan hóa đoạn sai số đỏ (chưa giải thích) và xanh (đã giải thích), thấy rõ vì sao $R^2$ đo lường tỷ lệ biến thiên.',
         tag: 'R-Squared',
         badgeColor: 'bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
         isPriority: true
@@ -371,7 +371,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Điểm Ngoại Lai, Đòn Bẩy & Khoảng Cách Cook',
         chapterId: 'ch11-regression',
         lectureRef: 'Slide 39 - 44',
-        descriptionVi: 'Kéo điểm ngoại lai ra mép xa tọa độ để xem đường OLS bị bẻ gãy ngoắt ngoéo và chỉ số Cook’s D cảnh báo nguy hiểm.',
+        descriptionVi: 'Kéo điểm ngoại lai ra mép xa tọa độ để xem đường OLS bị bẻ gãy ngoắt ngoéo và chỉ số Cook’s $D$ cảnh báo nguy hiểm.',
         tag: "Cook's D",
         badgeColor: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',
         isPriority: true
@@ -382,7 +382,7 @@ export const CURRICULUM_DATA: ChapterInfo[] = [
         titleVi: 'Bắt Bệnh Mô Hình Qua Đồ Thị Phần Dư',
         chapterId: 'ch11-regression',
         lectureRef: 'Slide 45 - 50',
-        descriptionVi: 'Xem đồ thị phần dư e_i theo y_hat để phát hiện các căn bệnh vi phạm giả thiết: Quan hệ phi tuyến (chữ U) hay Loa kèn (Heteroscedasticity).',
+        descriptionVi: 'Xem đồ thị phần dư $e_i$ theo $\\hat{y}_i$ để phát hiện các căn bệnh vi phạm giả thiết: Quan hệ phi tuyến (chữ U) hay Loa kèn (Heteroscedasticity).',
         tag: 'Diagnostics',
         badgeColor: 'bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300',
         isPriority: true

@@ -273,16 +273,19 @@ export const MomentGeneratingFunction: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
                 <div className="flex items-center gap-4 flex-wrap">
                   <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
-                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span> Đường cong M_X(s)
+                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span>
+                    <span>Đường cong <MathView math="M_X(s)" /></span>
                   </span>
                   {showTangent && (
                     <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
-                      <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span> Tiếp tuyến: Độ dốc = E[X] = {fmt(mean, 2)}
+                      <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span>
+                      <span>Tiếp tuyến: Độ dốc = <MathView math="E[X]" /> = {fmt(mean, 2)}</span>
                     </span>
                   )}
                   {showParabola && (
                     <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-bold">
-                      <span className="w-4 h-0.5 bg-amber-500"></span> Parabol: Độ cong = E[X²] = {fmt(moment2, 2)}
+                      <span className="w-4 h-0.5 bg-amber-500"></span>
+                      <span>Parabol: Độ cong = <MathView math="E[X^2]" /> = {fmt(moment2, 2)}</span>
                     </span>
                   )}
                 </div>
@@ -399,16 +402,16 @@ export const MomentGeneratingFunction: React.FC = () => {
           </div>
 
           <LabBriefing
-            question="Hàm sinh Moment M_X(s) = E[e^{sX}] là một công cụ biến đổi đại số cực mạnh. Làm thế nào mà chỉ cần đạo hàm hàm số này tại điểm gốc s = 0, ta lại thu được toàn bộ các moment kỳ vọng và phương sai?"
+            question="Hàm sinh Moment $M_X(s) = \mathbb{E}[e^{sX}]$ là một công cụ biến đổi đại số cực mạnh. Làm thế nào mà chỉ cần đạo hàm hàm số này tại điểm gốc $s = 0$, ta lại thu được toàn bộ các moment kỳ vọng và phương sai?"
             formula="M_X(s) = \mathbb{E}[e^{sX}] = 1 + s\mathbb{E}[X] + \frac{s^2}{2!}\mathbb{E}[X^2] + \dots \implies M'_X(0) = \mathbb{E}[X], \quad M''_X(0) = \mathbb{E}[X^2]"
-            mathExplanation="Khai triển chuỗi Taylor của hàm e^{sX} tại s = 0 biến các lũy thừa của s thành hệ số chứa các moment E[X^k]. Do đó: độ dốc tiếp tuyến tại 0 chính là Kỳ vọng E[X], và độ cong uốn parabol tại 0 chính là Moment bậc 2 E[X²]!"
+            mathExplanation="Khai triển chuỗi Taylor của hàm $e^{sX}$ tại $s = 0$ biến các lũy thừa của $s$ thành hệ số chứa các moment $\mathbb{E}[X^k]$. Do đó: độ dốc tiếp tuyến tại 0 chính là Kỳ vọng $\mathbb{E}[X]$, và độ cong uốn parabol tại 0 chính là Moment bậc 2 $\mathbb{E}[X^2]$!"
             howToInteract={[
-              "Chọn một trong 3 phân phối: Poisson(λ), Mũ Exp(λ), hoặc Chuẩn N(μ, 1).",
-              "Kéo slider tham số để xem đường cong M_X(s) đổi độ dốc tại điểm s = 0.",
+              "Chọn một trong 3 phân phối: Poisson($\lambda$), Mũ Exp($\lambda$), hoặc Chuẩn $\\mathcal{N}(\\mu, 1)$.",
+              "Kéo slider tham số để xem đường cong $M_X(s)$ đổi độ dốc tại điểm $s = 0$.",
               "Bật/tắt checkbox 'Hiện tiếp tuyến' và 'Hiện parabol' để kiểm chứng xấp xỉ Taylor bậc 1 và bậc 2 quanh gốc tọa độ."
             ]}
-            whatToObserve="Tại s = 0, M_X(0) LUÔN LUÔN BẰNG 1.00 với mọi phân phối (do e^0 = 1). Đường tiếp tuyến màu cam bám khít hàm số quanh lân cận s = 0 với độ dốc bằng đúng E[X]."
-            takeaway="Mẹo thi cử: Muốn tìm kỳ vọng và phương sai từ MGF: Tính đạo hàm M'(0) được E[X], tính đạo hàm cấp hai M''(0) được E[X²], rồi dùng Var(X) = E[X²] - (E[X])²!"
+            whatToObserve="Tại $s = 0$, $M_X(0)$ LUÔN LUÔN BẰNG 1.00 với mọi phân phối (do $e^0 = 1$). Đường tiếp tuyến màu cam bám khít hàm số quanh lân cận $s = 0$ với độ dốc bằng đúng $\mathbb{E}[X]$."
+            takeaway="Mẹo thi cử: Muốn tìm kỳ vọng và phương sai từ MGF: Tính đạo hàm $M'(0)$ được $\mathbb{E}[X]$, tính đạo hàm cấp hai $M''(0)$ được $\mathbb{E}[X^2]$, rồi dùng $\text{Var}(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2$!"
           />
         </div>
       )}
@@ -498,17 +501,24 @@ export const MomentGeneratingFunction: React.FC = () => {
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
                 <div className="flex items-center gap-4 flex-wrap">
                   <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
-                    <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span> M_X(s) (Biến 1)
+                    <span className="w-4 h-0.5 bg-sky-500 border-dashed"></span>
+                    <span><MathView math="M_X(s)" /> (Biến 1)</span>
                   </span>
                   <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                    <span className="w-4 h-0.5 bg-emerald-500 border-dashed"></span> M_Y(s) (Biến 2)
+                    <span className="w-4 h-0.5 bg-emerald-500 border-dashed"></span>
+                    <span><MathView math="M_Y(s)" /> (Biến 2)</span>
                   </span>
                   <span className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400 font-bold">
-                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span> M_Z(s) = M_X(s) · M_Y(s)
+                    <span className="w-4 h-1 bg-rose-500 rounded-full"></span>
+                    <span><MathView math="M_Z(s) = M_X(s) \cdot M_Y(s)" /></span>
                   </span>
                 </div>
                 <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
-                  {sumDist === 'poisson' ? `λ_Z = ${fmt(param1 + param2, 1)}` : `μ_Z = ${fmt(param1 + param2, 1)}, σ_Z² = 2.0`}
+                  {sumDist === 'poisson' ? (
+                    <span><MathView math={`\\lambda_Z = ${fmt(param1 + param2, 1)}`} /></span>
+                  ) : (
+                    <span><MathView math={`\\mu_Z = ${fmt(param1 + param2, 1)}, \\sigma_Z^2 = 2.0`} /></span>
+                  )}
                 </span>
               </div>
             </div>
@@ -558,15 +568,15 @@ export const MomentGeneratingFunction: React.FC = () => {
           </ClayCard>
 
           <LabBriefing
-            question="Khi cộng hai biến ngẫu nhiên độc lập Z = X + Y, tích phân tích chập rất khó tính. Tại sao MGF lại biến bài toán tích chập thành phép nhân đại số đơn giản?"
+            question="Khi cộng hai biến ngẫu nhiên độc lập $Z = X + Y$, tích phân tích chập rất khó tính. Tại sao MGF lại biến bài toán tích chập thành phép nhân đại số đơn giản?"
             formula="M_{X+Y}(s) = \mathbb{E}[e^{s(X+Y)}] = \mathbb{E}[e^{sX} \cdot e^{sY}] = M_X(s) \cdot M_Y(s)"
-            mathExplanation="Do X và Y độc lập, kỳ vọng của tích bằng tích các kỳ vọng! Khi nhân 2 hàm MGF với nhau, các số mũ cộng lại. Nhìn vào dạng hàm MGF kết quả, ta nhận dạng được ngay phân phối của tổng mà không cần giải bất kỳ một tích phân nào!"
+            mathExplanation="Do $X$ và $Y$ độc lập, kỳ vọng của tích bằng tích các kỳ vọng! Khi nhân 2 hàm MGF với nhau, các số mũ cộng lại. Nhìn vào dạng hàm MGF kết quả, ta nhận dạng được ngay phân phối của tổng mà không cần giải bất kỳ một tích phân nào!"
             howToInteract={[
               "Chọn loại phân phối: Tổng 2 biến Poisson hoặc Tổng 2 biến Gaussian.",
-              "Kéo slider tham số của X và Y.",
-              "Quan sát 3 đường cong M_X, M_Y và đường tích M_{X+Y} trên cùng hệ trục tọa độ Desmos."
+              "Kéo slider tham số của $X$ và $Y$.",
+              "Quan sát 3 đường cong $M_X$, $M_Y$ và đường tích $M_{X+Y}$ trên cùng hệ trục tọa độ Desmos."
             ]}
-            whatToObserve="Đường cong tích M_{X+Y}(s) dâng lên rất nhanh vì là tích của 2 hàm tăng. Tham số của tổng chính là tổng các tham số: λ_Z = λ_X + λ_Y hoặc μ_Z = μ_X + μ_Y."
+            whatToObserve="Đường cong tích $M_{X+Y}(s)$ dâng lên rất nhanh vì là tích của 2 hàm tăng. Tham số của tổng chính là tổng các tham số: $\lambda_Z = \lambda_X + \lambda_Y$ hoặc $\mu_Z = \mu_X + \mu_Y$."
             takeaway="Tổng các biến Poisson độc lập LÀ một biến Poisson. Tổng các biến Gauss độc lập LÀ một biến Gauss. Điều này được chứng minh dễ dàng nhất qua MGF!"
           />
         </div>
@@ -718,15 +728,15 @@ export const MomentGeneratingFunction: React.FC = () => {
           </ClayCard>
 
           <LabBriefing
-            question="Một ngân hàng có N khách hàng ghé thăm trong ngày (N ngẫu nhiên ~ Poisson). Mỗi khách rút một số tiền X_i ngẫu nhiên. Tổng số tiền rút trong ngày S = X₁ + X₂ + ... + X_N có kỳ vọng và phương sai tính như thế nào khi cả số phần tử N lẫn giá trị X_i đều ngẫu nhiên?"
-            formula="\mathbb{E}[S] = \mathbb{E}[N]\mathbb{E}[X], \quad Var(S) = \mathbb{E}[N]Var(X) + (\mathbb{E}[X])^2 Var(N)"
-            mathExplanation="Đây là đẳng thức Wald kinh điển! Phương sai của tổng ngẫu nhiên gồm 2 nguồn: Sự bấp bênh từ giá trị của từng khách hàng E[N]Var(X) CỘNG VỚI sự bấp bênh từ số lượng khách hàng ghé thăm (E[X])^2 Var(N)."
+            question="Một ngân hàng có $N$ khách hàng ghé thăm trong ngày ($N$ ngẫu nhiên $\sim \text{Poisson}$). Mỗi khách rút một số tiền $X_i$ ngẫu nhiên. Tổng số tiền rút trong ngày $S = X_1 + X_2 + \dots + X_N$ có kỳ vọng và phương sai tính như thế nào khi cả số phần tử $N$ lẫn giá trị $X_i$ đều ngẫu nhiên?"
+            formula="\mathbb{E}[S] = \mathbb{E}[N]\mathbb{E}[X], \quad \text{Var}(S) = \mathbb{E}[N]\text{Var}(X) + (\mathbb{E}[X])^2 \text{Var}(N)"
+            mathExplanation="Đây là đẳng thức Wald kinh điển! Phương sai của tổng ngẫu nhiên gồm 2 nguồn: Sự bấp bênh từ giá trị của từng khách hàng $\mathbb{E}[N]\text{Var}(X)$ CỘNG VỚI sự bấp bênh từ số lượng khách hàng ghé thăm $(\mathbb{E}[X])^2 \text{Var}(N)$."
             howToInteract={[
-              "Kéo slider 'Kỳ vọng số khách E[N]' và 'Kỳ vọng số tiền mỗi khách E[X]'.",
+              "Kéo slider 'Kỳ vọng số khách $\\mathbb{E}[N]$' và 'Kỳ vọng số tiền mỗi khách $\\mathbb{E}[X]$'.",
               "Bấm nút 'Chạy Mô Phỏng Monte Carlo 3,000 ngày' để xem phân phối mẫu.",
               "So sánh số liệu thực nghiệm với công thức lý thuyết Wald."
             ]}
-            whatToObserve="Sau 3,000 lần mô phỏng, trung bình thực tế E_emp và phương sai Var_emp hội tụ sát sàn sạt với giá trị tính từ công thức Wald!"
+            whatToObserve="Sau 3,000 lần mô phỏng, trung bình thực tế $\mathbb{E}_{\text{emp}}$ và phương sai $\text{Var}_{\text{emp}}$ hội tụ sát sàn sạt với giá trị tính từ công thức Wald!"
             takeaway="Trong bài thi: Cứ gặp bài toán 'Tổng số ngẫu nhiên các biến ngẫu nhiên độc lập cùng phân phối (i.i.d)' $\implies$ áp dụng ngay Định lý Wald!"
           />
         </div>

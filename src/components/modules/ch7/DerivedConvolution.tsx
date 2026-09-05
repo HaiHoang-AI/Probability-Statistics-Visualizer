@@ -317,18 +317,21 @@ export const DerivedConvolution: React.FC = () => {
 
               {/* Bottom Stage Legend */}
               <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
-                <div className="flex items-center gap-4 flex-wrap">
-                  <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400">
-                    <span className="w-3 h-3 bg-sky-500 rounded-sm"></span> f_X(x) cố định [0, 1]
+                <div className="flex flex-wrap items-center gap-3 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 bg-sky-500 rounded-sm"></span>
+                    <span><MathView math="f_X(x)" /> cố định [0, 1]</span>
                   </span>
-                  <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400">
-                    <span className="w-3 h-3 bg-orange-500 rounded-sm"></span> f_Y(z-x) trượt
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3 h-3 bg-orange-500 rounded-sm"></span>
+                    <span><MathView math="f_Y(z-x)" /> trượt</span>
                   </span>
                   <span className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
                     <span className="w-3 h-3 bg-amber-500 rounded-sm"></span> Miền tích diện tích
                   </span>
-                  <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                    <span className="w-3.5 h-1 bg-emerald-500 rounded-full"></span> Kết quả f_Z(z) hình tam giác
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-3.5 h-1 bg-emerald-500 rounded-full"></span>
+                    <span>Kết quả <MathView math="f_Z(z)" /> hình tam giác</span>
                   </span>
                 </div>
                 <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold text-sm">
@@ -422,7 +425,7 @@ export const DerivedConvolution: React.FC = () => {
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Mật độ f_Z(z):</span>
+                  <span className="text-slate-500">Mật độ <MathView math="f_Z(z)" />:</span>
                   <span className="font-mono font-extrabold text-emerald-600 dark:text-emerald-400 text-sm">
                     {fmt(zValue <= 1 ? zValue : Math.max(0, 2 - zValue), 2)}
                   </span>
@@ -432,16 +435,16 @@ export const DerivedConvolution: React.FC = () => {
           </div>
 
           <LabBriefing
-            question="Nếu ta có 2 biến ngẫu nhiên độc lập X và Y (ví dụ thời gian chờ ở 2 chặng xe bus), làm thế nào để tìm hàm phân phối xác suất của tổng thời gian Z = X + Y?"
+            question="Nếu ta có 2 biến ngẫu nhiên độc lập $X$ và $Y$ (ví dụ thời gian chờ ở 2 chặng xe bus), làm thế nào để tìm hàm phân phối xác suất của tổng thời gian $Z = X + Y$?"
             formula="f_Z(z) = (f_X * f_Y)(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z - x) \, dx"
-            mathExplanation="Tích chập là phép toán 'lật ngược' hàm f_Y, sau đó trượt nó qua f_X một khoảng z. Giá trị mật độ f_Z(z) tại mỗi điểm chính là diện tích phần giao nhau giữa hai hàm tại vị trí trượt đó."
+            mathExplanation="Tích chập là phép toán 'lật ngược' hàm $f_Y$, sau đó trượt nó qua $f_X$ một khoảng $z$. Giá trị mật độ $f_Z(z)$ tại mỗi điểm chính là diện tích phần giao nhau giữa hai hàm tại vị trí trượt đó."
             howToInteract={[
               "Bấm nút 'Chạy Quét Animation' hoặc kéo thanh trượt 'Giá trị z' từ 0.0 đến 2.0.",
-              "Quan sát khối màu cam f_Y(z-x) trượt ngang qua khối màu xanh f_X(x).",
-              "Nhìn diện tích phần giao nhau màu vàng (Miền Tích) thay đổi theo z.",
-              "Nhìn đường cong màu xanh lá f_Z(z) vẽ dần hình tam giác cân khi z chạy từ 0 đến 2."
+              "Quan sát khối màu cam $f_Y(z-x)$ trượt ngang qua khối màu xanh $f_X(x)$.",
+              "Nhìn diện tích phần giao nhau màu vàng (Miền Tích) thay đổi theo $z$.",
+              "Nhìn đường cong màu xanh lá $f_Z(z)$ vẽ dần hình tam giác cân khi $z$ chạy từ 0 đến 2."
             ]}
-            whatToObserve="Khi z = 1.0 (ở chính giữa), khối trượt trùng khít hoàn toàn với khối cố định, diện tích giao đạt cực đại 1.0. Đồ thị mật độ kết quả chuyển hóa từ 2 hình phẳng thành 1 hình tam giác cân hoàn hảo!"
+            whatToObserve="Khi $z = 1.0$ (ở chính giữa), khối trượt trùng khít hoàn toàn với khối cố định, diện tích giao đạt cực đại 1.0. Đồ thị mật độ kết quả chuyển hóa từ 2 hình phẳng thành 1 hình tam giác cân hoàn hảo!"
             takeaway="Tổng của 2 biến phân phối Đều (Uniform) độc lập KHÔNG CÒN LÀ hình chữ nhật nữa, mà biến thành phân phối Tam giác (Triangular). Đây là bước mở đầu trực quan của Định lý Giới hạn Trung tâm (CLT)!"
           />
         </div>
@@ -658,15 +661,15 @@ export const DerivedConvolution: React.FC = () => {
           </div>
 
           <LabBriefing
-            question="Hai biến có hệ số tương quan tuyến tính ρ = 0 thì có chắc chắn độc lập với nhau không? Làm thế nào để phân biệt giữa 'không tương quan' và 'độc lập hoàn toàn'?"
+            question="Hai biến có hệ số tương quan tuyến tính $\rho = 0$ thì có chắc chắn độc lập với nhau không? Làm thế nào để phân biệt giữa 'không tương quan' và 'độc lập hoàn toàn'?"
             formula="\rho(X, Y) = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y}, \quad \text{Cov}(X, Y) = \mathbb{E}[(X - \mu_X)(Y - \mu_Y)]"
-            mathExplanation="Hệ số tương quan Pearson ρ chỉ đo lường mức độ liên hệ TUYẾN TÍNH (đường thẳng). Nếu quan hệ giữa X và Y là đường cong đối xứng (như parabol Y = X²), thì Cov(X,Y) = 0 dù Y hoàn toàn bị quyết định bởi X!"
+            mathExplanation="Hệ số tương quan Pearson $\rho$ chỉ đo lường mức độ liên hệ TUYẾN TÍNH (đường thẳng). Nếu quan hệ giữa $X$ và $Y$ là đường cong đối xứng (như parabol $Y = X^2$), thì $\text{Cov}(X,Y) = 0$ dù $Y$ hoàn toàn bị quyết định bởi $X$!"
             howToInteract={[
-              "Kéo thanh trượt 'Hệ số tương quan rho' từ -1.0 đến +1.0 để xem đám mây 250 điểm dữ liệu co cụm lại.",
-              "Bấm nút 'Mô hình Phi tuyến Parabol (Y = X²)' để kích hoạt bẫy kinh điển.",
+              "Kéo thanh trượt 'Hệ số tương quan $\rho$' từ -1.0 đến +1.0 để xem đám mây 250 điểm dữ liệu co cụm lại.",
+              "Bấm nút 'Mô hình Phi tuyến Parabol ($Y = X^2$)' để kích hoạt bẫy kinh điển.",
               "Quan sát đám mây điểm uốn cong thành hình chữ U hoàn hảo nhưng hệ số tương quan vẫn bằng 0.00!"
             ]}
-            whatToObserve="Khi ρ = ±1, tất cả các điểm nằm khít trên một đường thẳng. Khi bấm Parabol, biết X ta lập tức tính được Y chính xác 100%, vậy mà ρ vẫn bằng 0!"
+            whatToObserve="Khi $\rho = \pm 1$, tất cả các điểm nằm khít trên một đường thẳng. Khi bấm Parabol, biết $X$ ta lập tức tính được $Y$ chính xác 100%, vậy mà $\rho$ vẫn bằng 0!"
             takeaway="Độc lập $\implies$ Không tương quan ($\rho = 0$). Nhưng chiều ngược lại: Không tương quan ($\rho = 0$) CHƯA CHẮC độc lập (trừ trường hợp phân phối Chuẩn nhiều chiều Bivariate Normal)!"
           />
         </div>
@@ -846,9 +849,9 @@ export const DerivedConvolution: React.FC = () => {
           </div>
 
           <LabBriefing
-            question="Nếu ta biết thông tin về một biến phụ Y (ví dụ biết sinh viên thuộc khoa nào), làm thế nào thông tin đó giúp phân rã và giải thích sự biến thiên của biến chính X (điểm thi)?"
+            question="Nếu ta biết thông tin về một biến phụ $Y$ (ví dụ biết sinh viên thuộc khoa nào), làm thế nào thông tin đó giúp phân rã và giải thích sự biến thiên của biến chính $X$ (điểm thi)?"
             formula="\text{Var}(X) = \text{Var}(\mathbb{E}[X|Y]) + \mathbb{E}[\text{Var}(X|Y)]"
-            mathExplanation="Tổng phương sai Var(X) luôn tách làm 2 phần: (1) Phương sai giữa các nhóm Var(E[X|Y]) do các tâm nhóm cách xa nhau (phần giải thích được nhờ Y), và (2) Phương sai nội bộ từng nhóm E[Var(X|Y)] do nhiễu ngẫu nhiên."
+            mathExplanation="Tổng phương sai $\text{Var}(X)$ luôn tách làm 2 phần: (1) Phương sai giữa các nhóm $\text{Var}(\mathbb{E}[X|Y])$ do các tâm nhóm cách xa nhau (phần giải thích được nhờ $Y$), và (2) Phương sai nội bộ từng nhóm $\mathbb{E}[\text{Var}(X|Y)]$ do nhiễu ngẫu nhiên."
             howToInteract={[
               "Kéo slider 'Khoảng cách giữa các nhóm': Quan sát 3 quả chuông tách xa nhau ra.",
               "Kéo slider 'Độ phân tán nội bộ nhóm': Quan sát các quả chuông phình to hay xẹp lại.",
@@ -1037,11 +1040,12 @@ export const DerivedConvolution: React.FC = () => {
                     <span className="w-3 h-0.5 bg-amber-500 border-dashed"></span> Độ dốc tiếp tuyến |g'(x)|
                   </span>
                   <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
-                    <span className="w-3 h-3 bg-sky-500 rounded-sm"></span> Mật độ kết quả f_Y(y)
+                    <span className="w-3 h-3 bg-sky-500 rounded-sm"></span>
+                    <span>Mật độ kết quả <MathView math="f_Y(y)" /></span>
                   </span>
                 </div>
                 <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
-                  Bảo toàn diện tích: f_Y(y) dy = f_X(x) dx
+                  Bảo toàn diện tích: <MathView math="f_Y(y)\,dy = f_X(x)\,dx" />
                 </span>
               </div>
             </div>
@@ -1052,7 +1056,7 @@ export const DerivedConvolution: React.FC = () => {
             {/* Card 1: Chọn hàm & Slider x */}
             <ClayCard glowColor="purple" className="p-5">
               <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                Hàm chuyển đổi Y = g(X)
+                Hàm chuyển đổi $Y = g(X)$
               </h4>
               <div className="flex gap-2 mb-3">
                 <button
@@ -1061,7 +1065,7 @@ export const DerivedConvolution: React.FC = () => {
                     transformType === 'square' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
-                  Y = X²
+                  $Y = X^2$
                 </button>
                 <button
                   onClick={() => setTransformType('linear')}
@@ -1069,7 +1073,7 @@ export const DerivedConvolution: React.FC = () => {
                     transformType === 'linear' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
-                  Y = 2X+1
+                  $Y = 2X+1$
                 </button>
                 <button
                   onClick={() => setTransformType('exp')}
@@ -1077,7 +1081,7 @@ export const DerivedConvolution: React.FC = () => {
                     transformType === 'exp' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
-                  Y = e^X
+                  $Y = e^X$
                 </button>
               </div>
 
@@ -1112,19 +1116,19 @@ export const DerivedConvolution: React.FC = () => {
               </h4>
               <div className="space-y-2 text-xs">
                 <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Giá trị y = g(x):</span>
+                  <span className="text-slate-500">Giá trị $y = g(x)$:</span>
                   <span className="font-mono font-bold text-slate-900 dark:text-white">
                     {fmt(transformType === 'square' ? xSlider ** 2 : transformType === 'linear' ? 2 * xSlider + 1 : Math.exp(xSlider), 2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1 border-b border-slate-200 dark:border-slate-800">
-                  <span className="text-slate-500">Độ dốc |g'(x)|:</span>
+                  <span className="text-slate-500">Độ dốc $|g'(x)|$:</span>
                   <span className="font-mono font-bold text-amber-600 dark:text-amber-400">
                     {fmt(transformType === 'square' ? 2 * xSlider : transformType === 'linear' ? 2 : Math.exp(xSlider), 2)}
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-1">
-                  <span className="text-slate-500">Mật độ f_Y(y):</span>
+                  <span className="text-slate-500">Mật độ <MathView math="f_Y(y)" />:</span>
                   <span className="font-mono font-extrabold text-sky-600 dark:text-sky-400 text-sm">
                     {fmt(
                       0.5 /
@@ -1145,16 +1149,16 @@ export const DerivedConvolution: React.FC = () => {
           </div>
 
           <LabBriefing
-            question="Nếu X có hàm mật độ f_X(x) và Y = g(X) (như Y = X²), tại sao ta không thể chỉ đơn giản thay x vào f_X(g(x)), mà bắt buộc phải chia cho đạo hàm |g'(x)|?"
+            question="Nếu $X$ có hàm mật độ $f_X(x)$ và $Y = g(X)$ (như $Y = X^2$), tại sao ta không thể chỉ đơn giản thay $x$ vào $f_X(g(x))$, mà bắt buộc phải chia cho đạo hàm $|g'(x)|$?"
             formula="f_Y(y) = f_X(x) \cdot \left| \frac{dx}{dy} \right| = \frac{f_X(g^{-1}(y))}{|g'(g^{-1}(y))|}"
-            mathExplanation="Xác suất là DIỆN TÍCH. Khi hàm g biến đổi không gian, một đoạn nhỏ dx bị kéo giãn hoặc nén lại thành dy = |g'(x)|dx. Để tổng diện tích xác suất bảo toàn P(X in dx) = P(Y in dy), mật độ chiều cao f_Y bắt buộc phải tỷ lệ nghịch với độ giãn nở |g'(x)|!"
+            mathExplanation="Xác suất là DIỆN TÍCH. Khi hàm $g$ biến đổi không gian, một đoạn nhỏ $dx$ bị kéo giãn hoặc nén lại thành $dy = |g'(x)|dx$. Để tổng diện tích xác suất bảo toàn $P(X \in dx) = P(Y \in dy)$, mật độ chiều cao $f_Y$ bắt buộc phải tỷ lệ nghịch với độ giãn nở $|g'(x)|$!"
             howToInteract={[
-              "Chọn một trong 3 dạng hàm biến đổi: Y = X² (Parabol), Y = 2X+1 (Tuyến tính), hoặc Y = e^X (Hàm mũ).",
-              "Kéo slider 'Điểm khảo sát x' để quan sát tiếp tuyến và độ dốc |g'(x)|.",
-              "Quan sát đồ thị bên phải: Chú ý giá trị mật độ f_Y(y) tương ứng."
+              "Chọn một trong 3 dạng hàm biến đổi: $Y = X^2$ (Parabol), $Y = 2X+1$ (Tuyến tính), hoặc $Y = e^X$ (Hàm mũ).",
+              "Kéo slider 'Điểm khảo sát $x$' để quan sát tiếp tuyến và độ dốc $|g'(x)|$.",
+              "Quan sát đồ thị bên phải: Chú ý giá trị mật độ $f_Y(y)$ tương ứng."
             ]}
-            whatToObserve="Khi hàm g dốc đứng (|g'(x)| lớn), một đoạn x hẹp bị kéo giãn thành đoạn y rất rộng, làm cho mật độ f_Y(y) bị dàn mỏng xẹp xuống. Ngược lại, chỗ nào g phẳng, mật độ vọt lên rất cao!"
-            takeaway="Quy tắc thi cử: Luôn nhớ nhân thêm trị tuyệt đối đạo hàm nghịch đảo |dx/dy| (Jacobian 1 chiều), không bao giờ được quên mẫu số |g'(x)|!"
+            whatToObserve="Khi hàm $g$ dốc đứng ($|g'(x)|$ lớn), một đoạn $x$ hẹp bị kéo giãn thành đoạn $y$ rất rộng, làm cho mật độ $f_Y(y)$ bị dàn mỏng xẹp xuống. Ngược lại, chỗ nào $g$ phẳng, mật độ vọt lên rất cao!"
+            takeaway="Quy tắc thi cử: Luôn nhớ nhân thêm trị tuyệt đối đạo hàm nghịch đảo $|dx/dy|$ (Jacobian 1 chiều), không bao giờ được quên mẫu số $|g'(x)|$!"
           />
         </div>
       )}
@@ -1340,15 +1344,15 @@ export const DerivedConvolution: React.FC = () => {
           </div>
 
           <LabBriefing
-            question="Một hệ thống máy tính gồm n linh kiện độc lập. Hệ thống chỉ chạy được nếu TẤT CẢ linh kiện cùng chạy (hệ nối tiếp - Min), hoặc chỉ cần ÍT NHẤT 1 linh kiện chạy (hệ song song dự phòng - Max). Tuổi thọ của hệ thống thay đổi thế nào khi ta tăng số linh kiện n?"
+            question="Một hệ thống máy tính gồm $n$ linh kiện độc lập. Hệ thống chỉ chạy được nếu TẤT CẢ linh kiện cùng chạy (hệ nối tiếp - $\min$), hoặc chỉ cần ÍT NHẤT 1 linh kiện chạy (hệ song song dự phòng - $\max$). Tuổi thọ của hệ thống thay đổi thế nào khi ta tăng số linh kiện $n$?"
             formula="F_{\max}(w) = [F_X(w)]^n, \quad F_{\min}(v) = 1 - [1 - F_X(v)]^n"
-            mathExplanation="Để Max < w thì TẤT CẢ n linh kiện phải cùng < w (xác suất nhân n lần: [F(w)]^n). Ngược lại, để Min > v thì TẤT CẢ n linh kiện phải cùng sống sót qua thời điểm v (xác suất [1 - F(v)]^n)."
+            mathExplanation="Để $\max < w$ thì TẤT CẢ $n$ linh kiện phải cùng $< w$ (xác suất nhân $n$ lần: $[F(w)]^n$). Ngược lại, để $\min > v$ thì TẤT CẢ $n$ linh kiện phải cùng sống sót qua thời điểm $v$ (xác suất $[1 - F(v)]^n$)."
             howToInteract={[
               "Chuyển đổi giữa chế độ 'Hệ Song Song (Max)' và 'Hệ Nối Tiếp (Min)'.",
-              "Kéo slider số linh kiện n từ 1 đến 15.",
-              "Xem đường cong hàm mật độ f(t) di chuyển dạt sang phải (Max) hay co cụm sang trái (Min)."
+              "Kéo slider số linh kiện $n$ từ 1 đến 15.",
+              "Xem đường cong hàm mật độ $f(t)$ di chuyển dạt sang phải (Max) hay co cụm sang trái (Min)."
             ]}
-            whatToObserve="Khi tăng n trong hệ song song (Max), đường cong bị đẩy mạnh về bên phải (tuổi thọ trung bình tăng vọt nhờ có linh kiện dự phòng). Còn hệ nối tiếp (Min) chỉ cần 1 linh kiện chết là sập cả hệ thống, nên đồ thị co rúm về sát 0!"
+            whatToObserve="Khi tăng $n$ trong hệ song song (Max), đường cong bị đẩy mạnh về bên phải (tuổi thọ trung bình tăng vọt nhờ có linh kiện dự phòng). Còn hệ nối tiếp (Min) chỉ cần 1 linh kiện chết là sập cả hệ thống, nên đồ thị co rúm về sát 0!"
             takeaway="Quy tắc thi cử: Bài toán 'Linh kiện hỏng đầu tiên' $\implies$ tìm phân phối của $\min$. Bài toán 'Thời điểm linh kiện cuối cùng ngừng hoạt động' $\implies$ tìm phân phối của $\max$!"
           />
         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MathView } from './MathView';
+import { FormattedMathText } from './FormattedMathText';
 
 export interface LabBriefingProps {
   title?: string;
@@ -60,9 +61,11 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
               <div className="font-heading font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider mb-0.5 text-sky-700 dark:text-sky-300">
                 Vấn đề thực tế & Câu hỏi cốt lõi
               </div>
-              <p className="text-slate-700 dark:text-slate-300 font-medium">
-                {question}
-              </p>
+              <FormattedMathText
+                as="p"
+                className="text-slate-700 dark:text-slate-300 font-medium"
+                text={question}
+              />
             </div>
           </div>
 
@@ -78,9 +81,11 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
                   <MathView math={formula} block={true} />
                 </div>
               )}
-              <p className="text-slate-600 dark:text-slate-300 text-xs">
-                {mathExplanation}
-              </p>
+              <FormattedMathText
+                as="p"
+                className="text-slate-600 dark:text-slate-300 text-xs"
+                text={mathExplanation}
+              />
             </div>
           </div>
 
@@ -92,7 +97,9 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
               </div>
               <ul className="list-disc list-inside space-y-1 text-xs text-amber-950 dark:text-amber-200">
                 {howToInteract.map((step, idx) => (
-                  <li key={idx} className="leading-snug">{step}</li>
+                  <li key={idx} className="leading-snug">
+                    <FormattedMathText text={step} />
+                  </li>
                 ))}
               </ul>
             </div>
@@ -101,9 +108,11 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
               <div className="font-heading font-bold text-emerald-900 dark:text-emerald-300 text-xs uppercase tracking-wider mb-1 flex items-center gap-1.5">
                 <span>🔍</span> Hiện tượng cần quan sát trên đồ thị
               </div>
-              <p className="text-xs text-emerald-950 dark:text-emerald-200 leading-snug">
-                {whatToObserve}
-              </p>
+              <FormattedMathText
+                as="p"
+                className="text-xs text-emerald-950 dark:text-emerald-200 leading-snug"
+                text={whatToObserve}
+              />
             </div>
           </div>
 
@@ -112,7 +121,7 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
             <span className="text-base">💡</span>
             <div>
               <span className="font-heading font-black mr-1 text-sky-700 dark:text-sky-300 uppercase">Chốt kiến thức:</span>
-              {takeaway}
+              <FormattedMathText text={takeaway} />
             </div>
           </div>
         </div>
