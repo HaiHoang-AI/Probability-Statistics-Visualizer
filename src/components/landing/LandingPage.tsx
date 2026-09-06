@@ -387,14 +387,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
             size="md"
             onClick={() => onSelectChapter('ch3-discrete-rv', 'particle')}
           >
-            Mô phỏng hạt mưa rơi
+            Mô phỏng Hạt rơi (Particle Mode)
           </ClayButton>
           <ClayButton
             variant="outline"
             size="md"
             onClick={() => onSelectChapter('ch8-limit-theorems', 'galton')}
           >
-            Bàn Galton
+            Bàn Galton (Quincunx)
           </ClayButton>
         </div>
       </section>
