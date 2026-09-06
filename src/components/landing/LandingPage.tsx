@@ -242,6 +242,116 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
         </div>
       </section>
 
+      {/* NEW VISUAL INNOVATIONS SHOWCASE */}
+      <section className="space-y-4 max-w-6xl mx-auto">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b-2 border-slate-900/20 dark:border-slate-800 gap-1">
+          <div>
+            <div className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800 mb-1">
+              Tính năng Nâng cấp Mới
+            </div>
+            <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
+              Phòng Thí Nghiệm Trực Quan Đột Phá
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Các mô hình đồ họa động, mô phỏng hạt và không gian 3D tương tác thế hệ mới.
+            </p>
+          </div>
+          <span className="text-xs font-mono font-bold text-slate-500">
+            Click vào thẻ để vào thẳng lab
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Card 1: Galton Board */}
+          <div
+            onClick={() => onSelectChapter('ch8-limit-theorems')}
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0f172a] transition-all cursor-pointer flex flex-col justify-between"
+          >
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
+                Bài 8 • Tab 5
+              </span>
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-sky-600 transition-colors">
+                Bàn Galton Cơ học (Quincunx)
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                Bi rơi qua mạng lưới chốt tam giác kèm âm thanh va chạm, tự động hội tụ thành đường cong Gauss.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
+              <span>Trải nghiệm ngay</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          {/* Card 2: Particle Simulation */}
+          <div
+            onClick={() => onSelectChapter('ch3-discrete-rv')}
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0f172a] transition-all cursor-pointer flex flex-col justify-between"
+          >
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                Bài 3 & 4 • Nút Chuyển Chế Độ
+              </span>
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-amber-600 transition-colors">
+                Mô Phỏng Mưa Hạt Rơi
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                Hàng ngàn hạt rơi theo hàm khối xác suất cho 5 phân bố: Bernoulli, Đều, Nhị thức, Hình học, Poisson.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+              <span>Trải nghiệm ngay</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          {/* Card 3: 3D Surface & Heatmap */}
+          <div
+            onClick={() => onSelectChapter('ch7-1-derived')}
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0f172a] transition-all cursor-pointer flex flex-col justify-between"
+          >
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
+                Bài 7.1 • Tab 2
+              </span>
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-purple-600 transition-colors">
+                Mặt Cong 3D & Heatmap 2D
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                Xoay 360° bề mặt phân phối Gauss 2D (Three.js WebGL) và bản đồ nhiệt màu biến dạng theo hệ số tương quan.
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-purple-600 dark:text-purple-400">
+              <span>Trải nghiệm ngay</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+
+          {/* Card 4: Bayes Sankey Flow */}
+          <div
+            onClick={() => onSelectChapter('ch9-bayesian')}
+            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0f172a] transition-all cursor-pointer flex flex-col justify-between"
+          >
+            <div>
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
+                Bài 9 • Tab 4
+              </span>
+              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-rose-600 transition-colors">
+                Dòng Chảy Phân Nhánh Bayes
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                Sankey Flow trực quan hóa dòng chảy xác suất giải mã nghịch lý Ảo giác Tỷ lệ nền (Base Rate Fallacy).
+              </p>
+            </div>
+            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-rose-600 dark:text-rose-400">
+              <span>Trải nghiệm ngay</span>
+              <span>&rarr;</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CURRICULUM SECTION 1: PRIORITY CHAPTERS (Page 2 Card Grid) */}
       <section id="priority-chapters-section" className="space-y-4 scroll-mt-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b-2 border-slate-900/20 dark:border-slate-800 gap-1">
