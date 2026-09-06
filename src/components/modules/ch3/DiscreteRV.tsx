@@ -165,33 +165,89 @@ export const DiscreteRV: React.FC = () => {
     }
   }
 
-  const maxP = Math.max(
-    ...bars.map((b) => Math.max(b.p, b.empP ?? 0)),
-    0.05
-  );
   const sigma = Math.sqrt(variance);
 
-  // SVG coordinate transformation
+  // SVG Fixed Coordinate System & Unit Divisions (Fixed Ox and Oy)
   const isBernoulli = dist === 'bernoulli';
-  const numBars = bars.length;
-  const leftX = isBernoulli ? 140 : 100;
-  const rightX = 740;
-  const usableWidth = rightX - leftX;
+  const axisOyX = isBernoulli ? 110 : 80;
+  const axisOxY = 330;
+  const axisHeight = 250; // from y=330 to y=80
 
-  const mapKtoX = (k: number) => {
-    if (isBernoulli) {
-      return k === 0 ? 300 : 540;
+  // 1. Ox Axis Configuration (Fixed domain & fixed ticks per distribution)
+  let oxTicks: number[] = [];
+  let mapKtoX: (k: number) => number;
+  let barWidth = 32;
+
+  if (dist === 'bernoulli') {
+    oxTicks = [0, 1];
+    barWidth = 64;
+    mapKtoX = (k: number) => 260 + k * 280;
+  } else if (dist === 'uniform') {
+    // Fixed scale for Uniform: k in [0, 12]. All ticks 0..12 are permanently displayed on Ox!
+    oxTicks = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const leftX = 125;
+    const rightX = 715;
+    const stepX = (rightX - leftX) / 12; // ~49.17px
+    barWidth = 32;
+    mapKtoX = (k: number) => leftX + k * stepX;
+  } else if (dist === 'binomial') {
+    // Fixed scale for Binomial: k in [0, 20]. All ticks 0..20 are permanently displayed on Ox!
+    oxTicks = Array.from({ length: 21 }, (_, i) => i);
+    const leftX = 115;
+    const rightX = 725;
+    const stepX = (rightX - leftX) / 20; // 30.5px
+    barWidth = 18;
+    mapKtoX = (k: number) => leftX + k * stepX;
+  } else if (dist === 'poisson') {
+    // Fixed scale for Poisson: k in [0, 20]. All ticks 0..20 are permanently displayed on Ox!
+    oxTicks = Array.from({ length: 21 }, (_, i) => i);
+    const leftX = 115;
+    const rightX = 725;
+    const stepX = (rightX - leftX) / 20; // 30.5px
+    barWidth = 18;
+    mapKtoX = (k: number) => leftX + k * stepX;
+  } else {
+    // Geometric: k in [1, 12]. All ticks 1..12 are permanently displayed on Ox!
+    oxTicks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    const leftX = 135;
+    const rightX = 715;
+    const stepX = (rightX - leftX) / 11; // ~52.73px
+    barWidth = 32;
+    mapKtoX = (k: number) => leftX + (k - 1) * stepX;
+  }
+
+  // 2. Oy Axis Configuration (Fixed unit tick divisions)
+  let yMax = 1.0;
+  let yTicks: number[] = [];
+
+  if (dist === 'bernoulli') {
+    yMax = 1.0;
+    yTicks = [0.2, 0.4, 0.6, 0.8, 1.0];
+  } else if (dist === 'uniform') {
+    yMax = 0.5;
+    yTicks = [0.1, 0.2, 0.3, 0.4, 0.5];
+  } else if (dist === 'binomial') {
+    if (binN <= 2) {
+      yMax = 1.0;
+      yTicks = [0.2, 0.4, 0.6, 0.8, 1.0];
+    } else {
+      yMax = 0.5;
+      yTicks = [0.1, 0.2, 0.3, 0.4, 0.5];
     }
-    const minK = bars[0]?.k ?? 0;
-    const maxK = bars[bars.length - 1]?.k ?? 1;
-    if (maxK === minK) return leftX + usableWidth / 2;
-    const barSlotWidth = usableWidth / Math.max(numBars, 1);
-    const bWidth = Math.min(barSlotWidth * 0.7, 48);
-    return leftX + ((k - minK) / (maxK - minK)) * (usableWidth - bWidth) + bWidth / 2;
-  };
+  } else if (dist === 'poisson') {
+    if (poiLambda <= 1.0) {
+      yMax = 0.7;
+      yTicks = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7];
+    } else {
+      yMax = 0.4;
+      yTicks = [0.1, 0.2, 0.3, 0.4];
+    }
+  } else {
+    yMax = 1.0;
+    yTicks = [0.2, 0.4, 0.6, 0.8, 1.0];
+  }
 
-  const barWidth = isBernoulli ? 70 : Math.min((usableWidth / Math.max(numBars, 1)) * 0.7, 48);
-  const mapPtoY = (p: number) => 330 - (p / (maxP * 1.15)) * 260;
+  const mapPtoY = (p: number) => axisOxY - (p / yMax) * axisHeight;
 
   // Dynamic LabBriefing content per distribution
   const getBriefing = () => {
@@ -738,18 +794,18 @@ export const DiscreteRV: React.FC = () => {
 
                 {/* Desmos Cartesian Axes */}
                 <line
-                  x1={isBernoulli ? '120' : '60'}
-                  y1="330"
+                  x1={axisOyX - 20}
+                  y1={axisOxY}
                   x2="760"
-                  y2="330"
+                  y2={axisOxY}
                   stroke="#EF4444"
                   strokeWidth="2.5"
                   markerEnd="url(#arrow-pmf-x)"
                 />
                 <line
-                  x1={isBernoulli ? '140' : '80'}
+                  x1={axisOyX}
                   y1="350"
-                  x2={isBernoulli ? '140' : '80'}
+                  x2={axisOyX}
                   y2="30"
                   stroke="#10B981"
                   strokeWidth="2.5"
@@ -759,7 +815,7 @@ export const DiscreteRV: React.FC = () => {
                   k
                 </text>
                 <text
-                  x={isBernoulli ? 140 : 80}
+                  x={axisOyX}
                   y="20"
                   fill="#10B981"
                   fontSize="13"
@@ -770,15 +826,98 @@ export const DiscreteRV: React.FC = () => {
                   P(X=k)
                 </text>
 
+                {/* Oy Fixed Unit Ticks, Numbers and Horizontal Grid Lines */}
+                {yTicks.map((val) => {
+                  const py = mapPtoY(val);
+                  return (
+                    <g key={val}>
+                      {/* Light horizontal grid line */}
+                      <line
+                        x1={axisOyX}
+                        y1={py}
+                        x2="745"
+                        y2={py}
+                        stroke="#94A3B8"
+                        strokeWidth="1"
+                        strokeDasharray="3 3"
+                        strokeOpacity="0.25"
+                      />
+                      {/* Tick mark on Oy */}
+                      <line
+                        x1={axisOyX - 4}
+                        y1={py}
+                        x2={axisOyX + 4}
+                        y2={py}
+                        stroke="#10B981"
+                        strokeWidth="1.5"
+                      />
+                      {/* Number on Oy */}
+                      <text
+                        x={axisOyX - 8}
+                        y={py + 3.5}
+                        fill="#64748B"
+                        fontSize="10"
+                        fontWeight="bold"
+                        textAnchor="end"
+                        fontFamily="monospace"
+                      >
+                        {val.toFixed(1)}
+                      </text>
+                    </g>
+                  );
+                })}
+                {/* Oy Origin 0.0 */}
+                <text
+                  x={axisOyX - 8}
+                  y="333.5"
+                  fill="#64748B"
+                  fontSize="10"
+                  fontWeight="bold"
+                  textAnchor="end"
+                  fontFamily="monospace"
+                >
+                  0.0
+                </text>
+
+                {/* Ox Fixed Unit Ticks and Numbers (Permanently fixed, never hidden) */}
+                {oxTicks.map((kVal) => {
+                  const cx = mapKtoX(kVal);
+                  return (
+                    <g key={kVal}>
+                      {/* Tick mark on Ox */}
+                      <line
+                        x1={cx}
+                        y1="326"
+                        x2={cx}
+                        y2="334"
+                        stroke="#EF4444"
+                        strokeWidth="1.5"
+                      />
+                      {/* Number on Ox */}
+                      <text
+                        x={cx}
+                        y="350"
+                        fill="#64748B"
+                        fontSize={dist === 'binomial' || dist === 'poisson' ? '10' : '11'}
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        fontFamily="monospace"
+                      >
+                        {isBernoulli ? (kVal === 0 ? '0 (Thất bại)' : '1 (Thành công)') : kVal}
+                      </text>
+                    </g>
+                  );
+                })}
+
                 {/* PMF Bars */}
                 {bars.map((b) => {
                   const cx = mapKtoX(b.k);
-                  const topY = mapPtoY(b.p);
-                  const h = Math.max(0, 330 - topY);
+                  const topY = Math.max(30, mapPtoY(b.p));
+                  const h = Math.max(0, axisOxY - topY);
 
                   const hasEmp = b.empP !== undefined;
-                  const empTopY = hasEmp ? mapPtoY(b.empP!) : 330;
-                  const empH = Math.max(0, 330 - empTopY);
+                  const empTopY = hasEmp ? Math.max(30, mapPtoY(b.empP!)) : axisOxY;
+                  const empH = Math.max(0, axisOxY - empTopY);
 
                   const singleBarW = hasEmp ? barWidth * 0.45 : barWidth;
 
@@ -798,13 +937,13 @@ export const DiscreteRV: React.FC = () => {
                       />
 
                       {/* Theoretical Value Label */}
-                      {b.p > maxP * 0.05 && (
+                      {b.p >= yMax * 0.04 && (
                         <text
                           x={hasEmp ? cx - singleBarW / 2 - 3 : cx}
                           y={topY - 6}
                           fill="#0284C7"
                           className="dark:fill-sky-400"
-                          fontSize="10"
+                          fontSize={dist === 'binomial' || dist === 'poisson' ? '9' : '10'}
                           fontWeight="bold"
                           textAnchor="middle"
                           fontFamily="monospace"
@@ -842,24 +981,11 @@ export const DiscreteRV: React.FC = () => {
                         </>
                       )}
 
-                      {/* k label on x-axis */}
-                      <text
-                        x={cx}
-                        y="348"
-                        fill="#64748B"
-                        fontSize="11"
-                        fontWeight="bold"
-                        textAnchor="middle"
-                        fontFamily="monospace"
-                      >
-                        {isBernoulli ? (b.k === 0 ? '0 (Thất bại)' : '1 (Thành công)') : b.k}
-                      </text>
-
                       {/* Outcome count under k if empirical */}
                       {hasEmp && (
                         <text
                           x={cx}
-                          y="363"
+                          y="364"
                           fill="#10B981"
                           fontSize="10"
                           fontWeight="bold"
@@ -875,35 +1001,9 @@ export const DiscreteRV: React.FC = () => {
 
                 {/* 1-Sigma Band [E[X]-sigma, E[X]+sigma] */}
                 {(() => {
-                  if (isBernoulli) {
-                    const x0 = mapKtoX(0);
-                    const x1 = mapKtoX(1);
-                    const meanX = x0 + mean * (x1 - x0);
-                    const xLeft = Math.max(x0, meanX - sigma * (x1 - x0));
-                    const xRight = Math.min(x1, meanX + sigma * (x1 - x0));
-                    return (
-                      <g>
-                        <line x1={xLeft} y1="50" x2={xRight} y2="50" stroke="#F59E0B" strokeWidth="2.5" />
-                        <line x1={xLeft} y1="44" x2={xLeft} y2="56" stroke="#F59E0B" strokeWidth="2" />
-                        <line x1={xRight} y1="44" x2={xRight} y2="56" stroke="#F59E0B" strokeWidth="2" />
-                        <text
-                          x={(xLeft + xRight) / 2}
-                          y="42"
-                          fill="#F59E0B"
-                          fontSize="11"
-                          fontWeight="bold"
-                          textAnchor="middle"
-                          fontFamily="monospace"
-                        >
-                          Dải ±1σ = [{fmt(Math.max(0, mean - sigma), 2)}, {fmt(Math.min(1, mean + sigma), 2)}]
-                        </text>
-                      </g>
-                    );
-                  }
-                  const minBound = bars[0]?.k ?? 0;
-                  const maxBound = bars[bars.length - 1]?.k ?? 15;
-                  const xLeft = mapKtoX(Math.max(minBound, mean - sigma));
-                  const xRight = mapKtoX(Math.min(maxBound, mean + sigma));
+                  const xLeft = Math.max(axisOyX + 10, mapKtoX(mean - sigma));
+                  const xRight = Math.min(740, mapKtoX(mean + sigma));
+                  if (xRight <= xLeft) return null;
                   return (
                     <g>
                       <line x1={xLeft} y1="50" x2={xRight} y2="50" stroke="#F59E0B" strokeWidth="2.5" />
@@ -926,29 +1026,27 @@ export const DiscreteRV: React.FC = () => {
 
                 {/* Mean E[X] Fulcrum (Trọng tâm) Indicator */}
                 {(() => {
-                  const meanX = isBernoulli
-                    ? mapKtoX(0) + mean * (mapKtoX(1) - mapKtoX(0))
-                    : mapKtoX(mean);
+                  const meanX = mapKtoX(mean);
                   return (
                     <g>
                       <line
                         x1={meanX}
                         y1="65"
                         x2={meanX}
-                        y2="330"
+                        y2={axisOxY}
                         stroke="#EF4444"
                         strokeWidth="2.5"
                         strokeDasharray="5 3"
                       />
                       <polygon
-                        points={`${meanX - 8},342 ${meanX + 8},342 ${meanX},330`}
+                        points={`${meanX - 8},342 ${meanX + 8},342 ${meanX},${axisOxY}`}
                         fill="#EF4444"
                         stroke="#FFFFFF"
                         strokeWidth="1.5"
                       />
                       <text
                         x={meanX}
-                        y="80"
+                        y="60"
                         fill="#EF4444"
                         fontSize="12"
                         fontWeight="black"

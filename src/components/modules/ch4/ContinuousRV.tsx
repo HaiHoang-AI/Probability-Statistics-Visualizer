@@ -314,6 +314,20 @@ export const ContinuousRV: React.FC = () => {
                     <text x="760" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
                     <text x="400" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
 
+                    {/* Oy Fixed Unit Ticks */}
+                    {[0.2, 0.4, 0.6, 0.8].map((val) => {
+                      const py = mapUnifY(val);
+                      return (
+                        <g key={val}>
+                          <line x1="50" y1={py} x2="750" y2={py} stroke="#94A3B8" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.2" />
+                          <line x1="395" y1={py} x2="405" y2={py} stroke="#10B981" strokeWidth="1.5" />
+                          <text x="390" y={py + 3.5} fill="#64748B" fontSize="10" fontWeight="bold" textAnchor="end" fontFamily="monospace">
+                            {val.toFixed(1)}
+                          </text>
+                        </g>
+                      );
+                    })}
+
                     {[-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7].map((val) => (
                       <g key={val}>
                         <line x1={mapUnifX(val)} y1="326" x2={mapUnifX(val)} y2="334" stroke="#64748B" strokeWidth="1.5" />
@@ -616,6 +630,20 @@ export const ContinuousRV: React.FC = () => {
                     <text x="770" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
                     <text x="100" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
 
+                    {/* Oy Fixed Unit Ticks */}
+                    {[0.5, 1.0, 1.5, 2.0, 2.5].map((val) => {
+                      const py = mapExpY(val);
+                      return (
+                        <g key={val}>
+                          <line x1="100" y1={py} x2="760" y2={py} stroke="#94A3B8" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.2" />
+                          <line x1="95" y1={py} x2="105" y2={py} stroke="#10B981" strokeWidth="1.5" />
+                          <text x="90" y={py + 3.5} fill="#64748B" fontSize="10" fontWeight="bold" textAnchor="end" fontFamily="monospace">
+                            {val.toFixed(1)}
+                          </text>
+                        </g>
+                      );
+                    })}
+
                     {[1, 2, 3, 4, 5, 6, 7].map((val) => (
                       <g key={val}>
                         <line x1={mapExpX(val)} y1="326" x2={mapExpX(val)} y2="334" stroke="#64748B" strokeWidth="1.5" />
@@ -905,6 +933,20 @@ export const ContinuousRV: React.FC = () => {
                     <line x1="400" y1="360" x2="400" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-norm-y)" />
                     <text x="750" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
                     <text x="400" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
+
+                    {/* Oy Fixed Unit Ticks */}
+                    {[0.1, 0.2, 0.3, 0.4, 0.5].map((val) => {
+                      const py = mapNormY(val);
+                      return (
+                        <g key={val}>
+                          <line x1="60" y1={py} x2="740" y2={py} stroke="#94A3B8" strokeWidth="1" strokeDasharray="3 3" strokeOpacity="0.2" />
+                          <line x1="395" y1={py} x2="405" y2={py} stroke="#10B981" strokeWidth="1.5" />
+                          <text x="390" y={py + 3.5} fill="#64748B" fontSize="10" fontWeight="bold" textAnchor="end" fontFamily="monospace">
+                            {val.toFixed(1)}
+                          </text>
+                        </g>
+                      );
+                    })}
 
                     {[-4, -3, -2, -1, 1, 2, 3, 4].map((val) => (
                       <g key={val}>
