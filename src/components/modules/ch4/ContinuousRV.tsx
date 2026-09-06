@@ -1,21 +1,17 @@
 import React, { useState } from 'react';
 import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
-import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import {
   fmt,
   normalPdf,
   normalCdf,
   exponentialPdf,
-  exponentialCdf,
-  uniformPdf,
-  uniformCdf,
 } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
 
-type ContinuousTab = 'uniform' | 'exponential' | 'normal' | 'standardization' | 'buffon';
+type ContinuousTab = 'uniform' | 'exponential' | 'normal' | 'standardization';
 
 export const ContinuousRV: React.FC = () => {
   const [activeSub, setActiveSub] = useState<ContinuousTab>('uniform');
@@ -35,14 +31,12 @@ export const ContinuousRV: React.FC = () => {
   const unifVariance = (unifLength * unifLength) / 12;
   const unifSigma = Math.sqrt(unifVariance);
 
-  // Overlap calculation for [unifX1, unifX2] with [unifA, safeUnifB]
   const safeX1 = Math.min(unifX1, unifX2);
   const safeX2 = Math.max(unifX1, unifX2);
   const overlapLow = Math.max(unifA, safeX1);
   const overlapHigh = Math.min(safeUnifB, safeX2);
   const unifArea = Math.max(0, overlapHigh - overlapLow) * unifHeight;
 
-  // SVG coordinates for Uniform: x in [-6, 8], y in [0, 1.2]
   const mapUnifX = (x: number) => 400 + x * 45;
   const mapUnifY = (y: number) => 330 - (y / Math.max(0.8, unifHeight * 1.35)) * 260;
 
@@ -60,14 +54,13 @@ export const ContinuousRV: React.FC = () => {
   const expSigma = 1 / expLambda;
   const expHalfLife = Math.LN2 / expLambda;
 
-  const expSurvProb = Math.exp(-expLambda * expT); // P(X > t)
-  const expCdfProb = 1 - expSurvProb; // P(X <= t)
+  const expSurvProb = Math.exp(-expLambda * expT);
+  const expCdfProb = 1 - expSurvProb;
 
-  // Memoryless verification
-  const probGreaterS = Math.exp(-expLambda * expS); // P(X > s)
-  const probGreaterST = Math.exp(-expLambda * (expS + expDeltaT)); // P(X > s + t)
+  const probGreaterS = Math.exp(-expLambda * expS);
+  const probGreaterST = Math.exp(-expLambda * (expS + expDeltaT));
   const condProbMemoryless = probGreaterS > 0 ? probGreaterST / probGreaterS : 0;
-  const directProbT = Math.exp(-expLambda * expDeltaT); // P(X > t)
+  const directProbT = Math.exp(-expLambda * expDeltaT);
 
   const expMaxY = Math.max(1.8, expLambda * 1.15);
   const mapExpX = (x: number) => 100 + x * 90;
@@ -94,51 +87,12 @@ export const ContinuousRV: React.FC = () => {
 
   const zScore = (stdX - stdMu) / stdSigma;
   const zProb = normalCdf(zScore, 0, 1);
-  const xProb = normalCdf(stdX, stdMu, stdSigma);
 
-  // SVG coordinates for dual chart in Standardization
-  // Top chart: X ~ N(stdMu, stdSigma^2) in [20..180]
   const mapStdTopX = (x: number) => 400 + (x - 2) * 50;
-  const mapStdTopY = (y: number) => 170 - (y / Math.max(0.5, 1 / (stdSigma * Math.sqrt(2 * Math.PI)) * 1.2)) * 130;
+  const mapStdTopY = (y: number) => 170 - (y / Math.max(0.5, (1 / (stdSigma * Math.sqrt(2 * Math.PI))) * 1.2)) * 130;
 
-  // Bottom chart: Z ~ N(0, 1) in [210..360]
   const mapStdBotX = (z: number) => 400 + z * 60;
   const mapStdBotY = (y: number) => 350 - (y / 0.45) * 120;
-
-  // ==========================================
-  // TAB 5: BUFFON'S NEEDLE STATE
-  // ==========================================
-  const [totalNeedles, setTotalNeedles] = useState<number>(0);
-  const [crossNeedles, setCrossNeedles] = useState<number>(0);
-  const [needles, setNeedles] = useState<Array<{ x: number; y: number; angle: number; crosses: boolean }>>([]);
-
-  const dropNeedles = (count = 50) => {
-    const newNeedles: Array<{ x: number; y: number; angle: number; crosses: boolean }> = [];
-    let newCrosses = 0;
-    const lineDistance = 50;
-    const needleLength = 35;
-
-    for (let i = 0; i < count; i++) {
-      const x = Math.random() * 700 + 50;
-      const y = Math.random() * 260 + 30;
-      const angle = Math.random() * Math.PI;
-
-      const d = y % lineDistance;
-      const distToLine = Math.min(d, lineDistance - d);
-      const halfProjection = (needleLength / 2) * Math.sin(angle);
-      const crosses = distToLine <= halfProjection;
-
-      if (crosses) newCrosses++;
-      newNeedles.push({ x, y, angle, crosses });
-    }
-
-    setTotalNeedles((t) => t + count);
-    setCrossNeedles((c) => c + newCrosses);
-    setNeedles((prev) => [...prev.slice(-250), ...newNeedles]);
-  };
-
-  const estimatedPi = crossNeedles > 0 ? (2 * 35 * totalNeedles) / (50 * crossNeedles) : 0;
-  const piError = estimatedPi > 0 ? Math.abs(estimatedPi - Math.PI) : 0;
 
   return (
     <div className="space-y-6">
@@ -153,15 +107,14 @@ export const ContinuousRV: React.FC = () => {
           </h2>
         </div>
 
-        {/* 5 Sub-Tabs Navigation */}
+        {/* 4 Sub-Tabs Navigation (Standard Naming, Buffon Removed) */}
         <div className="flex flex-wrap gap-2">
           {(
             [
-              { id: 'uniform', label: '1. Phân bố Đều' },
-              { id: 'exponential', label: '2. Phân bố Mũ' },
-              { id: 'normal', label: '3. Chuẩn Gauss' },
+              { id: 'uniform', label: '1. Phân bố Đều (Uniform)' },
+              { id: 'exponential', label: '2. Phân bố Mũ (Exponential)' },
+              { id: 'normal', label: '3. Chuẩn Gauss (Normal)' },
               { id: 'standardization', label: '4. Chuẩn hóa & Z-score' },
-              { id: 'buffon', label: '5. Kim Buffon (Monte Carlo)' },
             ] as const
           ).map((t) => (
             <button
@@ -179,25 +132,22 @@ export const ContinuousRV: React.FC = () => {
         </div>
       </div>
 
-      {/* ========================================================= */}
-      {/* TAB 1: CONTINUOUS UNIFORM U(a, b)                         */}
-      {/* ========================================================= */}
+      {/* TAB 1: CONTINUOUS UNIFORM U(a, b) */}
       {activeSub === 'uniform' && (
         <div className="space-y-6">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
-            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
             <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
               <ClayCard glowColor="amber" className="p-5">
                 <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                   Tham số Phân bố Đều U(a, b)
                 </h4>
-                {/* Presets */}
                 <div className="mb-3">
                   <span className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
                     Khoảng điển hình:
                   </span>
                   <div className="grid grid-cols-2 gap-1.5">
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(0);
                         setUnifB(1);
@@ -209,6 +159,7 @@ export const ContinuousRV: React.FC = () => {
                       Chuẩn tắc U(0, 1)
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(-2);
                         setUnifB(4);
@@ -220,6 +171,7 @@ export const ContinuousRV: React.FC = () => {
                       Khoảng [-2, 4]
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(-4);
                         setUnifB(4);
@@ -231,6 +183,7 @@ export const ContinuousRV: React.FC = () => {
                       Đối xứng [-4, 4]
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(0);
                         setUnifB(10);
@@ -269,7 +222,6 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 2: Khoảng tích phân */}
               <ClayCard glowColor="orange" className="p-5">
                 <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                   Khoảng Tích phân [X₁, X₂]
@@ -299,7 +251,6 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 3: Thống kê & Moment */}
               <ClayCard glowColor="emerald" className="p-5">
                 <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                   Đặc trưng Số Phân bố Đều
@@ -333,7 +284,6 @@ export const ContinuousRV: React.FC = () => {
               </ClayCard>
             </div>
 
-            {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
               <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
                 <DesmosStageHeader
@@ -359,13 +309,11 @@ export const ContinuousRV: React.FC = () => {
                       </marker>
                     </defs>
 
-                    {/* Desmos Cartesian Axes */}
                     <line x1="50" y1="330" x2="750" y2="330" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-unif-x)" />
                     <line x1="400" y1="360" x2="400" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-unif-y)" />
                     <text x="760" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
                     <text x="400" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
 
-                    {/* X Ticks */}
                     {[-5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7].map((val) => (
                       <g key={val}>
                         <line x1={mapUnifX(val)} y1="326" x2={mapUnifX(val)} y2="334" stroke="#64748B" strokeWidth="1.5" />
@@ -375,7 +323,6 @@ export const ContinuousRV: React.FC = () => {
                       </g>
                     ))}
 
-                    {/* Base PDF Rectangle */}
                     {(() => {
                       const ax = mapUnifX(unifA);
                       const bx = mapUnifX(safeUnifB);
@@ -384,7 +331,6 @@ export const ContinuousRV: React.FC = () => {
 
                       return (
                         <g>
-                          {/* Full PDF bounding rectangle (dotted light) */}
                           <rect
                             x={ax}
                             y={topY}
@@ -396,7 +342,6 @@ export const ContinuousRV: React.FC = () => {
                             strokeDasharray="4 4"
                           />
 
-                          {/* Integral Shaded Area */}
                           {overlapHigh > overlapLow && (
                             <rect
                               x={mapUnifX(overlapLow)}
@@ -409,18 +354,15 @@ export const ContinuousRV: React.FC = () => {
                             />
                           )}
 
-                          {/* Flat Top Density Line */}
                           <line x1={ax} y1={topY} x2={bx} y2={topY} stroke="#0284C7" strokeWidth="3.5" />
                           <line x1={ax} y1={330} x2={ax} y2={topY} stroke="#0284C7" strokeWidth="2" strokeDasharray="3 3" />
                           <line x1={bx} y1={330} x2={bx} y2={topY} stroke="#0284C7" strokeWidth="2" strokeDasharray="3 3" />
 
-                          {/* Height indicator line to Y axis */}
                           <line x1="400" y1={topY} x2={ax} y2={topY} stroke="#10B981" strokeWidth="1.5" strokeDasharray="3 2" />
                           <text x="390" y={topY - 4} fill="#10B981" fontSize="11" fontWeight="bold" textAnchor="end" fontFamily="monospace">
                             h = {fmt(unifHeight, 3)}
                           </text>
 
-                          {/* Boundary a, b markers */}
                           <circle cx={ax} cy={topY} r="5" fill="#0284C7" stroke="#FFFFFF" strokeWidth="2" />
                           <circle cx={bx} cy={topY} r="5" fill="#0284C7" stroke="#FFFFFF" strokeWidth="2" />
                           <text x={ax} y="320" fill="#0284C7" fontSize="11" fontWeight="black" textAnchor="middle" fontFamily="monospace">
@@ -433,7 +375,6 @@ export const ContinuousRV: React.FC = () => {
                       );
                     })()}
 
-                    {/* Mean Fulcrum */}
                     {(() => {
                       const meanX = mapUnifX(unifMean);
                       return (
@@ -448,7 +389,6 @@ export const ContinuousRV: React.FC = () => {
                     })()}
                   </svg>
 
-                  {/* Bottom Stage Legend */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
                     <div className="flex items-center gap-4 flex-wrap">
                       <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
@@ -473,26 +413,23 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phân bố Đều Liên tục U(a, b) & Nghịch lý Xác suất Điểm bằng 0"
             question="Tại sao với biến ngẫu nhiên liên tục, xác suất tại một điểm chính xác P(X = c) luôn luôn bằng 0, nhưng xác suất trên một khoảng [x1, x2] lại có giá trị dương?"
-            formula="f(x) = \frac{1}{b - a}, \quad P(x_1 \le X \le x_2) = \int_{x_1}^{x_2} \frac{1}{b - a} dx = \frac{x_2 - x_1}{b - a}"
-            mathExplanation="Phân bố Đều liên tục mô hình hóa tình huống một đại lượng có thể rơi vào bất kỳ vị trí nào trong khoảng [a, b] với mật độ đồng đều tuyệt đối. Vì khoảng [a, b] chứa vô số điểm không đếm được, xác suất để chiếc kim rơi trúng một con số thập phân vô hạn cụ thể là 1/∞ = 0. Do đó, trong không gian liên tục, xác suất chỉ tồn tại dưới dạng DIỆN TÍCH tích phân của hàm mật độ trên một khoảng."
+            formula="f(x) = \\frac{1}{b - a}, \\quad P(x_1 \\le X \\le x_2) = \\int_{x_1}^{x_2} \\frac{1}{b - a} dx = \\frac{x_2 - x_1}{b - a}"
+            mathExplanation="Phân bố Đều liên tục mô hình hóa tình huống một đại lượng có thể rơi vào bất kỳ vị trí nào trong khoảng [a, b] với mật độ đồng đều tuyệt đối. Vì khoảng [a, b] chứa vô số điểm không đếm được, xác suất để rơi trúng một con số thập phân vô hạn cụ thể là 0. Do đó, trong không gian liên tục, xác suất chỉ tồn tại dưới dạng DIỆN TÍCH tích phân của hàm mật độ trên một khoảng."
             howToInteract={[
-              "Kéo slider 'Cận dưới a' và 'Cận trên b' để nới rộng hoặc thu hẹp khoảng xác định. Quan sát độ cao mật độ h = 1/(b-a) tự động dâng lên hoặc hạ xuống để bảo toàn diện tích tổng luôn bằng đúng 1.",
-              "Kéo các slider x1, x2 để chọn khoảng quan sát, vùng tích phân màu cam sẽ phản ánh diện tích hình chữ nhật tương ứng.",
-              "Bấm các nút chọn nhanh để thử nghiệm các tình huống quen thuộc: Chờ xe buýt [0, 10], Biến ngẫu nhiên chuẩn tắc U(0, 1).",
+              'Kéo slider Cận dưới a và Cận trên b để nới rộng hoặc thu hẹp khoảng xác định. Quan sát độ cao mật độ h = 1/(b-a) tự động thay đổi để bảo toàn diện tích tổng luôn bằng 1.',
+              'Kéo các slider x1, x2 để chọn khoảng quan sát, vùng tích phân màu cam sẽ phản ánh diện tích hình chữ nhật tương ứng.',
+              'Bấm các nút chọn nhanh để thử nghiệm các tình huống quen thuộc: Chờ xe buýt [0, 10], Chuẩn tắc U(0, 1).',
             ]}
-            whatToObserve="Khi bạn thu hẹp khoảng [a, b] từ 10 đơn vị xuống 2 đơn vị, độ cao mật độ f(x) tăng vọt gấp 5 lần (từ 0.1 lên 0.5), nhưng diện tích toàn bộ hình chữ nhật luôn là h × (b - a) = 1. Trọng tâm E[X] luôn nằm chính xác ở trung điểm (a + b) / 2."
-            takeaway="Mật độ xác suất f(x) KHÔNG phải là xác suất; nó là 'mật độ trên mỗi đơn vị chiều dài'. Chỉ khi nhân f(x) với độ dài khoảng dx ta mới thu được xác suất thực sự P = f(x)dx."
+            whatToObserve="Khi bạn thu hẹp khoảng [a, b], độ cao mật độ f(x) tăng vọt tương ứng, nhưng diện tích toàn bộ hình chữ nhật luôn là h × (b - a) = 1. Trọng tâm E[X] luôn nằm chính xác ở trung điểm (a + b) / 2."
+            takeaway="Mật độ xác suất f(x) không phải là xác suất; nó là mật độ trên mỗi đơn vị chiều dài. Chỉ khi nhân f(x) với độ dài khoảng dx ta mới thu được xác suất thực sự P = f(x)dx."
           />
         </div>
       )}
 
-      {/* ========================================================= */}
-      {/* TAB 2: EXPONENTIAL Exp(lambda)                            */}
-      {/* ========================================================= */}
+      {/* TAB 2: EXPONENTIAL Exp(lambda) */}
       {activeSub === 'exponential' && (
         <div className="space-y-6">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
-            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
             <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
               <ClayCard glowColor="emerald" className="p-5">
                 <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
@@ -510,13 +447,13 @@ export const ContinuousRV: React.FC = () => {
                     onChange={setExpLambda}
                   />
 
-                  {/* Mode selector */}
                   <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
                     <span className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1.5">
                       Chế độ quan sát:
                     </span>
                     <div className="grid grid-cols-2 gap-1.5">
                       <button
+                        type="button"
                         onClick={() => setExpMode('survival')}
                         className={`px-2 py-1.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer ${
                           expMode === 'survival'
@@ -527,6 +464,7 @@ export const ContinuousRV: React.FC = () => {
                         Tích phân & Sống sót
                       </button>
                       <button
+                        type="button"
                         onClick={() => setExpMode('memoryless')}
                         className={`px-2 py-1.5 text-xs font-bold rounded-lg border transition-colors cursor-pointer ${
                           expMode === 'memoryless'
@@ -541,7 +479,6 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 2: Interactive Controls based on Mode */}
               {expMode === 'survival' ? (
                 <ClayCard glowColor="orange" className="p-5">
                   <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
@@ -618,7 +555,6 @@ export const ContinuousRV: React.FC = () => {
                 </ClayCard>
               )}
 
-              {/* Card 3: Thống kê & Moment */}
               <ClayCard glowColor="emerald" className="p-5">
                 <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                   Đặc trưng Số Phân bố Mũ
@@ -646,7 +582,6 @@ export const ContinuousRV: React.FC = () => {
               </ClayCard>
             </div>
 
-            {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
               <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
                 <DesmosStageHeader
@@ -676,13 +611,11 @@ export const ContinuousRV: React.FC = () => {
                       </marker>
                     </defs>
 
-                    {/* Desmos Cartesian Axes */}
                     <line x1="80" y1="330" x2="760" y2="330" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-exp-x)" />
                     <line x1="100" y1="350" x2="100" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-exp-y)" />
                     <text x="770" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
                     <text x="100" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
 
-                    {/* X Ticks */}
                     {[1, 2, 3, 4, 5, 6, 7].map((val) => (
                       <g key={val}>
                         <line x1={mapExpX(val)} y1="326" x2={mapExpX(val)} y2="334" stroke="#64748B" strokeWidth="1.5" />
@@ -692,10 +625,8 @@ export const ContinuousRV: React.FC = () => {
                       </g>
                     ))}
 
-                    {/* Survival Shaded Areas */}
                     {expMode === 'survival' ? (
                       <>
-                        {/* Area 0 to t (CDF) */}
                         {(() => {
                           const pts = [];
                           const step = 0.05;
@@ -712,7 +643,6 @@ export const ContinuousRV: React.FC = () => {
                           );
                         })()}
 
-                        {/* Area t to 7 (Tail survival) */}
                         {(() => {
                           const pts = [];
                           const step = 0.05;
@@ -729,7 +659,6 @@ export const ContinuousRV: React.FC = () => {
                           );
                         })()}
 
-                        {/* Vertical line at t */}
                         <line
                           x1={mapExpX(expT)}
                           y1="60"
@@ -745,9 +674,7 @@ export const ContinuousRV: React.FC = () => {
                         </text>
                       </>
                     ) : (
-                      /* Memoryless mode visualization */
                       <>
-                        {/* Shaded Tail beyond s */}
                         {(() => {
                           const pts = [];
                           for (let x = expS; x <= 7.001; x += 0.05) {
@@ -763,7 +690,6 @@ export const ContinuousRV: React.FC = () => {
                           );
                         })()}
 
-                        {/* Shaded Tail beyond s + t */}
                         {(() => {
                           const pts = [];
                           const target = expS + expDeltaT;
@@ -780,13 +706,11 @@ export const ContinuousRV: React.FC = () => {
                           );
                         })()}
 
-                        {/* Marker for s */}
                         <line x1={mapExpX(expS)} y1="80" x2={mapExpX(expS)} y2="330" stroke="#A855F7" strokeWidth="2" strokeDasharray="4 2" />
                         <text x={mapExpX(expS)} y="72" fill="#A855F7" fontSize="11" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
                           s = {fmt(expS, 1)}
                         </text>
 
-                        {/* Marker for s + t */}
                         <line x1={mapExpX(expS + expDeltaT)} y1="60" x2={mapExpX(expS + expDeltaT)} y2="330" stroke="#7E22CE" strokeWidth="2.5" strokeDasharray="4 2" />
                         <text x={mapExpX(expS + expDeltaT)} y="52" fill="#7E22CE" fontSize="11" fontWeight="black" textAnchor="middle" fontFamily="monospace">
                           s + t = {fmt(expS + expDeltaT, 1)}
@@ -794,7 +718,6 @@ export const ContinuousRV: React.FC = () => {
                       </>
                     )}
 
-                    {/* Full Exponential Curve */}
                     <path
                       d={Array.from({ length: 140 }, (_, i) => {
                         const x = (i / 140) * 7;
@@ -806,7 +729,6 @@ export const ContinuousRV: React.FC = () => {
                       strokeWidth="3.5"
                     />
 
-                    {/* Fulcrum at Mean E[X] */}
                     {(() => {
                       const mx = mapExpX(expMean);
                       if (expMean > 7) return null;
@@ -822,7 +744,6 @@ export const ContinuousRV: React.FC = () => {
                     })()}
                   </svg>
 
-                  {/* Bottom Stage Legend */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
                     <div className="flex items-center gap-4 flex-wrap">
                       <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
@@ -858,26 +779,23 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phân bố Mũ & Bí mật Tính Không Nhớ (Memoryless Property)"
             question="Nếu bạn đã đợi xe buýt 20 phút mà xe chưa tới, liệu xác suất bạn phải đợi thêm 10 phút nữa có nhỏ hơn một người vừa mới bước tới trạm hay không?"
-            formula="P(X > s + t \mid X > s) = \frac{P(X > s + t)}{P(X > s)} = \frac{e^{-\lambda(s+t)}}{e^{-\lambda s}} = e^{-\lambda t} = P(X > t)"
-            mathExplanation="Nếu thời gian chờ tuân theo phân bố Mũ, câu trả lời gây sốc là: HOÀN TOÀN NHƯ NHAU! Phân bố Mũ là phân bố liên tục duy nhất sở hữu Tính Không Nhớ (Memoryless). Thiết bị hoạt động theo phân bố mũ không hề bị 'già đi' hay 'hao mòn' theo thời gian: một bóng đèn đã sáng 1000 giờ vẫn có xác suất hỏng trong 1 giờ tới y hệt như một bóng đèn mới tinh vừa bóc hộp."
+            formula="P(X > s + t \\mid X > s) = \\frac{P(X > s + t)}{P(X > s)} = \\frac{e^{-\\lambda(s+t)}}{e^{-\\lambda s}} = e^{-\\lambda t} = P(X > t)"
+            mathExplanation="Nếu thời gian chờ tuân theo phân bố Mũ, câu trả lời là: HOÀN TOÀN NHƯ NHAU! Phân bố Mũ là phân bố liên tục duy nhất sở hữu Tính Không Nhớ. Thiết bị hoạt động theo phân bố mũ không hề bị hao mòn theo thời gian: một bóng đèn đã sáng 1000 giờ vẫn có xác suất hỏng trong 1 giờ tới y hệt như một bóng đèn mới tinh vừa bóc hộp."
             howToInteract={[
-              "Kéo slider lambda để thay đổi tần suất biến cố: lambda càng lớn thì biến cố diễn ra càng dồn dập, đường cong suy giảm càng dốc và thời gian chờ trung bình E[X] càng ngắn.",
-              "Bật chế độ 'Tính Không Nhớ': hãy thử thay đổi s (thời gian đã đợi) và t (thời gian đợi thêm). Quan sát kết quả xác suất có điều kiện luôn trùng khít 100% với P(X > t).",
-              "Quan sát mối liên hệ kỳ diệu: với phân bố mũ, kỳ vọng E[X] và độ lệch chuẩn sigma luôn bằng nhau chằn chặn và bằng đúng 1/lambda.",
+              'Kéo slider lambda để thay đổi tần suất biến cố: lambda càng lớn thì biến cố diễn ra càng dồn dập, đường cong suy giảm càng dốc.',
+              'Bật chế độ Tính Không Nhớ: thay đổi s (thời gian đã đợi) và t (thời gian đợi thêm). Quan sát kết quả xác suất có điều kiện luôn trùng khít 100% với P(X > t).',
+              'Quan sát mối liên hệ: với phân bố mũ, kỳ vọng E[X] và độ lệch chuẩn sigma luôn bằng nhau chằn chặn và bằng đúng 1/lambda.',
             ]}
-            whatToObserve="Đồ thị hàm mật độ f(x) luôn bắt đầu tại giá trị cực đại f(0) = lambda rồi suy giảm tiệm cận về 0 nhưng không bao giờ chạm hẳn vào trục hoành (Đuôi dài vô tận). Điểm trọng tâm E[X] = 1/lambda luôn nằm tại vị trí mà phần diện tích bên trái chiếm khoảng 63.2% tổng thể."
+            whatToObserve="Đồ thị hàm mật độ f(x) luôn bắt đầu tại giá trị cực đại f(0) = lambda rồi suy giảm tiệm cận về 0 nhưng không bao giờ chạm hẳn vào trục hoành. Điểm trọng tâm E[X] = 1/lambda luôn nằm tại vị trí mà phần diện tích bên trái chiếm khoảng 63.2% tổng thể."
             takeaway="Phân bố Mũ mô tả thời gian chờ giữa các biến cố của một quá trình Poisson. Nó là mô hình chuẩn mực cho hiện tượng phân rã phóng xạ, thời gian phục vụ tại quầy giao dịch và tuổi thọ linh kiện điện tử không hao mòn cơ học."
           />
         </div>
       )}
 
-      {/* ========================================================= */}
-      {/* TAB 3: NORMAL DISTRIBUTION N(mu, sigma^2)                 */}
-      {/* ========================================================= */}
+      {/* TAB 3: NORMAL DISTRIBUTION N(mu, sigma^2) */}
       {activeSub === 'normal' && (
         <div className="space-y-6">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
-            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
             <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
               <ClayCard glowColor="blue" className="p-5">
                 <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
@@ -905,7 +823,6 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 2: Khoảng tích phân */}
               <ClayCard glowColor="orange" className="p-5">
                 <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                   Khoảng Tích phân [X₁, X₂]
@@ -932,7 +849,6 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 3: Thống kê & Công thức */}
               <ClayCard glowColor="emerald" className="p-5">
                 <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                   Xác suất Tích phân
@@ -960,7 +876,6 @@ export const ContinuousRV: React.FC = () => {
               </ClayCard>
             </div>
 
-            {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
               <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
                 <DesmosStageHeader
@@ -986,13 +901,11 @@ export const ContinuousRV: React.FC = () => {
                       </marker>
                     </defs>
 
-                    {/* Desmos Cartesian Axes */}
                     <line x1="60" y1="330" x2="740" y2="330" stroke="#EF4444" strokeWidth="2.5" markerEnd="url(#arrow-norm-x)" />
                     <line x1="400" y1="360" x2="400" y2="30" stroke="#10B981" strokeWidth="2.5" markerEnd="url(#arrow-norm-y)" />
                     <text x="750" y="334" fill="#EF4444" fontSize="13" fontWeight="bold" fontFamily="monospace">x</text>
                     <text x="400" y="20" fill="#10B981" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="monospace">f(x)</text>
 
-                    {/* X-axis Ticks */}
                     {[-4, -3, -2, -1, 1, 2, 3, 4].map((val) => (
                       <g key={val}>
                         <line x1={mapNormX(val)} y1="326" x2={mapNormX(val)} y2="334" stroke="#64748B" strokeWidth="1.5" />
@@ -1002,7 +915,6 @@ export const ContinuousRV: React.FC = () => {
                       </g>
                     ))}
 
-                    {/* Shaded Area between rangeX1 and rangeX2 */}
                     {(() => {
                       const pts = [];
                       const step = 0.05;
@@ -1039,7 +951,6 @@ export const ContinuousRV: React.FC = () => {
                       );
                     })()}
 
-                    {/* Full Normal Curve */}
                     <path
                       d={Array.from({ length: 160 }, (_, i) => {
                         const x = -5 + (i / 160) * 10;
@@ -1051,7 +962,6 @@ export const ContinuousRV: React.FC = () => {
                       strokeWidth="3.5"
                     />
 
-                    {/* Mean line mu */}
                     <line
                       x1={mapNormX(normMu)}
                       y1="50"
@@ -1067,7 +977,6 @@ export const ContinuousRV: React.FC = () => {
                     </text>
                   </svg>
 
-                  {/* Bottom Stage Legend */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
                     <div className="flex items-center gap-4 flex-wrap">
                       <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 font-bold">
@@ -1088,40 +997,37 @@ export const ContinuousRV: React.FC = () => {
 
           <LabBriefing
             title="Bản chất Phân bố Chuẩn Gauss & Quy Tắc Thực Nghiệm 68-95-99.7"
-            question="Tại sao đường cong hình chuông Gauss lại xuất hiện khắp mọi nơi trong tự nhiên, từ chiều cao con người, sai số đo lường thiên văn đến điểm thi cử?"
-            formula="f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}, \quad \mu = \mathbb{E}[X], \quad \sigma^2 = \text{Var}(X)"
-            mathExplanation="Theo Định lý Giới hạn Trung tâm (CLT), khi cộng dồn một số lượng lớn các yếu tố ngẫu nhiên độc lập nhỏ lẻ, tổng hoặc trung bình của chúng sẽ tự động hội tụ về phân bố Chuẩn, bất kể các yếu tố thành phần mang hình dạng phân bố nào. Đồ thị có hình quả chuông đối xứng tuyệt đối qua kỳ vọng mu, và đạt điểm uốn (nơi độ dốc đổi chiều cong) tại đúng mu - sigma và mu + sigma."
+            question="Tại sao đường cong hình chuông Gauss lại xuất hiện khắp mọi nơi trong tự nhiên, từ chiều cao con người đến điểm thi cử?"
+            formula="f(x) = \\frac{1}{\\sigma \\sqrt{2\\pi}} e^{-\\frac{(x - \\mu)^2}{2\\sigma^2}}, \\quad \\mu = \\mathbb{E}[X], \\quad \\sigma^2 = \\text{Var}(X)"
+            mathExplanation="Theo Định lý Giới hạn Trung tâm, khi cộng dồn một số lượng lớn các yếu tố ngẫu nhiên độc lập, tổng hoặc trung bình của chúng sẽ tự động hội tụ về phân bố Chuẩn. Đồ thị có hình quả chuông đối xứng tuyệt đối qua kỳ vọng mu, và đạt điểm uốn tại đúng mu - sigma và mu + sigma."
             howToInteract={[
-              "Kéo slider mu để tịnh tiến toàn bộ quả chuông sang trái/phải dọc theo trục x mà không làm thay đổi hình dáng của nó.",
-              "Kéo slider sigma: khi sigma nhỏ, quả chuông nhọn hoắt và cao vút (tập trung cao độ); khi sigma lớn, quả chuông bè thấp và trải rộng (phân tán lớn).",
-              "Thử đặt khoảng [X1, X2] = [mu - sigma, mu + sigma] để tự mình kiểm chứng diện tích tích phân xấp xỉ đúng 68.27%.",
+              'Kéo slider mu để tịnh tiến toàn bộ quả chuông sang trái/phải dọc theo trục x mà không làm thay đổi hình dáng.',
+              'Kéo slider sigma: khi sigma nhỏ, quả chuông nhọn hoắt và cao vút; khi sigma lớn, quả chuông bè thấp và trải rộng.',
+              'Thử đặt khoảng [X1, X2] = [mu - sigma, mu + sigma] để kiểm chứng diện tích tích phân xấp xỉ đúng 68.27%.',
             ]}
-            whatToObserve="Dù mu và sigma có thay đổi thế nào thì phần diện tích trong dải mu ± 1sigma luôn luôn bằng đúng 68.27%, dải mu ± 2sigma luôn bằng 95.45%, và dải mu ± 3sigma chiếm tới 99.73%. Đây chính là Quy tắc Thực nghiệm 3-Sigma kinh điển."
-            takeaway="Phân bố Gauss được định nghĩa trọn vẹn chỉ bởi 2 tham số: mu (vị trí tâm) và sigma (độ co giãn). Mọi phép tính toán phức tạp trên phân bố Gauss đều có thể chuyển hóa về phân bố chuẩn tắc N(0, 1) thông qua phép chuẩn hóa Z-score."
+            whatToObserve="Dù mu và sigma có thay đổi thế nào thì phần diện tích trong dải mu ± 1sigma luôn bằng đúng 68.27%, dải mu ± 2sigma luôn bằng 95.45%, và dải mu ± 3sigma chiếm tới 99.73%. Đây chính là Quy tắc Thực nghiệm 3-Sigma kinh điển."
+            takeaway="Phân bố Gauss được định nghĩa trọn vẹn chỉ bởi 2 tham số: mu (vị trí tâm) và sigma (độ co giãn). Mọi phép tính trên phân bố Gauss đều có thể quy về phân bố chuẩn tắc N(0, 1) thông qua phép chuẩn hóa Z-score."
           />
         </div>
       )}
 
-      {/* ========================================================= */}
-      {/* TAB 4: STANDARDIZATION & Z-SCORE                          */}
-      {/* ========================================================= */}
+      {/* TAB 4: STANDARDIZATION & Z-SCORE */}
       {activeSub === 'standardization' && (
         <div className="space-y-6">
           <div className="flex flex-col lg:flex-row gap-6 items-start">
-            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
             <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
               <ClayCard glowColor="purple" className="p-5">
                 <h4 className="font-heading font-black text-sm text-slate-900 dark:text-white uppercase tracking-wider mb-3">
                   Biến ngẫu nhiên gốc X ~ N(μ, σ²)
                 </h4>
 
-                {/* Quick Presets */}
                 <div className="mb-3">
                   <span className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1">
                     Tình huống thực tế:
                   </span>
                   <div className="grid grid-cols-2 gap-1.5">
                     <button
+                      type="button"
                       onClick={() => {
                         setStdMu(0);
                         setStdSigma(1.0);
@@ -1132,6 +1038,7 @@ export const ContinuousRV: React.FC = () => {
                       Mốc 97.5% (z = +1.96)
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setStdMu(2.0);
                         setStdSigma(1.5);
@@ -1142,6 +1049,7 @@ export const ContinuousRV: React.FC = () => {
                       Lệch chuẩn +2.0σ
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setStdMu(3.0);
                         setStdSigma(2.0);
@@ -1152,6 +1060,7 @@ export const ContinuousRV: React.FC = () => {
                       Lệch dưới -1.5σ
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setStdMu(0);
                         setStdSigma(1.0);
@@ -1198,13 +1107,12 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 2: Phép tính Z-score */}
               <ClayCard glowColor="blue" className="p-5">
                 <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                   Công thức Chuẩn hóa & Z-Score
                 </h4>
                 <div className="p-3 rounded-xl bg-purple-50 dark:bg-slate-800 border border-purple-200 dark:border-slate-700 text-center font-mono font-bold text-purple-800 dark:text-purple-300 text-sm sm:text-base mb-3">
-                  <MathView math="Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1)" />
+                  <MathView math="Z = \\frac{X - \\mu}{\\sigma} \\sim \\mathcal{N}(0, 1)" />
                 </div>
                 <div className="space-y-2 text-xs font-mono">
                   <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
@@ -1226,7 +1134,6 @@ export const ContinuousRV: React.FC = () => {
                 </div>
               </ClayCard>
 
-              {/* Card 3: Diễn giải Ý nghĩa Thống kê */}
               <ClayCard glowColor="emerald" className="p-5">
                 <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
                   Ý nghĩa Vị trí Z-score
@@ -1270,7 +1177,6 @@ export const ContinuousRV: React.FC = () => {
               </ClayCard>
             </div>
 
-            {/* RIGHT COLUMN: GRAPH STAGE (DUAL COMPARISON VIEWPORT) */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
               <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
                 <DesmosStageHeader
@@ -1295,18 +1201,15 @@ export const ContinuousRV: React.FC = () => {
                       </marker>
                     </defs>
 
-                    {/* ================= TOP CHART: X ~ N(stdMu, stdSigma^2) ================= */}
+                    {/* TOP CHART: X ~ N(stdMu, stdSigma^2) */}
                     <g>
-                      {/* Top chart title */}
                       <text x="60" y="24" fill="#6366F1" fontSize="12" fontWeight="black" fontFamily="sans-serif">
                         1. Phân bố ban đầu: X ~ N(μ = {fmt(stdMu, 1)}, σ² = {fmt(stdSigma * stdSigma, 2)})
                       </text>
 
-                      {/* Top X-Axis */}
                       <line x1="50" y1="170" x2="750" y2="170" stroke="#EF4444" strokeWidth="2" markerEnd="url(#arrow-std-x)" />
                       <text x="760" y="174" fill="#EF4444" fontSize="11" fontWeight="bold" fontFamily="monospace">x</text>
 
-                      {/* Ticks for Top X-axis around stdMu */}
                       {[-3, -2, -1, 0, 1, 2, 3, 4, 5, 6, 7].map((val) => (
                         <g key={'top-' + val}>
                           <line x1={mapStdTopX(val)} y1="167" x2={mapStdTopX(val)} y2="173" stroke="#94A3B8" strokeWidth="1" />
@@ -1316,7 +1219,6 @@ export const ContinuousRV: React.FC = () => {
                         </g>
                       ))}
 
-                      {/* Top Shaded Area P(X <= stdX) */}
                       {(() => {
                         const minVal = stdMu - 4 * stdSigma;
                         const boundX = Math.min(stdX, stdMu + 4 * stdSigma);
@@ -1334,7 +1236,6 @@ export const ContinuousRV: React.FC = () => {
                         );
                       })()}
 
-                      {/* Top Bell Curve */}
                       <path
                         d={Array.from({ length: 120 }, (_, i) => {
                           const x = stdMu - 4 * stdSigma + (i / 120) * (8 * stdSigma);
@@ -1346,13 +1247,11 @@ export const ContinuousRV: React.FC = () => {
                         strokeWidth="2.5"
                       />
 
-                      {/* Top Mean line */}
                       <line x1={mapStdTopX(stdMu)} y1="35" x2={mapStdTopX(stdMu)} y2="170" stroke="#EF4444" strokeWidth="1.5" strokeDasharray="3 3" />
                       <text x={mapStdTopX(stdMu)} y="30" fill="#EF4444" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
                         μ = {fmt(stdMu, 1)}
                       </text>
 
-                      {/* Top Observation x */}
                       <line x1={mapStdTopX(stdX)} y1="45" x2={mapStdTopX(stdX)} y2="170" stroke="#F59E0B" strokeWidth="2.5" />
                       <circle cx={mapStdTopX(stdX)} cy={mapStdTopY(normalPdf(stdX, stdMu, stdSigma))} r="4.5" fill="#F59E0B" stroke="#FFFFFF" strokeWidth="1.5" />
                       <text x={mapStdTopX(stdX)} y="40" fill="#F59E0B" fontSize="10" fontWeight="black" textAnchor="middle" fontFamily="monospace">
@@ -1360,7 +1259,7 @@ export const ContinuousRV: React.FC = () => {
                       </text>
                     </g>
 
-                    {/* ================= MIDDLE DIVIDER & ARROW ================= */}
+                    {/* MIDDLE DIVIDER */}
                     <g>
                       <line x1="100" y1="195" x2="700" y2="195" stroke="#CBD5E1" strokeWidth="1" strokeDasharray="6 4" className="dark:stroke-slate-700" />
                       <rect x="270" y="186" width="260" height="18" rx="9" fill="#0284C7" />
@@ -1369,18 +1268,15 @@ export const ContinuousRV: React.FC = () => {
                       </text>
                     </g>
 
-                    {/* ================= BOTTOM CHART: Z ~ N(0, 1) ================= */}
+                    {/* BOTTOM CHART: Z ~ N(0, 1) */}
                     <g>
-                      {/* Bottom chart title */}
                       <text x="60" y="222" fill="#0284C7" fontSize="12" fontWeight="black" fontFamily="sans-serif">
                         2. Phân bố chuẩn tắc: Z ~ N(0, 1) [Bảo toàn nguyên vẹn xác suất tích phân]
                       </text>
 
-                      {/* Bottom X-Axis */}
                       <line x1="50" y1="350" x2="750" y2="350" stroke="#EF4444" strokeWidth="2" markerEnd="url(#arrow-std-x)" />
                       <text x="760" y="354" fill="#EF4444" fontSize="11" fontWeight="bold" fontFamily="monospace">z</text>
 
-                      {/* Ticks for Bottom Z-axis: -4 to 4 */}
                       {[-4, -3, -2, -1, 0, 1, 2, 3, 4].map((val) => (
                         <g key={'bot-' + val}>
                           <line x1={mapStdBotX(val)} y1="347" x2={mapStdBotX(val)} y2="353" stroke="#94A3B8" strokeWidth="1" />
@@ -1390,7 +1286,6 @@ export const ContinuousRV: React.FC = () => {
                         </g>
                       ))}
 
-                      {/* Bottom Shaded Area P(Z <= zScore) */}
                       {(() => {
                         const minZ = -4;
                         const boundZ = Math.min(zScore, 4);
@@ -1408,7 +1303,6 @@ export const ContinuousRV: React.FC = () => {
                         );
                       })()}
 
-                      {/* Bottom Standard Bell Curve */}
                       <path
                         d={Array.from({ length: 120 }, (_, i) => {
                           const z = -4 + (i / 120) * 8;
@@ -1420,13 +1314,11 @@ export const ContinuousRV: React.FC = () => {
                         strokeWidth="2.5"
                       />
 
-                      {/* Bottom Mean line at 0 */}
                       <line x1={mapStdBotX(0)} y1="230" x2={mapStdBotX(0)} y2="350" stroke="#EF4444" strokeWidth="1.5" strokeDasharray="3 3" />
                       <text x={mapStdBotX(0)} y="226" fill="#EF4444" fontSize="10" fontWeight="bold" textAnchor="middle" fontFamily="monospace">
                         z = 0
                       </text>
 
-                      {/* Bottom Observation zScore */}
                       <line x1={mapStdBotX(zScore)} y1="235" x2={mapStdBotX(zScore)} y2="350" stroke="#F59E0B" strokeWidth="2.5" />
                       <circle cx={mapStdBotX(zScore)} cy={mapStdBotY(normalPdf(zScore, 0, 1))} r="4.5" fill="#F59E0B" stroke="#FFFFFF" strokeWidth="1.5" />
                       <text x={mapStdBotX(zScore)} y="230" fill="#F59E0B" fontSize="10" fontWeight="black" textAnchor="middle" fontFamily="monospace">
@@ -1435,7 +1327,6 @@ export const ContinuousRV: React.FC = () => {
                     </g>
                   </svg>
 
-                  {/* Bottom Stage Legend */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
                     <div className="flex items-center gap-4 flex-wrap">
                       <span className="flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 font-bold">
@@ -1460,171 +1351,15 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phép Chuẩn Hóa (Standardization) & Ý Nghĩa Z-Score"
             question="Tại sao mọi phân bố Chuẩn N(μ, σ²) bất kỳ đều có thể quy về một phân bố chuẩn tắc N(0, 1) duy nhất, và Z-score có vai trò gì trong thế giới thực?"
-            formula="Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1), \quad P(X \le x) = P\left(Z \le \frac{x - \mu}{\sigma}\right) = \Phi(z)"
-            mathExplanation="Phép chuẩn hóa gồm 2 thao tác hình học thuần túy: (1) Dời gốc tọa độ: Trừ đi mu đưa tâm phân bố về 0; (2) Co giãn tỷ lệ: Chia cho sigma chuẩn hóa độ rộng về 1 đơn vị chuẩn. Dù quả chuông ban đầu có lệch sang phải, sang trái, phồng to hay thu hẹp thế nào thì qua phép biến đổi tuyến tính Z = (X - mu)/sigma, toàn bộ diện tích tích phân dưới đường cong được bảo toàn 100%."
+            formula="Z = \\frac{X - \\mu}{\\sigma} \\sim \\mathcal{N}(0, 1), \\quad P(X \\le x) = P\\left(Z \\le \\frac{x - \\mu}{\\sigma}\\right) = \\Phi(z)"
+            mathExplanation="Phép chuẩn hóa gồm 2 thao tác hình học thuần túy: Dời gốc tọa độ (trừ mu đưa tâm phân bố về 0) và co giãn tỷ lệ (chia cho sigma chuẩn hóa độ rộng về 1 đơn vị chuẩn). Qua phép biến đổi tuyến tính Z = (X - mu)/sigma, toàn bộ diện tích tích phân dưới đường cong được bảo toàn nguyên vẹn."
             howToInteract={[
-              "Kéo slider x, mu, sigma để quan sát đồng thời cả hai đồ thị: đồ thị trên là phân bố gốc X, đồ thị dưới là phân bố chuẩn tắc Z.",
-              "Để ý vùng tô màu tím ở trên và vùng màu xanh dương ở dưới luôn luôn bằng nhau chằn chặn về tỷ lệ phần trăm (Diện tích bảo toàn).",
-              "Bấm các nút chọn nhanh để xem ví dụ kinh điển: mốc giới hạn z = +1.96 (tương ứng đuôi 2.5% bên phải), hoặc tình huống ngoại lai z > 3.",
+              'Kéo slider x, mu, sigma để quan sát đồng thời cả hai đồ thị: đồ thị trên là phân bố gốc X, đồ thị dưới là phân bố chuẩn tắc Z.',
+              'Để ý vùng tô màu tím ở trên và vùng màu xanh dương ở dưới luôn luôn bằng nhau chằn chặn về tỷ lệ phần trăm (Diện tích bảo toàn).',
+              'Bấm các nút chọn nhanh để xem ví dụ kinh điển: mốc giới hạn z = +1.96 (tương ứng đuôi 2.5% bên phải), hoặc tình huống ngoại lai z > 3.',
             ]}
-            whatToObserve="Giá trị Z-score chính là 'thước đo khoảng cách theo đơn vị độ lệch chuẩn': z = +2.0 nghĩa là điểm số này cao hơn trung bình đúng 2 lần độ lệch chuẩn; z = -1.5 nghĩa là thấp hơn trung bình 1.5 lần độ lệch chuẩn. Vì chỉ cần 1 bảng tra duy nhất cho N(0, 1), ta có thể tra cứu xác suất cho bất kỳ biến ngẫu nhiên Gauss nào trong vũ trụ."
-            takeaway="Z-score là công cụ chuẩn hóa tối thượng trong khoa học dữ liệu (Data Science & Machine Learning, như thư viện StandardScaler của Scikit-Learn) giúp xóa bỏ sự chênh lệch về đơn vị đo lường và thang điểm giữa các đặc trưng."
-          />
-        </div>
-      )}
-
-      {/* ========================================================= */}
-      {/* TAB 5: BUFFON'S NEEDLE (MONTE CARLO)                      */}
-      {/* ========================================================= */}
-      {activeSub === 'buffon' && (
-        <div className="space-y-6">
-          <div className="flex flex-col lg:flex-row gap-6 items-start">
-            {/* LEFT COLUMN: 3 CONTROLS & INFO CARDS */}
-            <div className="w-full lg:w-[380px] xl:w-[420px] shrink-0 space-y-4 order-2 lg:order-1">
-              <ClayCard glowColor="emerald" className="p-5">
-                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-3">
-                  Thao tác Mô phỏng
-                </h4>
-                <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-4 leading-relaxed font-normal">
-                  Thả ngẫu nhiên các cây kim dài <MathView math="\ell = 35" /> lên mặt phẳng có các đường kẻ song song cách nhau <MathView math="d = 50" />.
-                </p>
-                <div className="flex gap-2">
-                  <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(100)} className="w-full text-xs sm:text-sm">
-                    + 100 Kim
-                  </ClayButton>
-                  <ClayButton variant="secondary" size="sm" onClick={() => dropNeedles(1000)} className="w-full text-xs sm:text-sm">
-                    + 1,000 Kim
-                  </ClayButton>
-                </div>
-              </ClayCard>
-
-              {/* Card 2: Công thức Hình học Buffon */}
-              <ClayCard glowColor="blue" className="p-5">
-                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                  Công thức Tích phân Buffon (1777)
-                </h4>
-                <p className="text-sm sm:text-base text-slate-700 dark:text-slate-200 mb-2 font-medium">
-                  Xác suất cây kim cắt đường kẻ:
-                </p>
-                <div className="p-3 rounded-xl bg-sky-50 dark:bg-slate-800 border border-sky-200 dark:border-slate-700 text-center font-mono font-bold text-sky-700 dark:text-sky-300 text-sm sm:text-base">
-                  <MathView math="P = \frac{2\ell}{\pi d} \implies \pi = \frac{2\ell}{d \cdot P}" />
-                </div>
-              </ClayCard>
-
-              {/* Card 3: Kết quả Ước lượng Pi */}
-              <ClayCard glowColor="rose" className="p-5">
-                <h4 className="font-heading font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-wider mb-2">
-                  Ước lượng Số Pi
-                </h4>
-                <div className="space-y-2.5 text-sm sm:text-[15px]">
-                  <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">Giá trị Monte Carlo:</span>
-                    <span className="font-mono font-black text-teal-600 dark:text-teal-400 text-base sm:text-lg">
-                      {fmt(estimatedPi, 4)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5 border-b border-slate-200 dark:border-slate-800">
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">Số Pi thực tế:</span>
-                    <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm sm:text-base">3.14159...</span>
-                  </div>
-                  <div className="flex justify-between items-center py-1.5">
-                    <span className="text-slate-600 dark:text-slate-400 font-medium">Sai số tuyệt đối:</span>
-                    <span className="font-mono font-bold text-rose-500 text-sm sm:text-base">
-                      {fmt(piError, 4)}
-                    </span>
-                  </div>
-                </div>
-              </ClayCard>
-            </div>
-
-            {/* RIGHT COLUMN: GRAPH STAGE */}
-            <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
-                <DesmosStageHeader
-                  title="Mô phỏng Thả Cây kim Buffon & Ước lượng Monte Carlo số Pi"
-                  formula="\pi \approx \frac{2\ell \cdot N_{\text{tổng}}}{d \cdot N_{\text{cắt}}}"
-                  badge={`π ≈ ${fmt(estimatedPi, 4)}`}
-                  onReset={() => {
-                    setTotalNeedles(0);
-                    setCrossNeedles(0);
-                    setNeedles([]);
-                  }}
-                  extraActions={
-                    <div className="flex gap-2">
-                      <ClayButton variant="primary" size="sm" onClick={() => dropNeedles(50)} className="py-1 px-3 text-xs">
-                        + Thả 50 Kim
-                      </ClayButton>
-                      <ClayButton variant="outline" size="sm" onClick={() => dropNeedles(500)} className="py-1 px-3 text-xs">
-                        + Thả 500 Kim
-                      </ClayButton>
-                    </div>
-                  }
-                />
-
-                <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
-                  <svg viewBox="0 0 800 320" className="w-full h-auto select-none">
-                    {/* Parallel lines at distance d = 50 */}
-                    {[50, 100, 150, 200, 250].map((yVal) => (
-                      <g key={yVal}>
-                        <line x1="30" y1={yVal} x2="770" y2={yVal} stroke="#64748B" strokeWidth="2" strokeDasharray="5 3" />
-                        <text x="15" y={yVal + 4} fill="#64748B" fontSize="10" fontFamily="monospace">d</text>
-                      </g>
-                    ))}
-
-                    {/* Needles */}
-                    {needles.map((nd, idx) => {
-                      const dx = (35 / 2) * Math.cos(nd.angle);
-                      const dy = (35 / 2) * Math.sin(nd.angle);
-                      return (
-                        <g key={idx}>
-                          <line
-                            x1={nd.x - dx}
-                            y1={nd.y - dy}
-                            x2={nd.x + dx}
-                            y2={nd.y + dy}
-                            stroke={nd.crosses ? '#EF4444' : '#10B981'}
-                            strokeWidth="2.5"
-                            strokeLinecap="round"
-                          />
-                          {nd.crosses && (
-                            <circle cx={nd.x} cy={nd.y} r="3.5" fill="#EF4444" stroke="#FFFFFF" strokeWidth="1" />
-                          )}
-                        </g>
-                      );
-                    })}
-                  </svg>
-
-                  {/* Bottom Stage Legend */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800 text-xs font-semibold">
-                    <div className="flex items-center gap-4 flex-wrap">
-                      <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-bold">
-                        <span className="w-3 h-0.5 bg-emerald-500"></span> Kim không cắt: {totalNeedles - crossNeedles}
-                      </span>
-                      <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400 font-bold">
-                        <span className="w-3 h-0.5 bg-red-500"></span> Kim cắt vạch ngang: {crossNeedles}
-                      </span>
-                    </div>
-                    <span className="font-mono text-slate-700 dark:text-slate-300 font-bold">
-                      Tổng kim: {totalNeedles} | Tỷ lệ cắt: {totalNeedles > 0 ? fmt((crossNeedles / totalNeedles) * 100, 2) : 0}%
-                    </span>
-                  </div>
-                </div>
-              </ClayCard>
-            </div>
-          </div>
-
-          <LabBriefing
-            title="Bản chất Bài Toán Cây Kim Buffon & Phương Pháp Mô Phỏng Monte Carlo"
-            question="Làm thế nào một hành động vật lý ngẫu nhiên thuần túy như thả các cây kim xuống sàn gỗ lại có thể tính toán chính xác hằng số toán học kỳ vĩ Pi?"
-            formula="P(\text{cắt}) = \frac{\int_0^\pi \frac{\ell \sin\theta}{2} d\theta}{\pi \cdot \frac{d}{2}} = \frac{2\ell}{\pi d} \implies \pi = \frac{2\ell}{d \cdot P}"
-            mathExplanation="Năm 1777, Bá tước Buffon đã chứng minh rằng khi thả một cây kim có độ dài ell ngẫu nhiên lên mặt phẳng kẻ vạch cách nhau khoảng d (với ell <= d), xác suất cây kim cắt vạch là tỷ lệ giữa diện tích hình học của các vị trí cắt và toàn bộ không gian biến cố (gồm khoảng cách y đến vạch gần nhất và góc quay theta). Vì góc quay quét qua một nửa vòng tròn [0, pi], số pi tự nhiên xuất hiện trong mẫu số của xác suất!"
-            howToInteract={[
-              "Bấm nút '+50 Kim', '+100 Kim' hoặc '+1,000 Kim' để thả ngẫu nhiên các cây kim rơi tự do lên mặt phẳng có các đường kẻ song song.",
-              "Quan sát các cây kim cắt vạch được đánh dấu màu đỏ kèm chấm đỏ tại giao điểm, kim không cắt vạch có màu xanh lá.",
-              "Theo dõi giá trị ước lượng pi hội tụ dần về 3.14159... khi tổng số kim tăng dần từ vài chục lên hàng nghìn cây."
-            ]}
-            whatToObserve="Với số lượng kim ít (dưới 100 kim), sai số của số pi có thể khá lớn do biến động ngẫu nhiên. Khi thả hàng nghìn kim, theo Luật số lớn, tỷ lệ kim cắt thực nghiệm sẽ xấp xỉ xác suất lý thuyết P, giúp sai số của pi giảm dần về 0."
-            takeaway="Đây là thủy tổ của Phương pháp Monte Carlo: giải quyết các bài toán giải tích hoặc hình học phức tạp bằng cách chạy thử nghiệm ngẫu nhiên trên máy tính hàng triệu lần."
+            whatToObserve="Giá trị Z-score chính là thước đo khoảng cách theo đơn vị độ lệch chuẩn: z = +2.0 nghĩa là điểm số này cao hơn trung bình đúng 2 lần độ lệch chuẩn; z = -1.5 nghĩa là thấp hơn trung bình 1.5 lần độ lệch chuẩn."
+            takeaway="Z-score là công cụ chuẩn hóa tối thượng trong khoa học dữ liệu giúp xóa bỏ sự chênh lệch về đơn vị đo lường và thang điểm giữa các đặc trưng."
           />
         </div>
       )}

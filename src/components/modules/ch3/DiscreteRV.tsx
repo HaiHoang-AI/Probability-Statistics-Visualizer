@@ -180,7 +180,6 @@ export const DiscreteRV: React.FC = () => {
 
   const mapKtoX = (k: number) => {
     if (isBernoulli) {
-      // Distinctly space k=0 and k=1 at comfortable coordinates
       return k === 0 ? 300 : 540;
     }
     const minK = bars[0]?.k ?? 0;
@@ -201,68 +200,68 @@ export const DiscreteRV: React.FC = () => {
         return {
           title: 'Bản chất Phân bố Bernoulli & Thử nghiệm Nhị phân',
           question: 'Phân bố Bernoulli mô tả điều gì, và tại sao nó được xem là hạt nhân cơ bản của toàn bộ lý thuyết xác suất rời rạc?',
-          formula: 'P(X = 1) = p, \quad P(X = 0) = 1 - p, \quad \mathbb{E}[X] = p, \quad \text{Var}(X) = p(1 - p)',
-          mathExplanation: 'Biến ngẫu nhiên Bernoulli $X \sim \text{Bernoulli}(p)$ chỉ nhận đúng 2 giá trị duy nhất: $X = 1$ (Thành công với xác suất $p$) và $X = 0$ (Thất bại với xác suất $1 - p$). Mọi biến cố nhị phân Đúng/Sai, Trúng/Trượt trong đời sống đều có thể mô hình hóa dưới dạng một phép thử Bernoulli.',
+          formula: 'P(X = 1) = p, \\quad P(X = 0) = 1 - p, \\quad \\mathbb{E}[X] = p, \\quad \\text{Var}(X) = p(1 - p)',
+          mathExplanation: 'Biến ngẫu nhiên Bernoulli $X \\sim \\text{Bernoulli}(p)$ chỉ nhận đúng 2 giá trị duy nhất: $X = 1$ (Thành công với xác suất $p$) và $X = 0$ (Thất bại với xác suất $1 - p$). Mọi biến cố nhị phân Đúng/Sai, Trúng/Trượt trong đời sống đều có thể mô hình hóa dưới dạng một phép thử Bernoulli.',
           howToInteract: [
             'Kéo thanh trượt Xác suất thành công p từ 0.01 đến 0.99 để quan sát hai cột xác suất thay đổi độ cao đối nghịch nhau.',
             'Bấm các nút Tung 1 lần, Tung 10 lần, Tung 100 lần để chạy mô phỏng thực nghiệm và theo dõi số lần thành công/thất bại tích lũy.',
-            'Quan sát tam giác đỏ trọng tâm $\mathbb{E}[X] = p$ luôn di chuyển mượt mà trên đoạn [0, 1].',
+            'Quan sát tam giác đỏ trọng tâm $\\mathbb{E}[X] = p$ luôn di chuyển mượt mà trên đoạn [0, 1].',
           ],
-          whatToObserve: 'Dù biến ngẫu nhiên chỉ nhận giá trị 0 hoặc 1, nhưng kỳ vọng $\mathbb{E}[X] = p$ lại là một số thực nằm giữa 0 và 1. Điều này chứng minh trực quan rằng Kỳ vọng không nhất thiết phải là một giá trị mà biến ngẫu nhiên có thể nhận được trong thực tế.',
+          whatToObserve: 'Dù biến ngẫu nhiên chỉ nhận giá trị 0 hoặc 1, nhưng kỳ vọng $\\mathbb{E}[X] = p$ lại là một số thực nằm giữa 0 và 1. Điều này chứng minh trực quan rằng Kỳ vọng không nhất thiết phải là một giá trị mà biến ngẫu nhiên có thể nhận được trong thực tế.',
           takeaway: 'Tổng của n biến Bernoulli độc lập cùng tham số p chính là phân bố Nhị thức $B(n, p)$. Bernoulli là viên gạch nguyên tử cấu thành nên toàn bộ thế giới xác suất rời rạc.',
         };
       case 'uniform':
         return {
           title: 'Bản chất Phân bố Đều Rời rạc U{a, b} & Trọng Tâm Đối Xứng',
           question: 'Phân bố Đều rời rạc mô hình hóa hiện tượng gì, và vì sao các cột xác suất lại có độ cao bằng nhau chằn chặn?',
-          formula: 'P(X = k) = \frac{1}{b - a + 1}, \quad \mathbb{E}[X] = \frac{a + b}{2}, \quad \text{Var}(X) = \frac{(b - a + 1)^2 - 1}{12}',
+          formula: 'P(X = k) = \\frac{1}{b - a + 1}, \\quad \\mathbb{E}[X] = \\frac{a + b}{2}, \\quad \\text{Var}(X) = \\frac{(b - a + 1)^2 - 1}{12}',
           mathExplanation: 'Phân bố Đều rời rạc gán xác suất đồng đều $1/N$ (với $N = b - a + 1$) cho mọi giá trị nguyên từ $a$ đến $b$. Đây là biểu hiện toán học của Nguyên lý Bất khả Phân biệt: khi không có lý do gì để một kết quả có xác suất cao hơn kết quả khác, ta gán cho tất cả cùng mức xác suất như nhau.',
           howToInteract: [
             'Kéo cận dưới a và cận trên b để thay đổi không gian mẫu.',
             'Bấm các nút chọn nhanh tình huống: Xúc xắc 6 mặt, Xúc xắc 12 mặt, Bốc thăm 10 số để khám phá các mô hình thực tế.',
             'Bấm các nút Gieo thử nghiệm để quan sát số lần xuất hiện thực tế tích lũy.',
           ],
-          whatToObserve: 'Đồ thị PMF hoàn toàn phẳng lặng hình chữ nhật nằm ngang. Trọng tâm $\mathbb{E}[X]$ luôn nằm chính xác ở trung điểm $(a + b)/2$ do tính đối xứng tuyệt đối của các giá trị.',
+          whatToObserve: 'Đồ thị PMF hoàn toàn phẳng lặng hình chữ nhật nằm ngang. Trọng tâm $\\mathbb{E}[X]$ luôn nằm chính xác ở trung điểm $(a + b)/2$ do tính đối xứng tuyệt đối của các giá trị.',
           takeaway: 'Phân bố Đều là cơ sở cho các trò chơi may rủi (gieo xúc xắc, bốc thăm) và là trạng thái có độ bất định lớn nhất trên một tập hữu hạn.',
         };
       case 'binomial':
         return {
           title: 'Bản chất Phân bố Nhị thức B(n, p) & Hình Dạng Đối Xứng/Lệch',
           question: 'Phân bố Nhị thức đếm đại lượng nào, và hình dạng của nó biến đổi ra sao khi xác suất p dịch chuyển từ 0 đến 1?',
-          formula: 'P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k}, \quad \mathbb{E}[X] = n p, \quad \text{Var}(X) = n p (1 - p)',
-          mathExplanation: 'Biến ngẫu nhiên Nhị thức $X \sim B(n, p)$ đếm tổng số lần thành công trong $n$ phép thử Bernoulli độc lập có cùng xác suất thành công $p$. Đại lượng $\binom{n}{k}$ là số tổ hợp cách chọn ra $k$ lần thành công trong $n$ lần thử.',
+          formula: 'P(X = k) = \\binom{n}{k} p^k (1 - p)^{n - k}, \\quad \\mathbb{E}[X] = n p, \\quad \\text{Var}(X) = n p (1 - p)',
+          mathExplanation: 'Biến ngẫu nhiên Nhị thức $X \\sim B(n, p)$ đếm tổng số lần thành công trong $n$ phép thử Bernoulli độc lập có cùng xác suất thành công $p$. Đại lượng $\\binom{n}{k}$ là số tổ hợp cách chọn ra $k$ lần thành công trong $n$ lần thử.',
           howToInteract: [
             'Kéo thanh trượt n (số phép thử) và p (xác suất thành công) để quan sát hình dạng chuông rời rạc biến đổi.',
             'Khi p = 0.5, đồ thị hoàn toàn đối xứng hình chuông quanh tâm $n p = n/2$.',
             'Khi p < 0.5, đồ thị lệch phải; khi p > 0.5, đồ thị lệch trái.',
           ],
-          whatToObserve: 'Khi tăng số phép thử n lên lớn ($n \ge 20$), hình dạng các cột phân bố Nhị thức ngày càng giống với đường cong hình chuông Gauss liên tục (Định lý De Moivre - Laplace).',
+          whatToObserve: 'Khi tăng số phép thử n lên lớn ($n \\ge 20$), hình dạng các cột phân bố Nhị thức ngày càng giống với đường cong hình chuông Gauss liên tục (Định lý De Moivre - Laplace).',
           takeaway: 'Phân bố Nhị thức là mô hình đếm số lần thành công cơ bản nhất trong thống kê, ứng dụng rộng rãi từ kiểm tra chất lượng sản phẩm đến điều tra thăm dò dư luận.',
         };
       case 'geometric':
         return {
           title: 'Bản chất Phân bố Hình học Geom(p) & Đuôi Xác Suất Giảm Dần',
           question: 'Phân bố Hình học đo lường cái gì, và tại sao xác suất lại suy giảm theo cấp số nhân?',
-          formula: 'P(X = k) = (1 - p)^{k - 1} p, \quad \mathbb{E}[X] = \frac{1}{p}, \quad \text{Var}(X) = \frac{1 - p}{p^2}',
-          mathExplanation: 'Biến ngẫu nhiên Hình học $X \sim \text{Geom}(p)$ đếm số phép thử cần thực hiện cho đến khi xuất hiện lần thành công ĐẦU TIÊN. Để thành công ở lần thứ $k$, bắt buộc phải có đúng $k - 1$ lần thất bại liên tiếp trước đó (mỗi lần với xác suất $1 - p$) rồi mới tới 1 lần thành công (xác suất $p$).',
+          formula: 'P(X = k) = (1 - p)^{k - 1} p, \\quad \\mathbb{E}[X] = \\frac{1}{p}, \\quad \\text{Var}(X) = \\frac{1 - p}{p^2}',
+          mathExplanation: 'Biến ngẫu nhiên Hình học $X \\sim \\text{Geom}(p)$ đếm số phép thử cần thực hiện cho đến khi xuất hiện lần thành công ĐẦU TIÊN. Để thành công ở lần thứ $k$, bắt buộc phải có đúng $k - 1$ lần thất bại liên tiếp trước đó (mỗi lần với xác suất $1 - p$) rồi mới tới 1 lần thành công (xác suất $p$).',
           howToInteract: [
-            'Kéo slider p: xác suất thành công càng nhỏ thì cần thử nghiệm trung bình càng nhiều lần $\mathbb{E}[X] = 1/p$.',
+            'Kéo slider p: xác suất thành công càng nhỏ thì cần thử nghiệm trung bình càng nhiều lần $\\mathbb{E}[X] = 1/p$.',
             'Quan sát các cột xác suất: cột đầu tiên tại k = 1 luôn cao nhất và các cột sau suy giảm dần theo tỷ lệ $(1 - p)$.',
           ],
-          whatToObserve: 'Đồ thị luôn có dạng dốc xuống dạng hàm mũ rời rạc (cấp số nhân). Phân bố Hình học là phân bố rời rạc duy nhất có tính chất không nhớ: $P(X > s + t \mid X > s) = P(X > t)$.',
+          whatToObserve: 'Đồ thị luôn có dạng dốc xuống dạng hàm mũ rời rạc (cấp số nhân). Phân bố Hình học là phân bố rời rạc duy nhất có tính chất không nhớ: $P(X > s + t \\mid X > s) = P(X > t)$.',
           takeaway: 'Phân bố Hình học mô tả thời gian chờ đợi thành công đầu tiên, ví dụ: gieo xúc xắc bao nhiêu lần thì được mặt 6, hoặc phỏng vấn bao nhiêu ứng viên thì tìm được người phù hợp.',
         };
       case 'poisson':
         return {
           title: 'Bản chất Phân bố Poisson(λ) & Quy Luật Biến Cố Hiếm',
           question: 'Phân bố Poisson bắt nguồn từ đâu, và mối liên hệ kỳ lạ giữa kỳ vọng và phương sai của nó là gì?',
-          formula: 'P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}, \quad \mathbb{E}[X] = \lambda, \quad \text{Var}(X) = \lambda',
-          mathExplanation: 'Phân bố Poisson $\text{Pois}(\lambda)$ đếm số biến cố xảy ra trong một khoảng thời gian hoặc không gian cố định, khi các biến cố xảy ra độc lập với nhau với tần suất trung bình $\lambda$. Đây là xấp xỉ hoàn hảo của phân bố Nhị thức $B(n, p)$ khi $n$ rất lớn và $p$ rất nhỏ sao cho $n p = \lambda$ không đổi (Luật số hiếm Poisson).',
+          formula: 'P(X = k) = \\frac{\\lambda^k e^{-\\lambda}}{k!}, \\quad \\mathbb{E}[X] = \\lambda, \\quad \\text{Var}(X) = \\lambda',
+          mathExplanation: 'Phân bố Poisson $\\text{Pois}(\\lambda)$ đếm số biến cố xảy ra trong một khoảng thời gian hoặc không gian cố định, khi các biến cố xảy ra độc lập với nhau với tần suất trung bình $\\lambda$. Đây là xấp xỉ hoàn hảo của phân bố Nhị thức $B(n, p)$ khi $n$ rất lớn và $p$ rất nhỏ sao cho $n p = \\lambda$ không đổi (Luật số hiếm Poisson).',
           howToInteract: [
             'Kéo slider λ từ 0.5 đến 10 để quan sát đỉnh của phân bố dịch chuyển về phía λ.',
             'Khi λ nhỏ (dưới 1), đồ thị dốc đứng tại k = 0; khi λ lớn (trên 5), đồ thị dần trở nên tròn trịa và đối xứng gần giống phân bố Chuẩn.',
           ],
-          whatToObserve: 'Đặc điểm nhận dạng độc nhất vô nhị của Poisson: Kỳ vọng và Phương sai luôn bằng nhau chằn chặn $\mathbb{E}[X] = \text{Var}(X) = \lambda$.',
+          whatToObserve: 'Đặc điểm nhận dạng độc nhất vô nhị của Poisson: Kỳ vọng và Phương sai luôn bằng nhau chằn chặn $\\mathbb{E}[X] = \\text{Var}(X) = \\lambda$.',
           takeaway: 'Phân bố Poisson mô hình hóa lưu lượng cuộc gọi tới tổng đài, số lỗi phần mềm trên 1000 dòng lệnh, số tai nạn giao thông trong một tháng, hay số lượt truy cập máy chủ.',
         };
     }
@@ -283,15 +282,15 @@ export const DiscreteRV: React.FC = () => {
           </h2>
         </div>
 
-        {/* 5 Distribution Selector Tabs */}
+        {/* 5 Distribution Selector Tabs (Standard Naming) */}
         <div className="flex flex-wrap gap-2">
           {(
             [
-              { id: 'bernoulli', label: '1. Bernoulli' },
-              { id: 'uniform', label: '2. Đều Rời rạc' },
-              { id: 'binomial', label: '3. Nhị thức' },
-              { id: 'geometric', label: '4. Hình học' },
-              { id: 'poisson', label: '5. Poisson' },
+              { id: 'bernoulli', label: 'Bernoulli' },
+              { id: 'uniform', label: 'Đều (Uniform)' },
+              { id: 'binomial', label: 'Nhị thức (Binomial)' },
+              { id: 'geometric', label: 'Hình học (Geometric)' },
+              { id: 'poisson', label: 'Poisson' },
             ] as const
           ).map((t) => (
             <button
@@ -355,7 +354,7 @@ export const DiscreteRV: React.FC = () => {
                     )}
                   </div>
 
-                  {/* 3 Action Buttons with uniform clean styling */}
+                  {/* Action Buttons: Tung 1 lần, 10 lần, 100 lần */}
                   <div className="grid grid-cols-3 gap-2">
                     <button
                       type="button"
