@@ -334,7 +334,7 @@ export const DiscreteRV: React.FC = () => {
             MAT1101 Bài 3 & 4 — Biến ngẫu nhiên Rời rạc
           </span>
           <h2 className="font-heading font-black text-xl sm:text-2xl text-slate-900 dark:text-white mt-0.5">
-            Hàm khối xác suất (PMF) & Trọng tâm Kỳ vọng <MathView math="\\mathbb{E}[X]" />
+            Hàm khối xác suất (PMF) & Trọng tâm Kỳ vọng <MathView math="\mathbb{E}[X]" />
           </h2>
         </div>
 
@@ -702,7 +702,7 @@ export const DiscreteRV: React.FC = () => {
             <div className="mt-3 text-xs text-slate-500 dark:text-slate-400 flex items-center justify-between">
               <span>Điều kiện chuẩn hóa:</span>
               <span className="font-mono font-bold text-slate-700 dark:text-slate-300">
-                <MathView math="\\sum_k P(X = k) = 1" />
+                <MathView math="\sum_k P(X = k) = 1" />
               </span>
             </div>
           </ClayCard>

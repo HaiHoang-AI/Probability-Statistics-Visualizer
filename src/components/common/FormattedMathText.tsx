@@ -51,7 +51,8 @@ function parseFormattedText(raw: string): ParsedToken[] {
 
 function renderMathHtml(math: string, displayMode: boolean): string {
   try {
-    return katex.renderToString(math, {
+    const cleanMath = math ? math.replace(/\\\\([a-zA-Z]+)/g, '\\$1') : '';
+    return katex.renderToString(cleanMath, {
       displayMode,
       throwOnError: false,
     });

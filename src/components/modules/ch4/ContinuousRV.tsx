@@ -427,7 +427,7 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phân bố Đều Liên tục U(a, b) & Nghịch lý Xác suất Điểm bằng 0"
             question="Tại sao với biến ngẫu nhiên liên tục, xác suất tại một điểm chính xác P(X = c) luôn luôn bằng 0, nhưng xác suất trên một khoảng [x1, x2] lại có giá trị dương?"
-            formula="f(x) = \\frac{1}{b - a}, \\quad P(x_1 \\le X \\le x_2) = \\int_{x_1}^{x_2} \\frac{1}{b - a} dx = \\frac{x_2 - x_1}{b - a}"
+            formula="f(x) = \frac{1}{b - a}, \quad P(x_1 \le X \le x_2) = \int_{x_1}^{x_2} \frac{1}{b - a} dx = \frac{x_2 - x_1}{b - a}"
             mathExplanation="Phân bố Đều liên tục mô hình hóa tình huống một đại lượng có thể rơi vào bất kỳ vị trí nào trong khoảng [a, b] với mật độ đồng đều tuyệt đối. Vì khoảng [a, b] chứa vô số điểm không đếm được, xác suất để rơi trúng một con số thập phân vô hạn cụ thể là 0. Do đó, trong không gian liên tục, xác suất chỉ tồn tại dưới dạng DIỆN TÍCH tích phân của hàm mật độ trên một khoảng."
             howToInteract={[
               'Kéo slider Cận dưới a và Cận trên b để nới rộng hoặc thu hẹp khoảng xác định. Quan sát độ cao mật độ h = 1/(b-a) tự động thay đổi để bảo toàn diện tích tổng luôn bằng 1.',
@@ -807,7 +807,7 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phân bố Mũ & Bí mật Tính Không Nhớ (Memoryless Property)"
             question="Nếu bạn đã đợi xe buýt 20 phút mà xe chưa tới, liệu xác suất bạn phải đợi thêm 10 phút nữa có nhỏ hơn một người vừa mới bước tới trạm hay không?"
-            formula="P(X > s + t \\mid X > s) = \\frac{P(X > s + t)}{P(X > s)} = \\frac{e^{-\\lambda(s+t)}}{e^{-\\lambda s}} = e^{-\\lambda t} = P(X > t)"
+            formula="P(X > s + t \mid X > s) = \frac{P(X > s + t)}{P(X > s)} = \frac{e^{-\lambda(s+t)}}{e^{-\lambda s}} = e^{-\lambda t} = P(X > t)"
             mathExplanation="Nếu thời gian chờ tuân theo phân bố Mũ, câu trả lời là: HOÀN TOÀN NHƯ NHAU! Phân bố Mũ là phân bố liên tục duy nhất sở hữu Tính Không Nhớ. Thiết bị hoạt động theo phân bố mũ không hề bị hao mòn theo thời gian: một bóng đèn đã sáng 1000 giờ vẫn có xác suất hỏng trong 1 giờ tới y hệt như một bóng đèn mới tinh vừa bóc hộp."
             howToInteract={[
               'Kéo slider lambda để thay đổi tần suất biến cố: lambda càng lớn thì biến cố diễn ra càng dồn dập, đường cong suy giảm càng dốc.',
@@ -1040,7 +1040,7 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phân bố Chuẩn Gauss & Quy Tắc Thực Nghiệm 68-95-99.7"
             question="Tại sao đường cong hình chuông Gauss lại xuất hiện khắp mọi nơi trong tự nhiên, từ chiều cao con người đến điểm thi cử?"
-            formula="f(x) = \\frac{1}{\\sigma \\sqrt{2\\pi}} e^{-\\frac{(x - \\mu)^2}{2\\sigma^2}}, \\quad \\mu = \\mathbb{E}[X], \\quad \\sigma^2 = \\text{Var}(X)"
+            formula="f(x) = \frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}, \quad \mu = \mathbb{E}[X], \quad \sigma^2 = \text{Var}(X)"
             mathExplanation="Theo Định lý Giới hạn Trung tâm, khi cộng dồn một số lượng lớn các yếu tố ngẫu nhiên độc lập, tổng hoặc trung bình của chúng sẽ tự động hội tụ về phân bố Chuẩn. Đồ thị có hình quả chuông đối xứng tuyệt đối qua kỳ vọng mu, và đạt điểm uốn tại đúng mu - sigma và mu + sigma."
             howToInteract={[
               'Kéo slider mu để tịnh tiến toàn bộ quả chuông sang trái/phải dọc theo trục x mà không làm thay đổi hình dáng.',
@@ -1154,7 +1154,7 @@ export const ContinuousRV: React.FC = () => {
                   Công thức Chuẩn hóa & Z-Score
                 </h4>
                 <div className="p-3 rounded-xl bg-purple-50 dark:bg-slate-800 border border-purple-200 dark:border-slate-700 text-center font-mono font-bold text-purple-800 dark:text-purple-300 text-sm sm:text-base mb-3">
-                  <MathView math="Z = \\frac{X - \\mu}{\\sigma} \\sim \\mathcal{N}(0, 1)" />
+                  <MathView math="Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1)" />
                 </div>
                 <div className="space-y-2 text-xs font-mono">
                   <div className="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800">
@@ -1393,7 +1393,7 @@ export const ContinuousRV: React.FC = () => {
           <LabBriefing
             title="Bản chất Phép Chuẩn Hóa (Standardization) & Ý Nghĩa Z-Score"
             question="Tại sao mọi phân bố Chuẩn N(μ, σ²) bất kỳ đều có thể quy về một phân bố chuẩn tắc N(0, 1) duy nhất, và Z-score có vai trò gì trong thế giới thực?"
-            formula="Z = \\frac{X - \\mu}{\\sigma} \\sim \\mathcal{N}(0, 1), \\quad P(X \\le x) = P\\left(Z \\le \\frac{x - \\mu}{\\sigma}\\right) = \\Phi(z)"
+            formula="Z = \frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1), \quad P(X \le x) = P\left(Z \le \frac{x - \mu}{\sigma}\right) = \Phi(z)"
             mathExplanation="Phép chuẩn hóa gồm 2 thao tác hình học thuần túy: Dời gốc tọa độ (trừ mu đưa tâm phân bố về 0) và co giãn tỷ lệ (chia cho sigma chuẩn hóa độ rộng về 1 đơn vị chuẩn). Qua phép biến đổi tuyến tính Z = (X - mu)/sigma, toàn bộ diện tích tích phân dưới đường cong được bảo toàn nguyên vẹn."
             howToInteract={[
               'Kéo slider x, mu, sigma để quan sát đồng thời cả hai đồ thị: đồ thị trên là phân bố gốc X, đồ thị dưới là phân bố chuẩn tắc Z.',

@@ -13,7 +13,8 @@ export const MathView: React.FC<MathViewProps> = ({ math, block = false, classNa
   useEffect(() => {
     if (containerRef.current) {
       try {
-        katex.render(math, containerRef.current, {
+        const cleanMath = math ? math.replace(/\\\\([a-zA-Z]+)/g, '\\$1') : '';
+        katex.render(cleanMath, containerRef.current, {
           displayMode: block,
           throwOnError: false,
         });
