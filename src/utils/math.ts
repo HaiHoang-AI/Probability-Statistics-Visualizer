@@ -157,3 +157,29 @@ export function randomPoisson(lambda: number): number {
   return k - 1;
 }
 
+// Exponential distribution PDF
+export function exponentialPdf(x: number, lambda: number): number {
+  if (lambda <= 0 || x < 0) return 0;
+  return lambda * Math.exp(-lambda * x);
+}
+
+// Exponential distribution CDF
+export function exponentialCdf(x: number, lambda: number): number {
+  if (lambda <= 0 || x < 0) return 0;
+  return 1 - Math.exp(-lambda * x);
+}
+
+// Continuous Uniform distribution PDF
+export function uniformPdf(x: number, a: number, b: number): number {
+  if (b <= a || x < a || x > b) return 0;
+  return 1 / (b - a);
+}
+
+// Continuous Uniform distribution CDF
+export function uniformCdf(x: number, a: number, b: number): number {
+  if (b <= a) return 0;
+  if (x < a) return 0;
+  if (x > b) return 1;
+  return (x - a) / (b - a);
+}
+
