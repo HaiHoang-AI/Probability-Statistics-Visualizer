@@ -8,8 +8,12 @@ import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
 import { GaltonBoard } from '../../canvas/GaltonBoard';
 
-export const LimitTheoremsCLT: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'clt' | 'lln' | 'bounds' | 'cauchy' | 'galton'>('clt');
+interface LimitTheoremsCLTProps {
+  initialTab?: 'clt' | 'lln' | 'bounds' | 'cauchy' | 'galton';
+}
+
+export const LimitTheoremsCLT: React.FC<LimitTheoremsCLTProps> = ({ initialTab = 'clt' }) => {
+  const [activeTab, setActiveTab] = useState<'clt' | 'lln' | 'bounds' | 'cauchy' | 'galton'>(initialTab);
 
   // Tab 1: CLT Lab State (Original Lab)
   const [sourceDist, setSourceDist] = useState<'uniform' | 'exponential' | 'bimodal' | 'dice'>('bimodal');

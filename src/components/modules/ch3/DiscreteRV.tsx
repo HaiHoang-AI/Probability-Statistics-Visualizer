@@ -9,9 +9,13 @@ import { ParticleHistogram } from '../../canvas/ParticleHistogram';
 
 type DiscreteDistType = 'bernoulli' | 'uniform' | 'binomial' | 'geometric' | 'poisson';
 
-export const DiscreteRV: React.FC = () => {
+interface DiscreteRVProps {
+  initialMode?: 'chart' | 'particle';
+}
+
+export const DiscreteRV: React.FC<DiscreteRVProps> = ({ initialMode = 'chart' }) => {
   const [dist, setDist] = useState<DiscreteDistType>('bernoulli');
-  const [displayMode, setDisplayMode] = useState<'chart' | 'particle'>('chart');
+  const [displayMode, setDisplayMode] = useState<'chart' | 'particle'>(initialMode);
 
   // Bernoulli state
   const [bernP, setBernP] = useState<number>(0.6);

@@ -5,7 +5,7 @@ import { CURRICULUM_DATA } from '../../data/curriculum';
 import { ChapterId } from '../../types';
 
 interface LandingPageProps {
-  onSelectChapter: (id: ChapterId) => void;
+  onSelectChapter: (id: ChapterId, target?: string) => void;
 }
 
 const getChapterIcon = (id: ChapterId) => {
@@ -136,7 +136,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
         {/* Tagline Badge */}
         <div className="inline-block">
           <span className="px-4 py-1.5 rounded-full text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 shadow-xs transition-all duration-150 inline-block cursor-default select-none">
-            MAT1101 — Xác suất Thống kê Tương tác (VNU-UET)
+            MAT1101 — Xác suất Thống kê (VNU-UET)
           </span>
         </div>
 
@@ -239,116 +239,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           <span className="font-heading font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">
             Tương tác không giới hạn
           </span>
-        </div>
-      </section>
-
-      {/* NEW VISUAL INNOVATIONS SHOWCASE */}
-      <section className="space-y-4 max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between pb-2 border-b border-slate-200 dark:border-slate-800 gap-1">
-          <div>
-            <div className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-mono font-bold bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300 border border-amber-300 dark:border-amber-800 mb-1">
-              Tính năng Nâng cấp Mới
-            </div>
-            <h2 className="font-heading font-black text-2xl text-slate-900 dark:text-white">
-              Phòng Thí Nghiệm Trực Quan Đột Phá
-            </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Các mô hình đồ họa động, mô phỏng hạt và không gian 3D tương tác thế hệ mới.
-            </p>
-          </div>
-          <span className="text-xs font-mono font-bold text-slate-500">
-            Click vào thẻ để vào thẳng lab
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {/* Card 1: Galton Board */}
-          <div
-            onClick={() => onSelectChapter('ch8-limit-theorems')}
-            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
-                Bài 8 • Tab 5
-              </span>
-              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-sky-600 transition-colors">
-                Bàn Galton Cơ học (Quincunx)
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
-                Bi rơi qua mạng lưới chốt tam giác kèm âm thanh va chạm, tự động hội tụ thành đường cong Gauss.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-              <span>Trải nghiệm ngay</span>
-              <span>&rarr;</span>
-            </div>
-          </div>
-
-          {/* Card 2: Particle Simulation */}
-          <div
-            onClick={() => onSelectChapter('ch3-discrete-rv')}
-            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">
-                Bài 3 & 4 • Nút Chuyển Chế Độ
-              </span>
-              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-amber-600 transition-colors">
-                Mô Phỏng Mưa Hạt Rơi
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
-                Hàng ngàn hạt rơi theo hàm khối xác suất cho 5 phân bố: Bernoulli, Đều, Nhị thức, Hình học, Poisson.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
-              <span>Trải nghiệm ngay</span>
-              <span>&rarr;</span>
-            </div>
-          </div>
-
-          {/* Card 3: 3D Surface & Heatmap */}
-          <div
-            onClick={() => onSelectChapter('ch7-1-derived')}
-            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">
-                Bài 7.1 • Tab 2
-              </span>
-              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-purple-600 transition-colors">
-                Mặt Cong 3D & Heatmap 2D
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
-                Xoay 360° bề mặt phân phối Gauss 2D (Three.js WebGL) và bản đồ nhiệt màu biến dạng theo hệ số tương quan.
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-purple-600 dark:text-purple-400">
-              <span>Trải nghiệm ngay</span>
-              <span>&rarr;</span>
-            </div>
-          </div>
-
-          {/* Card 4: Bayes Sankey Flow */}
-          <div
-            onClick={() => onSelectChapter('ch9-bayesian')}
-            className="group p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xs transition-all cursor-pointer flex flex-col justify-between"
-          >
-            <div>
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-rose-600 dark:text-rose-400">
-                Bài 9 • Tab 4
-              </span>
-              <h3 className="font-heading font-black text-base text-slate-900 dark:text-white mt-1 group-hover:text-rose-600 transition-colors">
-                Dòng Chảy Phân Nhánh Bayes
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
-                Sankey Flow trực quan hóa dòng chảy xác suất giải mã nghịch lý Ảo giác Tỷ lệ nền (Base Rate Fallacy).
-              </p>
-            </div>
-            <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs font-bold text-rose-600 dark:text-rose-400">
-              <span>Trải nghiệm ngay</span>
-              <span>&rarr;</span>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -495,16 +385,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectChapter }) => 
           <ClayButton
             variant="secondary"
             size="md"
-            onClick={() => onSelectChapter('ch8-limit-theorems')}
+            onClick={() => onSelectChapter('ch3-discrete-rv', 'particle')}
           >
-            Định lý Giới hạn CLT
+            Mô phỏng hạt mưa rơi
           </ClayButton>
           <ClayButton
             variant="outline"
             size="md"
-            onClick={() => onSelectChapter('ch11-regression')}
+            onClick={() => onSelectChapter('ch8-limit-theorems', 'galton')}
           >
-            Hồi quy Tuyến tính OLS
+            Bàn Galton
           </ClayButton>
         </div>
       </section>

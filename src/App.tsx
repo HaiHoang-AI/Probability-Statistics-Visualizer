@@ -16,13 +16,19 @@ import { ChapterId } from './types';
 
 export const App: React.FC = () => {
   const [currentChapter, setCurrentChapter] = useState<ChapterId>('overview');
+  const [navigationTarget, setNavigationTarget] = useState<string | null>(null);
+
+  const handleSelectChapter = (id: ChapterId, target?: string) => {
+    setCurrentChapter(id);
+    setNavigationTarget(target || null);
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F4F6F9] dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
       {/* Top Header */}
       <Header
         currentChapterId={currentChapter}
-        onSelectChapter={setCurrentChapter}
+        onSelectChapter={handleSelectChapter}
       />
 
       {/* Main Container */}
@@ -31,7 +37,7 @@ export const App: React.FC = () => {
         {currentChapter !== 'overview' && (
           <div className="mb-4">
             <button
-              onClick={() => setCurrentChapter('overview')}
+              onClick={() => handleSelectChapter('overview')}
               className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-heading font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 active:scale-[0.98] transition-all cursor-pointer"
             >
               Quay lại danh sách bài học
@@ -40,18 +46,18 @@ export const App: React.FC = () => {
         )}
 
         {/* Dynamic Chapter Content with smooth page transition */}
-        <div key={currentChapter} className="page-transition">
-          {currentChapter === 'overview' && <LandingPage onSelectChapter={setCurrentChapter} />}
+        <div key={`${currentChapter}-${navigationTarget || ''}`} className="page-transition">
+          {currentChapter === 'overview' && <LandingPage onSelectChapter={handleSelectChapter} />}
           {currentChapter === 'ch7-1-derived' && <DerivedConvolution />}
           {currentChapter === 'ch7-2-mgf' && <MomentGeneratingFunction />}
-          {currentChapter === 'ch8-limit-theorems' && <LimitTheoremsCLT />}
+          {currentChapter === 'ch8-limit-theorems' && <LimitTheoremsCLT initialTab={(navigationTarget as any) || 'clt'} />}
           {currentChapter === 'ch9-bayesian' && <BayesianInference />}
           {currentChapter === 'ch10-1-estimation' && <ClassicalEstimation />}
           {currentChapter === 'ch10-2-hypothesis' && <HypothesisTesting />}
           {currentChapter === 'ch11-regression' && <LinearRegression />}
           {currentChapter === 'ch1-foundations' && <Foundations />}
           {currentChapter === 'ch2-basic-prob' && <BasicProbability />}
-          {currentChapter === 'ch3-discrete-rv' && <DiscreteRV />}
+          {currentChapter === 'ch3-discrete-rv' && <DiscreteRV initialMode={(navigationTarget as any) || 'chart'} />}
           {currentChapter === 'ch4-continuous-rv' && <ContinuousRV />}
         </div>
       </main>
