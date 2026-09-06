@@ -56,7 +56,6 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
         <div className="p-4 sm:p-6 space-y-5 text-sm sm:text-base leading-relaxed">
           {/* 1. Goal / Core Question */}
           <div className="flex items-start gap-3">
-            <span className="text-xl leading-none pt-0.5">🎯</span>
             <div>
               <div className="font-heading font-bold text-slate-900 dark:text-white text-xs sm:text-sm uppercase tracking-wider mb-1 text-sky-700 dark:text-sky-300">
                 Vấn đề thực tế & Câu hỏi cốt lõi
@@ -71,7 +70,6 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
 
           {/* 2. Formula & Mathematical Insight */}
           <div className="flex items-start gap-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
-            <span className="text-xl leading-none pt-0.5">📐</span>
             <div className="space-y-2 w-full">
               <div className="font-heading font-bold text-slate-900 dark:text-white text-xs sm:text-sm uppercase tracking-wider text-purple-700 dark:text-purple-300">
                 Bản chất toán học & Công thức
@@ -93,7 +91,7 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-amber-50/80 dark:bg-amber-950/30 p-4 rounded-2xl border border-amber-200 dark:border-amber-900/60">
               <div className="font-heading font-bold text-amber-900 dark:text-amber-300 text-xs sm:text-sm uppercase tracking-wider mb-2 flex items-center gap-2">
-                <span>🕹️</span> Cách tương tác thí nghiệm
+                Cách tương tác thí nghiệm
               </div>
               <ul className="list-disc list-inside space-y-2 text-sm sm:text-[15px] text-amber-950 dark:text-amber-100 leading-relaxed">
                 {howToInteract.map((step, idx) => (
@@ -106,7 +104,7 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
 
             <div className="bg-emerald-50/80 dark:bg-emerald-950/30 p-4 rounded-2xl border border-emerald-200 dark:border-emerald-900/60">
               <div className="font-heading font-bold text-emerald-900 dark:text-emerald-300 text-xs sm:text-sm uppercase tracking-wider mb-2 flex items-center gap-2">
-                <span>🔍</span> Hiện tượng cần quan sát trên đồ thị
+                Hiện tượng cần quan sát trên đồ thị
               </div>
               <FormattedMathText
                 as="p"
@@ -118,7 +116,6 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
 
           {/* 4. Exam Takeaway / Key Takeaway */}
           <div className="p-3.5 sm:p-4 rounded-2xl bg-sky-100/90 dark:bg-sky-950/70 border-2 border-sky-300 dark:border-sky-800 flex items-start gap-3 text-sm sm:text-base text-sky-950 dark:text-sky-100 leading-relaxed">
-            <span className="text-xl shrink-0 pt-0.5">💡</span>
             <div>
               <span className="font-heading font-black mr-2 text-sky-800 dark:text-sky-300 uppercase tracking-wide">Chốt kiến thức:</span>
               <FormattedMathText text={takeaway} className="font-medium" />

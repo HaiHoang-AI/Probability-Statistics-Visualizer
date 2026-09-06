@@ -405,7 +405,7 @@ export const Foundations: React.FC = () => {
 
               {/* Bottom Result text inside stage */}
               <div className="mt-5 text-center text-sm font-bold text-sky-600 dark:text-sky-400 font-mono">
-                Số ô thỏa mãn: {countMatch} / 36 ô ➔ Xác suất cổ điển P(E) = {fmt(countMatch / 36, 4)} ({fmt((countMatch / 36) * 100, 1)}%)
+                Số ô thỏa mãn: {countMatch} / 36 ô -> Xác suất cổ điển P(E) = {fmt(countMatch / 36, 4)} ({fmt((countMatch / 36) * 100, 1)}%)
               </div>
             </div>
           </ClayCard>

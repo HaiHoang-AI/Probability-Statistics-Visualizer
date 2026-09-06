@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
 import { ClayButton } from '../../common/ClayButton';
@@ -6,6 +6,9 @@ import { MathView } from '../../common/MathView';
 import { fmt, randomNormal } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
+import { DensityHeatmap } from '../../canvas/DensityHeatmap';
+
+const Surface3D = lazy(() => import('../../three/Surface3D'));
 
 export const DerivedConvolution: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'convolution' | 'correlation' | 'totalvar' | 'transform' | 'extremes'>('convolution');
@@ -31,6 +34,7 @@ export const DerivedConvolution: React.FC = () => {
   const [rho, setRho] = useState<number>(0.75);
   const [scatterPoints, setScatterPoints] = useState<Array<{ x: number; y: number }>>([]);
   const [showParabola, setShowParabola] = useState<boolean>(false);
+  const [corrViewMode, setCorrViewMode] = useState<'scatter' | 'heatmap' | '3d'>('scatter');
 
   useEffect(() => {
     const pts = [];
@@ -573,6 +577,58 @@ export const DerivedConvolution: React.FC = () => {
               }
             />
 
+            {/* View Switcher: Scatter vs 2D Density Heatmap vs 3D Surface */}
+            <div className="flex flex-wrap items-center gap-2 px-4 sm:px-6 py-2.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
+              <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Góc nhìn:</span>
+              <button
+                onClick={() => setCorrViewMode('scatter')}
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                  corrViewMode === 'scatter'
+                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                Đám Mây Điểm (Scatter)
+              </button>
+              <button
+                onClick={() => setCorrViewMode('heatmap')}
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                  corrViewMode === 'heatmap'
+                    ? 'bg-amber-400 text-slate-950 shadow-[2px_2px_0px_#0f172a]'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                Bản đồ Mật độ Nhiệt 2D (Heatmap)
+              </button>
+              <button
+                onClick={() => setCorrViewMode('3d')}
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                  corrViewMode === '3d'
+                    ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]'
+                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
+                }`}
+              >
+                Mặt Cong 3D Không Gian (Three.js)
+              </button>
+            </div>
+
+            {corrViewMode === '3d' ? (
+              <div className="p-4 sm:p-6">
+                <Suspense
+                  fallback={
+                    <div className="h-[460px] flex items-center justify-center font-heading font-bold text-slate-500">
+                      Đang tải mô hình không gian 3D WebGL...
+                    </div>
+                  }
+                >
+                  <Surface3D rho={showParabola ? 0 : rho} />
+                </Suspense>
+              </div>
+            ) : corrViewMode === 'heatmap' ? (
+              <div className="p-4 sm:p-6">
+                <DensityHeatmap rho={showParabola ? 0 : rho} />
+              </div>
+            ) : (
             <div className="desmos-viewport w-full p-4 sm:p-6 flex flex-col justify-between min-h-[460px]">
               <svg viewBox="0 0 800 380" className="w-full h-auto select-none">
                 <defs>
@@ -666,6 +722,7 @@ export const DerivedConvolution: React.FC = () => {
                 </span>
               </div>
             </div>
+            )}
           </ClayCard>
             </div>
           </div>

@@ -269,7 +269,7 @@ export const LinearRegression: React.FC = () => {
                       className="w-full"
                       onClick={handleAutoFit}
                     >
-                      🎯 Khớp Nghiệm Tối Ưu OLS
+                      Khớp Nghiệm Tối Ưu OLS
                     </ClayButton>
                     <div className="grid grid-cols-2 gap-2">
                       <ClayButton
@@ -332,7 +332,7 @@ export const LinearRegression: React.FC = () => {
                     <span>Hiện ô vuông RSS</span>
                   </label>
                   <ClayButton variant="primary" size="sm" onClick={handleAutoFit}>
-                    🎯 Khớp OLS Tối Ưu
+                    Khớp OLS Tối Ưu
                   </ClayButton>
                 </div>
               }
@@ -526,7 +526,7 @@ export const LinearRegression: React.FC = () => {
             howToInteract={[
               "Kéo slider 'Hệ số góc (Slope $\\beta_1$)' và 'Hệ số chặn (Intercept $\\beta_0$)' để xoay và tịnh tiến đường thẳng.",
               "Quan sát các hình vuông màu đỏ co giãn kích thước theo thời gian thực.",
-              "Bấm nút '🎯 Khớp Nghiệm Tối Ưu OLS' để xem đường thẳng tự động khóa vào vị trí cực tiểu hóa $\\text{RSS}$."
+              "Bấm nút 'Khớp Nghiệm Tối Ưu OLS' để xem đường thẳng tự động khóa vào vị trí cực tiểu hóa $\\text{RSS}$."
             ]}
             whatToObserve="Khi bạn xoay đường thẳng trượt xa khỏi đám mây điểm, các hình vuông phình to khổng lồ ($\text{RSS}$ tăng vọt). Chỉ khi khớp đúng nghiệm OLS, tổng diện tích mới co về mức nhỏ nhất có thể!"
             takeaway="OLS chỉ cực tiểu hóa sai số theo phương DỌC (trục $Y$), chứ không phải khoảng cách vuông góc hình học tới đường thẳng!"
@@ -582,7 +582,7 @@ export const LinearRegression: React.FC = () => {
                     <p className="text-xs text-slate-500 mb-2">Đưa R² về giá trị cực đại có thể đạt:</p>
                   </div>
                   <ClayButton variant="primary" size="md" className="w-full" onClick={handleAutoFit}>
-                    🎯 Khớp OLS Tối Ưu (Max R²)
+                    Khớp OLS Tối Ưu (Max R²)
                   </ClayButton>
                 </ClayCard>
 
@@ -616,7 +616,7 @@ export const LinearRegression: React.FC = () => {
               badge={`R² = ${fmt(rSquared * 100, 1)}%`}
               extraActions={
                 <ClayButton variant="primary" size="sm" onClick={handleAutoFit}>
-                  🎯 Khớp OLS Tối Ưu
+                  Khớp OLS Tối Ưu
                 </ClayButton>
               }
             />
@@ -769,7 +769,7 @@ export const LinearRegression: React.FC = () => {
             formula="TSS = MSS + RSS \implies R^2 = \frac{MSS}{TSS} = 1 - \frac{RSS}{TSS} \in [0, 1]"
             mathExplanation="$\text{TSS}$ là tổng độ phân tán của $Y$ quanh trung bình mẫu $\bar{y}$. Khi kẻ đường hồi quy OLS, một phần biến thiên được đường thẳng giải thích ($\text{MSS} = \text{Model Sum of Squares}$), phần còn lại là sai số ngẫu nhiên không giải thích được ($\text{RSS} = \text{Residual Sum of Squares}$)."
             howToInteract={[
-              "Bấm nút '🎯 Khớp OLS Tối Ưu' để đưa mô hình về trạng thái tối ưu.",
+              "Bấm nút 'Khớp OLS Tối Ưu' để đưa mô hình về trạng thái tối ưu.",
               "Kéo lệch hệ số góc $\\beta_1$ và hệ số chặn $\\beta_0$ ở thanh điều khiển để xem $R^2$ tụt dốc.",
               "Nhìn hình học phân rã vector dọc trên đồ thị và thanh tỷ lệ $\\text{TSS}$ bên dưới."
             ]}
@@ -834,7 +834,7 @@ export const LinearRegression: React.FC = () => {
                     leveragePoints.cookD > 0.5 ? 'bg-rose-50 dark:bg-rose-950/40 border-rose-400 text-rose-800 dark:text-rose-200' : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-400 text-emerald-800 dark:text-emerald-200'
                   }`}>
                     <div className="font-heading font-black text-sm">
-                      {leveragePoints.cookD > 0.5 ? '⚠️ BẺ GÃY MÔ HÌNH (D > 0.5)' : '✅ ẢNH HƯỞNG NHẸ (D ≤ 0.5)'}
+                      {leveragePoints.cookD > 0.5 ? 'BẺ GÃY MÔ HÌNH (D > 0.5)' : 'ẢNH HƯỞNG NHẸ (D ≤ 0.5)'}
                     </div>
                     <div className="text-xs font-mono mt-1">
                       D = {fmt(leveragePoints.cookD, 2)}
@@ -1076,7 +1076,7 @@ export const LinearRegression: React.FC = () => {
                       }`}
                     >
                       <span>1. Chuẩn Tắc (Đồng phương sai)</span>
-                      <span>✅</span>
+                      <span></span>
                     </button>
                     <button
                       onClick={() => setDiagPattern('nonlinear')}
@@ -1087,7 +1087,7 @@ export const LinearRegression: React.FC = () => {
                       }`}
                     >
                       <span>2. Phi Tuyến (U-shape Parabola)</span>
-                      <span>⚠️</span>
+                      <span></span>
                     </button>
                     <button
                       onClick={() => setDiagPattern('heteroscedastic')}
@@ -1098,7 +1098,7 @@ export const LinearRegression: React.FC = () => {
                       }`}
                     >
                       <span>3. Loa Kèn (Heteroscedasticity)</span>
-                      <span>🚨</span>
+                      <span></span>
                     </button>
                   </div>
                 </ClayCard>

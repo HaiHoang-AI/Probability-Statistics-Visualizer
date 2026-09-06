@@ -691,7 +691,7 @@ export const MomentGeneratingFunction: React.FC = () => {
                   />
                 </div>
                 <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={runWaldSimulation}>
-                  🎲 Chạy Mô Phỏng 3,000 Mẫu
+                  Chạy Mô Phỏng 3,000 Mẫu
                 </ClayButton>
               </ClayCard>
 

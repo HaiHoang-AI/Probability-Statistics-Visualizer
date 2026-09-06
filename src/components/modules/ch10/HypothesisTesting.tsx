@@ -730,7 +730,7 @@ export const HypothesisTesting: React.FC = () => {
                     curPower >= 0.80 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200'
                   }`}>
                     <div className="font-heading font-black text-sm">
-                      {curPower >= 0.80 ? '✅ ĐẠT CHUẨN VÀNG (≥ 80%)' : '⚠️ THIẾU MẪU (< 80%)'}
+                      {curPower >= 0.80 ? 'ĐẠT CHUẨN VÀNG (≥ 80%)' : 'THIẾU MẪU (< 80%)'}
                     </div>
                     <div className="text-xs font-mono mt-1">
                       Power = {fmt(curPower * 100, 1)}% | Cần n ≥ {nRequired80}

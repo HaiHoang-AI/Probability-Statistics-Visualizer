@@ -183,11 +183,11 @@ export const BasicProbability: React.FC = () => {
                   let doorContent = 'Chưa mở';
                   let contentColor = 'text-slate-400';
                   if (isRevealed) {
-                    doorContent = 'DÊ 🐐';
+                    doorContent = 'DÊ';
                     contentColor = 'text-amber-600';
                   }
                   if (gameStep === 'result') {
-                    doorContent = isCar ? 'XE HƠI 🚗' : 'DÊ 🐐';
+                    doorContent = isCar ? 'XE HƠI' : 'DÊ';
                     contentColor = isCar ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-400';
                   }
 

@@ -6,9 +6,10 @@ import { MathView } from '../../common/MathView';
 import { fmt, normalPdf, randomCauchy, randomNormal } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
 import { LabBriefing } from '../../common/LabBriefing';
+import { GaltonBoard } from '../../canvas/GaltonBoard';
 
 export const LimitTheoremsCLT: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'clt' | 'lln' | 'bounds' | 'cauchy'>('clt');
+  const [activeTab, setActiveTab] = useState<'clt' | 'lln' | 'bounds' | 'cauchy' | 'galton'>('clt');
 
   // Tab 1: CLT Lab State (Original Lab)
   const [sourceDist, setSourceDist] = useState<'uniform' | 'exponential' | 'bimodal' | 'dice'>('bimodal');
@@ -203,6 +204,16 @@ export const LimitTheoremsCLT: React.FC = () => {
             }`}
           >
             4. Khi CLT Thất Bại (Cauchy)
+          </button>
+          <button
+            onClick={() => setActiveTab('galton')}
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+              activeTab === 'galton'
+                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }`}
+          >
+            5. Bàn Galton (Quincunx)
           </button>
         </div>
       </div>
@@ -412,7 +423,7 @@ export const LimitTheoremsCLT: React.FC = () => {
                 />
                 <div className="mt-4">
                   <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={generateLlnPaths}>
-                    🎲 Sinh 15 Quỹ Đạo Mới
+                    Sinh 15 Quỹ Đạo Mới
                   </ClayButton>
                 </div>
               </ClayCard>
@@ -767,7 +778,7 @@ export const LimitTheoremsCLT: React.FC = () => {
                 />
                 <div className="mt-4">
                   <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={runCauchySim}>
-                    🎲 Lấy 150 Mẫu Mới
+                    Lấy 150 Mẫu Mới
                   </ClayButton>
                 </div>
               </ClayCard>
@@ -905,6 +916,29 @@ export const LimitTheoremsCLT: React.FC = () => {
             ]}
             whatToObserve="Trong khi đường Gaussian co cụm phẳng lì quanh trục 0, đường Cauchy liên tục bị những cú giật vọt lên hàng chục đơn vị do xuất hiện các ngoại lai cực đoan!"
             takeaway="Trong tài chính và quản trị rủi ro: Nếu dữ liệu có hiện tượng đuôi dày (Fat Tails - phân phối Pareto/Cauchy), không được áp dụng CLT mù quáng kẻo dẫn tới sụp đổ danh mục!"
+          />
+        </div>
+      )}
+
+      {/* =========================================================================
+          TAB 5: GALTON BOARD (QUINCUNX SIMULATION)
+         ========================================================================= */}
+      {activeTab === 'galton' && (
+        <div className="space-y-6">
+          <GaltonBoard />
+
+          <LabBriefing
+            question="Làm thế nào mà sự hỗn loạn thuần túy của từng viên bi lại tự động kiến tạo nên một trật tự hoàn hảo hình chuông đối xứng?"
+            formula="S_n = \sum_{i=1}^n X_i, \quad X_i \in \{0, 1\} \implies \frac{S_n - np}{\sqrt{np(1-p)}} \xrightarrow{d} \mathcal{N}(0, 1)"
+            mathExplanation="Bàn Galton (Quincunx) do Francis Galton phát minh năm 1889. Mỗi lần một viên bi chạm một chiếc đinh, nó rẽ trái hoặc phải ngẫu nhiên độc lập như một phép thử tung đồng xu Bernoulli. Sau n tầng đinh, số lần rẽ phải là biến nhị thức B(n, p). Theo Định lý Moivre-Laplace (dạng sơ khai của CLT), khi n lớn, phân phối nhị thức hội tụ tiệm cận về phân phối chuẩn Gaussian."
+            howToInteract={[
+              "Bấm 'Thả 1 bi' hoặc 'Thả 20 bi' để theo dõi từng đường rẽ ngẫu nhiên của các hạt qua từng hàng chốt.",
+              "Bấm 'Tự động thả bi' và quan sát tháp bi tích lũy trong các ô chứa ở đáy.",
+              "Bật/Tắt 'Âm thanh' để nghe nhịp va chạm vào chốt gỗ và tiếng rơi vào ô đáy.",
+              "Kéo slider 'Xác suất rẽ phải (p)' lệch khỏi 0.5 (ví dụ 0.3 hoặc 0.7) để thấy hình chuông bị kéo lệch (Skewness) sang một bên."
+            ]}
+            whatToObserve="Dù đường đi của từng hạt hoàn toàn bất định và không thể đoán trước, khi số lượng bi đủ lớn, cột tháp bi luôn luôn ôm khít lấy đường cong chuẩn Gauss màu đỏ!"
+            takeaway="Đây là trực giác cốt lõi của thống kê hiện đại: Từ vô số tác động ngẫu nhiên vi mô, quy luật vĩ mô tất yếu xuất hiện."
           />
         </div>
       )}

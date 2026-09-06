@@ -493,7 +493,7 @@ export const ClassicalEstimation: React.FC = () => {
                 />
                 <div className="mt-3">
                   <ClayButton variant="primary" size="md" className="w-full text-xs font-bold" onClick={runBesselMonteCarlo}>
-                    🎲 Lấy Lại 2,500 Lần Mẫu
+                    Lấy Lại 2,500 Lần Mẫu
                   </ClayButton>
                 </div>
               </ClayCard>
