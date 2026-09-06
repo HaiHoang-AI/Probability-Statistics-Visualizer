@@ -206,7 +206,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      📏 Chuẩn tắc U(0, 1)
+                      Chuẩn tắc U(0, 1)
                     </button>
                     <button
                       onClick={() => {
@@ -217,7 +217,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      📐 Khoảng [-2, 4]
+                      Khoảng [-2, 4]
                     </button>
                     <button
                       onClick={() => {
@@ -228,7 +228,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      ⚖️ Đối xứng [-4, 4]
+                      Đối xứng [-4, 4]
                     </button>
                     <button
                       onClick={() => {
@@ -239,7 +239,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      ⏱️ Đợi xe buýt [0, 10]
+                      Đợi xe buýt [0, 10]
                     </button>
                   </div>
                 </div>
@@ -524,7 +524,7 @@ export const ContinuousRV: React.FC = () => {
                             : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'
                         }`}
                       >
-                        ⏱️ Tích phân & Sống sót
+                        Tích phân & Sống sót
                       </button>
                       <button
                         onClick={() => setExpMode('memoryless')}
@@ -534,7 +534,7 @@ export const ContinuousRV: React.FC = () => {
                             : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-700'
                         }`}
                       >
-                        🧠 Tính Không Nhớ
+                        Tính Không Nhớ
                       </button>
                     </div>
                   </div>
@@ -1129,7 +1129,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      🎯 Mốc 97.5% (z = +1.96)
+                      Mốc 97.5% (z = +1.96)
                     </button>
                     <button
                       onClick={() => {
@@ -1139,7 +1139,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      📈 Lệch chuẩn +2.0σ
+                      Lệch chuẩn +2.0σ
                     </button>
                     <button
                       onClick={() => {
@@ -1149,7 +1149,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      📉 Lệch dưới -1.5σ
+                      Lệch dưới -1.5σ
                     </button>
                     <button
                       onClick={() => {
@@ -1159,7 +1159,7 @@ export const ContinuousRV: React.FC = () => {
                       }}
                       className="px-2 py-1 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      ⚠️ Ngoại lai Outlier (|z|≥3)
+                      Ngoại lai Outlier (|z|≥3)
                     </button>
                   </div>
                 </div>

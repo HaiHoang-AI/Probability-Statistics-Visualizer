@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ClayCard } from '../../common/ClayCard';
 import { ClaySlider } from '../../common/ClaySlider';
-import { ClayButton } from '../../common/ClayButton';
 import { MathView } from '../../common/MathView';
 import { fmt, binomialPmf, poissonPmf } from '../../../utils/math';
 import { DesmosStageHeader } from '../../common/DesmosStageHeader';
@@ -19,7 +18,12 @@ export const DiscreteRV: React.FC = () => {
     n0: 0,
     n1: 0,
   });
-  const [lastBernFlip, setLastBernFlip] = useState<number | null>(null);
+  const [bernLastBatch, setBernLastBatch] = useState<{
+    count: number;
+    n0: number;
+    n1: number;
+    last: number;
+  } | null>(null);
 
   // Uniform state
   const [unifA, setUnifA] = useState<number>(1);
@@ -28,7 +32,7 @@ export const DiscreteRV: React.FC = () => {
     total: 0,
     counts: {},
   });
-  const [lastUnifRoll, setLastUnifRoll] = useState<number | null>(null);
+  const [unifLastBatch, setUnifLastBatch] = useState<{ count: number; lastRoll: number } | null>(null);
 
   // Binomial state
   const [binN, setBinN] = useState<number>(10);
@@ -51,7 +55,7 @@ export const DiscreteRV: React.FC = () => {
       else add0++;
       last = outcome;
     }
-    setLastBernFlip(last);
+    setBernLastBatch({ count, n0: add0, n1: add1, last });
     setBernTrials((prev) => ({
       total: prev.total + count,
       n0: prev.n0 + add0,
@@ -61,12 +65,13 @@ export const DiscreteRV: React.FC = () => {
 
   const resetBernoulli = () => {
     setBernTrials({ total: 0, n0: 0, n1: 0 });
-    setLastBernFlip(null);
+    setBernLastBatch(null);
   };
 
   // Uniform simulation helpers
+  const safeUnifB = Math.max(unifA + 1, unifB);
   const runUniformTrials = (count: number) => {
-    const range = unifB - unifA + 1;
+    const range = safeUnifB - unifA + 1;
     if (range <= 0) return;
     const addCounts: Record<number, number> = {};
     let last = unifA;
@@ -75,7 +80,7 @@ export const DiscreteRV: React.FC = () => {
       addCounts[val] = (addCounts[val] || 0) + 1;
       last = val;
     }
-    setLastUnifRoll(last);
+    setUnifLastBatch({ count, lastRoll: last });
     setUnifTrials((prev) => {
       const newCounts = { ...prev.counts };
       for (const k in addCounts) {
@@ -90,7 +95,7 @@ export const DiscreteRV: React.FC = () => {
 
   const resetUniform = () => {
     setUnifTrials({ total: 0, counts: {} });
-    setLastUnifRoll(null);
+    setUnifLastBatch(null);
   };
 
   // Compute PMF points & statistics
@@ -116,15 +121,14 @@ export const DiscreteRV: React.FC = () => {
     bars.push({ k: 0, p: 1 - bernP, empCount: bernTrials.n0, empP: emp0 });
     bars.push({ k: 1, p: bernP, empCount: bernTrials.n1, empP: emp1 });
   } else if (dist === 'uniform') {
-    const safeB = Math.max(unifA + 1, unifB);
-    const N = safeB - unifA + 1;
-    mean = (unifA + safeB) / 2;
+    const N = safeUnifB - unifA + 1;
+    mean = (unifA + safeUnifB) / 2;
     variance = (N * N - 1) / 12;
-    pmfFormula = `P(X=k) = \\frac{1}{${N}} = ${fmt(1 / N, 3)}, \\quad k \\in \\{${unifA}, \\dots, ${safeB}\\}`;
-    interpretation = `Phân bố Đều rời rạc gán xác suất bằng nhau tuyệt đối 1/${N} cho mỗi giá trị nguyên từ ${unifA} đến ${safeB}.`;
+    pmfFormula = `P(X=k) = \\frac{1}{${N}} = ${fmt(1 / N, 3)}, \\quad k \\in \\{${unifA}, \\dots, ${safeUnifB}\\}`;
+    interpretation = `Phân bố Đều rời rạc gán xác suất bằng nhau tuyệt đối 1/${N} cho mỗi giá trị nguyên từ ${unifA} đến ${safeUnifB}.`;
 
     let sumEmp = 0;
-    for (let k = unifA; k <= safeB; k++) {
+    for (let k = unifA; k <= safeUnifB; k++) {
       const cnt = unifTrials.counts[k] || 0;
       const emp = unifTrials.total > 0 ? cnt / unifTrials.total : undefined;
       if (unifTrials.total > 0) sumEmp += k * cnt;
@@ -168,21 +172,103 @@ export const DiscreteRV: React.FC = () => {
   const sigma = Math.sqrt(variance);
 
   // SVG coordinate transformation
+  const isBernoulli = dist === 'bernoulli';
   const numBars = bars.length;
-  const leftX = 100;
+  const leftX = isBernoulli ? 140 : 100;
   const rightX = 740;
   const usableWidth = rightX - leftX;
-  const barSlotWidth = usableWidth / Math.max(numBars, 1);
-  const barWidth = Math.min(barSlotWidth * 0.7, 50);
 
   const mapKtoX = (k: number) => {
+    if (isBernoulli) {
+      // Distinctly space k=0 and k=1 at comfortable coordinates
+      return k === 0 ? 300 : 540;
+    }
     const minK = bars[0]?.k ?? 0;
     const maxK = bars[bars.length - 1]?.k ?? 1;
     if (maxK === minK) return leftX + usableWidth / 2;
-    return leftX + ((k - minK) / (maxK - minK)) * (usableWidth - barWidth) + barWidth / 2;
+    const barSlotWidth = usableWidth / Math.max(numBars, 1);
+    const bWidth = Math.min(barSlotWidth * 0.7, 48);
+    return leftX + ((k - minK) / (maxK - minK)) * (usableWidth - bWidth) + bWidth / 2;
   };
 
+  const barWidth = isBernoulli ? 70 : Math.min((usableWidth / Math.max(numBars, 1)) * 0.7, 48);
   const mapPtoY = (p: number) => 330 - (p / (maxP * 1.15)) * 260;
+
+  // Dynamic LabBriefing content per distribution
+  const getBriefing = () => {
+    switch (dist) {
+      case 'bernoulli':
+        return {
+          title: 'Bản chất Phân bố Bernoulli & Thử nghiệm Nhị phân',
+          question: 'Phân bố Bernoulli mô tả điều gì, và tại sao nó được xem là hạt nhân cơ bản của toàn bộ lý thuyết xác suất rời rạc?',
+          formula: 'P(X = 1) = p, \quad P(X = 0) = 1 - p, \quad \mathbb{E}[X] = p, \quad \text{Var}(X) = p(1 - p)',
+          mathExplanation: 'Biến ngẫu nhiên Bernoulli $X \sim \text{Bernoulli}(p)$ chỉ nhận đúng 2 giá trị duy nhất: $X = 1$ (Thành công với xác suất $p$) và $X = 0$ (Thất bại với xác suất $1 - p$). Mọi biến cố nhị phân Đúng/Sai, Trúng/Trượt trong đời sống đều có thể mô hình hóa dưới dạng một phép thử Bernoulli.',
+          howToInteract: [
+            'Kéo thanh trượt Xác suất thành công p từ 0.01 đến 0.99 để quan sát hai cột xác suất thay đổi độ cao đối nghịch nhau.',
+            'Bấm các nút Tung 1 lần, Tung 10 lần, Tung 100 lần để chạy mô phỏng thực nghiệm và theo dõi số lần thành công/thất bại tích lũy.',
+            'Quan sát tam giác đỏ trọng tâm $\mathbb{E}[X] = p$ luôn di chuyển mượt mà trên đoạn [0, 1].',
+          ],
+          whatToObserve: 'Dù biến ngẫu nhiên chỉ nhận giá trị 0 hoặc 1, nhưng kỳ vọng $\mathbb{E}[X] = p$ lại là một số thực nằm giữa 0 và 1. Điều này chứng minh trực quan rằng Kỳ vọng không nhất thiết phải là một giá trị mà biến ngẫu nhiên có thể nhận được trong thực tế.',
+          takeaway: 'Tổng của n biến Bernoulli độc lập cùng tham số p chính là phân bố Nhị thức $B(n, p)$. Bernoulli là viên gạch nguyên tử cấu thành nên toàn bộ thế giới xác suất rời rạc.',
+        };
+      case 'uniform':
+        return {
+          title: 'Bản chất Phân bố Đều Rời rạc U{a, b} & Trọng Tâm Đối Xứng',
+          question: 'Phân bố Đều rời rạc mô hình hóa hiện tượng gì, và vì sao các cột xác suất lại có độ cao bằng nhau chằn chặn?',
+          formula: 'P(X = k) = \frac{1}{b - a + 1}, \quad \mathbb{E}[X] = \frac{a + b}{2}, \quad \text{Var}(X) = \frac{(b - a + 1)^2 - 1}{12}',
+          mathExplanation: 'Phân bố Đều rời rạc gán xác suất đồng đều $1/N$ (với $N = b - a + 1$) cho mọi giá trị nguyên từ $a$ đến $b$. Đây là biểu hiện toán học của Nguyên lý Bất khả Phân biệt: khi không có lý do gì để một kết quả có xác suất cao hơn kết quả khác, ta gán cho tất cả cùng mức xác suất như nhau.',
+          howToInteract: [
+            'Kéo cận dưới a và cận trên b để thay đổi không gian mẫu.',
+            'Bấm các nút chọn nhanh tình huống: Xúc xắc 6 mặt, Xúc xắc 12 mặt, Bốc thăm 10 số để khám phá các mô hình thực tế.',
+            'Bấm các nút Gieo thử nghiệm để quan sát số lần xuất hiện thực tế tích lũy.',
+          ],
+          whatToObserve: 'Đồ thị PMF hoàn toàn phẳng lặng hình chữ nhật nằm ngang. Trọng tâm $\mathbb{E}[X]$ luôn nằm chính xác ở trung điểm $(a + b)/2$ do tính đối xứng tuyệt đối của các giá trị.',
+          takeaway: 'Phân bố Đều là cơ sở cho các trò chơi may rủi (gieo xúc xắc, bốc thăm) và là trạng thái có độ bất định lớn nhất trên một tập hữu hạn.',
+        };
+      case 'binomial':
+        return {
+          title: 'Bản chất Phân bố Nhị thức B(n, p) & Hình Dạng Đối Xứng/Lệch',
+          question: 'Phân bố Nhị thức đếm đại lượng nào, và hình dạng của nó biến đổi ra sao khi xác suất p dịch chuyển từ 0 đến 1?',
+          formula: 'P(X = k) = \binom{n}{k} p^k (1 - p)^{n - k}, \quad \mathbb{E}[X] = n p, \quad \text{Var}(X) = n p (1 - p)',
+          mathExplanation: 'Biến ngẫu nhiên Nhị thức $X \sim B(n, p)$ đếm tổng số lần thành công trong $n$ phép thử Bernoulli độc lập có cùng xác suất thành công $p$. Đại lượng $\binom{n}{k}$ là số tổ hợp cách chọn ra $k$ lần thành công trong $n$ lần thử.',
+          howToInteract: [
+            'Kéo thanh trượt n (số phép thử) và p (xác suất thành công) để quan sát hình dạng chuông rời rạc biến đổi.',
+            'Khi p = 0.5, đồ thị hoàn toàn đối xứng hình chuông quanh tâm $n p = n/2$.',
+            'Khi p < 0.5, đồ thị lệch phải; khi p > 0.5, đồ thị lệch trái.',
+          ],
+          whatToObserve: 'Khi tăng số phép thử n lên lớn ($n \ge 20$), hình dạng các cột phân bố Nhị thức ngày càng giống với đường cong hình chuông Gauss liên tục (Định lý De Moivre - Laplace).',
+          takeaway: 'Phân bố Nhị thức là mô hình đếm số lần thành công cơ bản nhất trong thống kê, ứng dụng rộng rãi từ kiểm tra chất lượng sản phẩm đến điều tra thăm dò dư luận.',
+        };
+      case 'geometric':
+        return {
+          title: 'Bản chất Phân bố Hình học Geom(p) & Đuôi Xác Suất Giảm Dần',
+          question: 'Phân bố Hình học đo lường cái gì, và tại sao xác suất lại suy giảm theo cấp số nhân?',
+          formula: 'P(X = k) = (1 - p)^{k - 1} p, \quad \mathbb{E}[X] = \frac{1}{p}, \quad \text{Var}(X) = \frac{1 - p}{p^2}',
+          mathExplanation: 'Biến ngẫu nhiên Hình học $X \sim \text{Geom}(p)$ đếm số phép thử cần thực hiện cho đến khi xuất hiện lần thành công ĐẦU TIÊN. Để thành công ở lần thứ $k$, bắt buộc phải có đúng $k - 1$ lần thất bại liên tiếp trước đó (mỗi lần với xác suất $1 - p$) rồi mới tới 1 lần thành công (xác suất $p$).',
+          howToInteract: [
+            'Kéo slider p: xác suất thành công càng nhỏ thì cần thử nghiệm trung bình càng nhiều lần $\mathbb{E}[X] = 1/p$.',
+            'Quan sát các cột xác suất: cột đầu tiên tại k = 1 luôn cao nhất và các cột sau suy giảm dần theo tỷ lệ $(1 - p)$.',
+          ],
+          whatToObserve: 'Đồ thị luôn có dạng dốc xuống dạng hàm mũ rời rạc (cấp số nhân). Phân bố Hình học là phân bố rời rạc duy nhất có tính chất không nhớ: $P(X > s + t \mid X > s) = P(X > t)$.',
+          takeaway: 'Phân bố Hình học mô tả thời gian chờ đợi thành công đầu tiên, ví dụ: gieo xúc xắc bao nhiêu lần thì được mặt 6, hoặc phỏng vấn bao nhiêu ứng viên thì tìm được người phù hợp.',
+        };
+      case 'poisson':
+        return {
+          title: 'Bản chất Phân bố Poisson(λ) & Quy Luật Biến Cố Hiếm',
+          question: 'Phân bố Poisson bắt nguồn từ đâu, và mối liên hệ kỳ lạ giữa kỳ vọng và phương sai của nó là gì?',
+          formula: 'P(X = k) = \frac{\lambda^k e^{-\lambda}}{k!}, \quad \mathbb{E}[X] = \lambda, \quad \text{Var}(X) = \lambda',
+          mathExplanation: 'Phân bố Poisson $\text{Pois}(\lambda)$ đếm số biến cố xảy ra trong một khoảng thời gian hoặc không gian cố định, khi các biến cố xảy ra độc lập với nhau với tần suất trung bình $\lambda$. Đây là xấp xỉ hoàn hảo của phân bố Nhị thức $B(n, p)$ khi $n$ rất lớn và $p$ rất nhỏ sao cho $n p = \lambda$ không đổi (Luật số hiếm Poisson).',
+          howToInteract: [
+            'Kéo slider λ từ 0.5 đến 10 để quan sát đỉnh của phân bố dịch chuyển về phía λ.',
+            'Khi λ nhỏ (dưới 1), đồ thị dốc đứng tại k = 0; khi λ lớn (trên 5), đồ thị dần trở nên tròn trịa và đối xứng gần giống phân bố Chuẩn.',
+          ],
+          whatToObserve: 'Đặc điểm nhận dạng độc nhất vô nhị của Poisson: Kỳ vọng và Phương sai luôn bằng nhau chằn chặn $\mathbb{E}[X] = \text{Var}(X) = \lambda$.',
+          takeaway: 'Phân bố Poisson mô hình hóa lưu lượng cuộc gọi tới tổng đài, số lỗi phần mềm trên 1000 dòng lệnh, số tai nạn giao thông trong một tháng, hay số lượt truy cập máy chủ.',
+        };
+    }
+  };
+
+  const currentBriefing = getBriefing();
 
   return (
     <div className="space-y-6">
@@ -253,45 +339,100 @@ export const DiscreteRV: React.FC = () => {
                 />
 
                 {/* Bernoulli Trials Box */}
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+                  <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                      Mô phỏng Thử nghiệm Tung lật
+                      Mô phỏng Thử nghiệm Bernoulli
                     </span>
-                    {lastBernFlip !== null && (
-                      <span
-                        className={`text-xs px-2 py-0.5 rounded-full font-bold font-mono ${
-                          lastBernFlip === 1
-                            ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
-                            : 'bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300'
-                        }`}
-                      >
-                        Vừa ra: X = {lastBernFlip} ({lastBernFlip === 1 ? 'Thành công' : 'Thất bại'})
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-3 gap-1.5 mb-2">
-                    <ClayButton variant="primary" size="sm" onClick={() => runBernoulliTrials(1)}>
-                      +1 lần
-                    </ClayButton>
-                    <ClayButton variant="secondary" size="sm" onClick={() => runBernoulliTrials(10)}>
-                      +10 lần
-                    </ClayButton>
-                    <ClayButton variant="outline" size="sm" onClick={() => runBernoulliTrials(100)}>
-                      +100 lần
-                    </ClayButton>
-                  </div>
-                  {bernTrials.total > 0 && (
-                    <div className="flex items-center justify-between pt-2 text-xs">
-                      <span className="text-slate-500 dark:text-slate-400">
-                        Đã thử: <strong className="text-slate-800 dark:text-slate-200">{bernTrials.total}</strong> lần
-                      </span>
+                    {bernTrials.total > 0 && (
                       <button
+                        type="button"
                         onClick={resetBernoulli}
                         className="text-xs text-rose-500 hover:text-rose-600 font-bold underline cursor-pointer"
                       >
                         Đặt lại đếm
                       </button>
+                    )}
+                  </div>
+
+                  {/* 3 Action Buttons with uniform clean styling */}
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => runBernoulliTrials(1)}
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                    >
+                      Tung 1 lần
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => runBernoulliTrials(10)}
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                    >
+                      Tung 10 lần
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => runBernoulliTrials(100)}
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                    >
+                      Tung 100 lần
+                    </button>
+                  </div>
+
+                  {/* Latest Batch Result Banner */}
+                  {bernLastBatch && (
+                    <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs">
+                      {bernLastBatch.count === 1 ? (
+                        <div className="flex items-center justify-between">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">Lần tung vừa rồi:</span>
+                          <span
+                            className={`font-mono font-bold px-2 py-0.5 rounded-md ${
+                              bernLastBatch.last === 1
+                                ? 'bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300'
+                                : 'bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300'
+                            }`}
+                          >
+                            X = {bernLastBatch.last === 1 ? '1 (Thành công)' : '0 (Thất bại)'}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          <div className="text-slate-500 dark:text-slate-400 font-semibold">
+                            Kết quả đợt vừa tung (+{bernLastBatch.count} lần):
+                          </div>
+                          <div className="flex justify-between font-mono font-bold">
+                            <span className="text-emerald-600 dark:text-emerald-400">
+                              X = 1: {bernLastBatch.n1} lần
+                            </span>
+                            <span className="text-rose-600 dark:text-rose-400">
+                              X = 0: {bernLastBatch.n0} lần
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Cumulative Simulation Statistics */}
+                  {bernTrials.total > 0 && (
+                    <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800 text-xs space-y-1.5 font-mono">
+                      <div className="flex justify-between text-slate-700 dark:text-slate-300 font-semibold">
+                        <span>Tổng số lần đã thử:</span>
+                        <span className="font-bold text-slate-900 dark:text-white">{bernTrials.total} lần</span>
+                      </div>
+                      <div className="flex justify-between text-emerald-700 dark:text-emerald-300">
+                        <span>Số lần X = 1:</span>
+                        <span>
+                          <strong>{bernTrials.n1}</strong> ({fmt((bernTrials.n1 / bernTrials.total) * 100, 1)}%)
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <span>Số lần X = 0:</span>
+                        <span>
+                          <strong>{bernTrials.n0}</strong> ({fmt((bernTrials.n0 / bernTrials.total) * 100, 1)}%)
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>
@@ -300,13 +441,14 @@ export const DiscreteRV: React.FC = () => {
 
             {dist === 'uniform' && (
               <div className="space-y-4">
-                {/* Quick Presets */}
+                {/* Quick Presets (NO EMOJIS) */}
                 <div>
                   <label className="text-xs font-bold text-slate-600 dark:text-slate-400 block mb-1.5">
                     Tình huống mô hình thực tế:
                   </label>
                   <div className="grid grid-cols-2 gap-1.5">
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(1);
                         setUnifB(6);
@@ -314,9 +456,10 @@ export const DiscreteRV: React.FC = () => {
                       }}
                       className="px-2 py-1.5 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      🎲 Xúc xắc 6 mặt (1-6)
+                      Xúc xắc 6 mặt (1-6)
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(1);
                         setUnifB(12);
@@ -324,9 +467,10 @@ export const DiscreteRV: React.FC = () => {
                       }}
                       className="px-2 py-1.5 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      🎲 Xúc xắc 12 mặt (D12)
+                      Xúc xắc 12 mặt (D12)
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(1);
                         setUnifB(10);
@@ -334,9 +478,10 @@ export const DiscreteRV: React.FC = () => {
                       }}
                       className="px-2 py-1.5 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      🎟️ Bốc thăm 10 số (1-10)
+                      Bốc thăm 10 số (1-10)
                     </button>
                     <button
+                      type="button"
                       onClick={() => {
                         setUnifA(0);
                         setUnifB(1);
@@ -344,7 +489,7 @@ export const DiscreteRV: React.FC = () => {
                       }}
                       className="px-2 py-1.5 text-xs font-bold rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-900/40 text-slate-700 dark:text-slate-200 transition-colors text-left cursor-pointer"
                     >
-                      🪙 Đồng xu nhị phân {'{0, 1}'}
+                      Đồng xu nhị phân {'{0, 1}'}
                     </button>
                   </div>
                 </div>
@@ -378,39 +523,60 @@ export const DiscreteRV: React.FC = () => {
                 </div>
 
                 {/* Uniform Roll Simulation */}
-                <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="pt-3 border-t border-slate-200 dark:border-slate-800 space-y-2.5">
+                  <div className="flex items-center justify-between">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                       Mô phỏng Gieo ngẫu nhiên
                     </span>
-                    {lastUnifRoll !== null && (
-                      <span className="text-xs px-2 py-0.5 rounded-full font-bold font-mono bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300">
-                        Vừa gieo ra: {lastUnifRoll}
-                      </span>
-                    )}
-                  </div>
-                  <div className="grid grid-cols-3 gap-1.5 mb-2">
-                    <ClayButton variant="primary" size="sm" onClick={() => runUniformTrials(1)}>
-                      +1 lần
-                    </ClayButton>
-                    <ClayButton variant="secondary" size="sm" onClick={() => runUniformTrials(20)}>
-                      +20 lần
-                    </ClayButton>
-                    <ClayButton variant="outline" size="sm" onClick={() => runUniformTrials(100)}>
-                      +100 lần
-                    </ClayButton>
-                  </div>
-                  {unifTrials.total > 0 && (
-                    <div className="flex items-center justify-between pt-2 text-xs">
-                      <span className="text-slate-500 dark:text-slate-400">
-                        Tổng gieo: <strong className="text-slate-800 dark:text-slate-200">{unifTrials.total}</strong> lần
-                      </span>
+                    {unifTrials.total > 0 && (
                       <button
+                        type="button"
                         onClick={resetUniform}
                         className="text-xs text-rose-500 hover:text-rose-600 font-bold underline cursor-pointer"
                       >
                         Đặt lại đếm
                       </button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => runUniformTrials(1)}
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                    >
+                      Gieo 1 lần
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => runUniformTrials(20)}
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                    >
+                      Gieo 20 lần
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => runUniformTrials(100)}
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                    >
+                      Gieo 100 lần
+                    </button>
+                  </div>
+
+                  {unifLastBatch && (
+                    <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-xs flex items-center justify-between font-mono">
+                      <span className="text-slate-600 dark:text-slate-300">
+                        {unifLastBatch.count === 1 ? 'Lần gieo vừa rồi:' : `Đã gieo +${unifLastBatch.count} lần (lần cuối):`}
+                      </span>
+                      <span className="font-bold px-2 py-0.5 rounded-md bg-sky-100 dark:bg-sky-900/60 text-sky-700 dark:text-sky-300">
+                        Kết quả: {unifLastBatch.lastRoll}
+                      </span>
+                    </div>
+                  )}
+
+                  {unifTrials.total > 0 && (
+                    <div className="text-xs text-slate-500 dark:text-slate-400 font-mono text-center">
+                      Tổng số lượt gieo: <strong className="text-slate-800 dark:text-slate-200">{unifTrials.total}</strong> lần
                     </div>
                   )}
                 </div>
@@ -573,7 +739,7 @@ export const DiscreteRV: React.FC = () => {
 
                 {/* Desmos Cartesian Axes */}
                 <line
-                  x1="60"
+                  x1={isBernoulli ? '120' : '60'}
                   y1="330"
                   x2="760"
                   y2="330"
@@ -582,9 +748,9 @@ export const DiscreteRV: React.FC = () => {
                   markerEnd="url(#arrow-pmf-x)"
                 />
                 <line
-                  x1="80"
+                  x1={isBernoulli ? '140' : '80'}
                   y1="350"
-                  x2="80"
+                  x2={isBernoulli ? '140' : '80'}
                   y2="30"
                   stroke="#10B981"
                   strokeWidth="2.5"
@@ -594,7 +760,7 @@ export const DiscreteRV: React.FC = () => {
                   k
                 </text>
                 <text
-                  x="80"
+                  x={isBernoulli ? 140 : 80}
                   y="20"
                   fill="#10B981"
                   fontSize="13"
@@ -615,13 +781,15 @@ export const DiscreteRV: React.FC = () => {
                   const empTopY = hasEmp ? mapPtoY(b.empP!) : 330;
                   const empH = Math.max(0, 330 - empTopY);
 
+                  const singleBarW = hasEmp ? barWidth * 0.45 : barWidth;
+
                   return (
                     <g key={b.k}>
                       {/* Theoretical PMF Bar */}
                       <rect
-                        x={hasEmp ? cx - barWidth : cx - barWidth / 2}
+                        x={hasEmp ? cx - singleBarW - 3 : cx - singleBarW / 2}
                         y={topY}
-                        width={hasEmp ? barWidth * 0.9 : barWidth}
+                        width={singleBarW}
                         height={h}
                         rx="4"
                         fill="#0284C7"
@@ -633,7 +801,7 @@ export const DiscreteRV: React.FC = () => {
                       {/* Theoretical Value Label */}
                       {b.p > maxP * 0.05 && (
                         <text
-                          x={hasEmp ? cx - barWidth * 0.55 : cx}
+                          x={hasEmp ? cx - singleBarW / 2 - 3 : cx}
                           y={topY - 6}
                           fill="#0284C7"
                           className="dark:fill-sky-400"
@@ -650,9 +818,9 @@ export const DiscreteRV: React.FC = () => {
                       {hasEmp && (
                         <>
                           <rect
-                            x={cx + barWidth * 0.1}
+                            x={cx + 3}
                             y={empTopY}
-                            width={barWidth * 0.9}
+                            width={singleBarW}
                             height={empH}
                             rx="4"
                             fill="#10B981"
@@ -661,7 +829,7 @@ export const DiscreteRV: React.FC = () => {
                             className="hover:fill-emerald-400 transition-colors"
                           />
                           <text
-                            x={cx + barWidth * 0.55}
+                            x={cx + singleBarW / 2 + 3}
                             y={empTopY - 6}
                             fill="#10B981"
                             className="dark:fill-emerald-400"
@@ -685,7 +853,7 @@ export const DiscreteRV: React.FC = () => {
                         textAnchor="middle"
                         fontFamily="monospace"
                       >
-                        {b.k}
+                        {isBernoulli ? (b.k === 0 ? '0 (Thất bại)' : '1 (Thành công)') : b.k}
                       </text>
 
                       {/* Outcome count under k if empirical */}
@@ -694,7 +862,7 @@ export const DiscreteRV: React.FC = () => {
                           x={cx}
                           y="363"
                           fill="#10B981"
-                          fontSize="9"
+                          fontSize="10"
                           fontWeight="bold"
                           textAnchor="middle"
                           fontFamily="monospace"
@@ -708,6 +876,31 @@ export const DiscreteRV: React.FC = () => {
 
                 {/* 1-Sigma Band [E[X]-sigma, E[X]+sigma] */}
                 {(() => {
+                  if (isBernoulli) {
+                    const x0 = mapKtoX(0);
+                    const x1 = mapKtoX(1);
+                    const meanX = x0 + mean * (x1 - x0);
+                    const xLeft = Math.max(x0, meanX - sigma * (x1 - x0));
+                    const xRight = Math.min(x1, meanX + sigma * (x1 - x0));
+                    return (
+                      <g>
+                        <line x1={xLeft} y1="50" x2={xRight} y2="50" stroke="#F59E0B" strokeWidth="2.5" />
+                        <line x1={xLeft} y1="44" x2={xLeft} y2="56" stroke="#F59E0B" strokeWidth="2" />
+                        <line x1={xRight} y1="44" x2={xRight} y2="56" stroke="#F59E0B" strokeWidth="2" />
+                        <text
+                          x={(xLeft + xRight) / 2}
+                          y="42"
+                          fill="#F59E0B"
+                          fontSize="11"
+                          fontWeight="bold"
+                          textAnchor="middle"
+                          fontFamily="monospace"
+                        >
+                          Dải ±1σ = [{fmt(Math.max(0, mean - sigma), 2)}, {fmt(Math.min(1, mean + sigma), 2)}]
+                        </text>
+                      </g>
+                    );
+                  }
                   const minBound = bars[0]?.k ?? 0;
                   const maxBound = bars[bars.length - 1]?.k ?? 15;
                   const xLeft = mapKtoX(Math.max(minBound, mean - sigma));
@@ -734,7 +927,9 @@ export const DiscreteRV: React.FC = () => {
 
                 {/* Mean E[X] Fulcrum (Trọng tâm) Indicator */}
                 {(() => {
-                  const meanX = mapKtoX(mean);
+                  const meanX = isBernoulli
+                    ? mapKtoX(0) + mean * (mapKtoX(1) - mapKtoX(0))
+                    : mapKtoX(mean);
                   return (
                     <g>
                       <line
@@ -795,20 +990,16 @@ export const DiscreteRV: React.FC = () => {
         </div>
       </div>
 
-      {/* FULL-WIDTH LAB BRIEFING AT BOTTOM */}
+      {/* FULL-WIDTH DYNAMIC LAB BRIEFING AT BOTTOM */}
       <LabBriefing
-        title="Bản chất Hàm Khối Xác Suất (PMF) & Trọng Tâm Kỳ Vọng E[X]"
-        question="Hàm khối xác suất (PMF) cho ta biết điều gì, và tại sao kỳ vọng E[X] lại đóng vai trò như trọng tâm vật lý của một chiếc bập bênh?"
-        formula="p_X(k) = P(X = k), \\quad \\sum_k p_X(k) = 1, \\quad \\mathbb{E}[X] = \\sum_k k \\cdot p_X(k)"
-        mathExplanation="Biến ngẫu nhiên rời rạc là biến chỉ nhận các giá trị đếm được. Hàm khối xác suất (PMF) phân bổ tổng khối lượng xác suất bằng 1 lên từng giá trị cụ thể k. Công thức tính kỳ vọng E[X] chính là công thức tính tọa độ trọng tâm (Center of Mass) của một thanh cứng khi gắn các quả nặng có khối lượng p_X(k) tại tọa độ k. Nếu đặt một điểm tựa tam giác (Fulcrum) ngay tại vị trí E[X], hệ thống các cột xác suất sẽ đạt trạng thái cân bằng lực đòn bẩy hoàn hảo."
-        howToInteract={[
-          "Chuyển đổi linh hoạt giữa 5 phân bố kinh điển trên thanh tab: Bernoulli, Đều rời rạc, Nhị thức, Hình học, Poisson.",
-          "Ở phân bố Bernoulli và Đều: hãy bấm các nút '+1 lần', '+10 lần', '+100 lần' để chạy mô phỏng thực nghiệm và quan sát cột màu xanh lá cây tiệm cận cột lý thuyết xanh dương theo Luật số lớn.",
-          "Kéo thanh trượt tham số (p, a, b, n, λ) và quan sát điểm tựa tam giác đỏ E[X] tự động di chuyển đến vị trí cân bằng mới.",
-          "Quan sát dải cam ±1σ để nhận biết mức độ phân tán tập trung hay lan rộng của biến ngẫu nhiên xung quanh kỳ vọng.",
-        ]}
-        whatToObserve="Ở phân bố Bernoulli, giá trị E[X] = p luôn nằm giữa 0 và 1 dù biến ngẫu nhiên chỉ nhận giá trị 0 hoặc 1 (Kỳ vọng không nhất thiết phải là một giá trị mà X có thể nhận). Ở phân bố đều U{a, b}, tất cả các cột có độ cao bằng nhau chằn chặn 1/N và E[X] nằm ngay chính giữa (a+b)/2. Khi tăng số lần thử nghiệm lên hàng trăm lần, tần suất thực tế sẽ ngày càng khớp sát với xác suất lý thuyết."
-        takeaway="Phân bố Bernoulli là nguyên tử nền tảng: tổng n biến Bernoulli độc lập tạo ra phân bố Nhị thức. Phân bố Đều mô hình hóa sự bất định hoàn hảo không thiên vị. Kỳ vọng E[X] là trọng tâm cân bằng, còn phương sai Var(X) là mômen quán tính đo độ tỏa rộng quanh tâm."
+        key={dist}
+        title={currentBriefing.title}
+        question={currentBriefing.question}
+        formula={currentBriefing.formula}
+        mathExplanation={currentBriefing.mathExplanation}
+        howToInteract={currentBriefing.howToInteract}
+        whatToObserve={currentBriefing.whatToObserve}
+        takeaway={currentBriefing.takeaway}
       />
     </div>
   );
