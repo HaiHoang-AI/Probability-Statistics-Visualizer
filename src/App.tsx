@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Header } from './components/common/Header';
 import { LandingPage } from './components/landing/LandingPage';
 import { DerivedConvolution } from './components/modules/ch7/DerivedConvolution';
@@ -14,6 +14,16 @@ import { DiscreteRV } from './components/modules/ch3/DiscreteRV';
 import { ContinuousRV } from './components/modules/ch4/ContinuousRV';
 import { ChapterId } from './types';
 
+const scrollToTop = () => {
+  try {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  } catch {
+    window.scrollTo(0, 0);
+  }
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+};
+
 export const App: React.FC = () => {
   const [currentChapter, setCurrentChapter] = useState<ChapterId>('overview');
   const [navigationTarget, setNavigationTarget] = useState<string | null>(null);
@@ -21,10 +31,24 @@ export const App: React.FC = () => {
   const handleSelectChapter = (id: ChapterId, target?: string) => {
     setCurrentChapter(id);
     setNavigationTarget(target || null);
+    scrollToTop();
   };
+
+  // Guarantee viewport always resets to top upon switching chapters/tabs
+  useEffect(() => {
+    scrollToTop();
+    const timer = setTimeout(scrollToTop, 20);
+    return () => clearTimeout(timer);
+  }, [currentChapter, navigationTarget]);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F4F6F9] dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200">
+      {/* Top glowing progress bar on route change */}
+      <div
+        key={`nav-progress-${currentChapter}-${navigationTarget || ''}`}
+        className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-sky-400 via-indigo-500 to-emerald-400 z-50 pointer-events-none page-switch-bar shadow-[0_0_8px_rgba(56,189,248,0.6)]"
+      />
+
       {/* Top Header */}
       <Header
         currentChapterId={currentChapter}
@@ -38,9 +62,19 @@ export const App: React.FC = () => {
           <div className="mb-4">
             <button
               onClick={() => handleSelectChapter('overview')}
-              className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-heading font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 active:scale-[0.98] transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-heading font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 active:scale-[0.98] transition-all cursor-pointer group"
             >
-              Quay lại danh sách bài học
+              <svg
+                className="w-3.5 h-3.5 stroke-slate-600 dark:stroke-slate-400 group-hover:-translate-x-0.5 transition-transform"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+              </svg>
+              <span>Quay lại danh sách bài học</span>
             </button>
           </div>
         )}
