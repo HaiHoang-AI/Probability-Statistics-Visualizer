@@ -155,7 +155,7 @@ export const LinearRegression: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 11 — Hồi quy Tuyến tính (Linear Regression)
@@ -168,9 +168,9 @@ export const LinearRegression: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('ols')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'ols'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -178,9 +178,9 @@ export const LinearRegression: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('r2')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'r2'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -188,9 +188,9 @@ export const LinearRegression: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('leverage')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'leverage'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -198,9 +198,9 @@ export const LinearRegression: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('residuals')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'residuals'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -314,7 +314,7 @@ export const LinearRegression: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Mặt phẳng Toạ độ Desmos & Bình phương Phần dư OLS"
               formula={`y = ${fmt(manualSlope, 2)}x + ${fmt(manualIntercept, 2)}`}
@@ -609,7 +609,7 @@ export const LinearRegression: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Phân Rã Biến Thiên Toàn Phần: TSS = MSS + RSS"
               formula="R^2 = 1 - \frac{RSS}{TSS} = \frac{MSS}{TSS}"
@@ -720,7 +720,7 @@ export const LinearRegression: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="w-full h-12 rounded-2xl overflow-hidden flex border-2 border-slate-900 dark:border-slate-700 shadow-[3px_3px_0px_#0f172a] font-mono text-xs sm:text-sm font-black text-white">
+                <div className="w-full h-12 rounded-2xl overflow-hidden flex border border-slate-200/80 dark:border-slate-800 shadow-sm font-mono text-xs sm:text-sm font-black text-white">
                   <div
                     style={{ width: `${Math.max(6, Math.round(rSquared * 100))}%` }}
                     className="bg-sky-600 flex items-center justify-center transition-all duration-300 px-2"
@@ -848,7 +848,7 @@ export const LinearRegression: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title={`Khảo Sát Đòn Bẩy & Điểm Ngoại Lai: Cook's D = ${fmt(leveragePoints.cookD, 2)}`}
               formula={`\\hat{y} = ${fmt(leveragePoints.slope, 2)}x + ${fmt(leveragePoints.intercept, 2)}`}
@@ -1071,7 +1071,7 @@ export const LinearRegression: React.FC = () => {
                       onClick={() => setDiagPattern('homoscedastic')}
                       className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
                         diagPattern === 'homoscedastic'
-                          ? 'bg-emerald-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
+                          ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
                       }`}
                     >
@@ -1082,7 +1082,7 @@ export const LinearRegression: React.FC = () => {
                       onClick={() => setDiagPattern('nonlinear')}
                       className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
                         diagPattern === 'nonlinear'
-                          ? 'bg-amber-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
+                          ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
                       }`}
                     >
@@ -1093,7 +1093,7 @@ export const LinearRegression: React.FC = () => {
                       onClick={() => setDiagPattern('heteroscedastic')}
                       className={`w-full py-2 px-3 rounded-xl text-xs font-heading font-bold border-2 transition-all text-left flex justify-between items-center cursor-pointer ${
                         diagPattern === 'heteroscedastic'
-                          ? 'bg-rose-600 text-white border-slate-900 shadow-[2px_2px_0px_#0f172a]'
+                          ? 'bg-rose-600 text-white border-rose-600 shadow-xs'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border-slate-300 dark:border-slate-700'
                       }`}
                     >
@@ -1152,7 +1152,7 @@ export const LinearRegression: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Bắt Bệnh Mô Hình Qua Đồ Thị Phần Dư (Residual Diagnostics Plot)"
               formula="e_i = y_i - \hat{y}_i"

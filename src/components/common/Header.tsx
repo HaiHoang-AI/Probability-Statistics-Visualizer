@@ -15,14 +15,14 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   return (
     <header className="sticky top-3 z-40 w-full px-4 sm:px-8 xl:px-10 transition-colors">
-      <div className="w-full max-w-[1920px] mx-auto bg-white dark:bg-slate-900 border-[2.5px] border-slate-900 dark:border-slate-700 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-[5px_5px_0px_#0f172a] dark:shadow-[5px_5px_0px_#0284c7] flex items-center justify-between transition-all duration-150">
+      <div className="w-full max-w-[1920px] mx-auto bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-200/80 dark:border-slate-800 rounded-2xl md:rounded-full px-5 sm:px-8 py-2.5 shadow-sm flex items-center justify-between transition-all duration-150">
         
         {/* Brand & Logo */}
         <div 
           onClick={() => onSelectChapter('overview')} 
           className="flex items-center gap-3 cursor-pointer select-none group"
         >
-          <div className="w-9 h-9 rounded-xl bg-sky-600 border-2 border-slate-900 flex items-center justify-center text-white font-heading font-black text-sm shadow-[2px_2px_0px_#0f172a] group-hover:translate-x-[1px] group-hover:translate-y-[1px] group-hover:shadow-none transition-all duration-100">
+          <div className="w-9 h-9 rounded-xl bg-sky-600 flex items-center justify-center text-white font-heading font-black text-sm shadow-sm group-hover:scale-105 transition-all duration-150">
             PS
           </div>
           <div>
@@ -30,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="font-heading font-black text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
                 ProbStat <span className="text-sky-600 dark:text-sky-400">Visualizer</span>
               </span>
-              <span className="hidden sm:inline-flex text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-slate-900/30 dark:border-sky-800">
+              <span className="hidden sm:inline-flex text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
                 MAT1101
               </span>
             </div>
@@ -44,10 +44,8 @@ export const Header: React.FC<HeaderProps> = ({
           <button
             onClick={() => onSelectChapter('overview')}
             className={`
-              px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all duration-100 cursor-pointer border-2 border-slate-900 dark:border-slate-700
-              shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
-              hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none
-              active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
+              px-3 py-1.5 rounded-xl text-xs font-heading font-bold transition-all duration-150 cursor-pointer border border-slate-200 dark:border-slate-700
+              shadow-xs hover:border-slate-300 dark:hover:border-slate-600 active:scale-[0.98]
               ${currentChapterId === 'overview'
                 ? 'bg-sky-600 text-white'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
@@ -64,14 +62,12 @@ export const Header: React.FC<HeaderProps> = ({
               onChange={(e) => onSelectChapter(e.target.value as ChapterId)}
               className="
                 appearance-none bg-white dark:bg-slate-800 
-                border-2 border-slate-900 dark:border-slate-700 
+                border border-slate-200 dark:border-slate-700 
                 text-slate-900 dark:text-slate-100 
                 text-xs font-heading font-bold rounded-xl px-3 py-1.5 pr-7 
-                cursor-pointer focus:outline-none 
-                shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
-                hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none
-                active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
-                transition-all duration-100
+                cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-500/20
+                shadow-xs hover:border-slate-300 dark:hover:border-slate-600
+                active:scale-[0.98] transition-all duration-150
               "
             >
               <option value="overview">Chọn bài học</option>

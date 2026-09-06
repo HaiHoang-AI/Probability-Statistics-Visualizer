@@ -71,7 +71,7 @@ export const BasicProbability: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Chapter Subtitle & Header */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 2 — Tính toán Xác suất Cơ bản
@@ -84,9 +84,9 @@ export const BasicProbability: React.FC = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSub('monty')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeSub === 'monty'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -94,9 +94,9 @@ export const BasicProbability: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveSub('medical')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeSub === 'medical'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -156,7 +156,7 @@ export const BasicProbability: React.FC = () => {
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
               {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Mô phỏng Trực quan Nghịch lý 3 Cánh Cửa Monty Hall"
               formula="P(\text{Win}|\text{Switch}) = \frac{2}{3} \approx 66.7\% \quad vs \quad P(\text{Win}|\text{Stay}) = \frac{1}{3} \approx 33.3\%"
@@ -199,7 +199,7 @@ export const BasicProbability: React.FC = () => {
                         h-52 rounded-3xl border-4 flex flex-col items-center justify-between p-4 cursor-pointer transition-all duration-200 select-none
                         ${isChosen
                           ? 'border-sky-500 bg-sky-50 dark:bg-slate-800 scale-105 shadow-[4px_4px_0px_#0284c7]'
-                          : 'border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-[4px_4px_0px_#0f172a] hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_#0f172a]'}
+                          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm  hover:shadow-xs'}
                         ${isRevealed ? 'opacity-70 bg-red-50 dark:bg-red-950/30 border-red-400' : ''}
                       `}
                     >
@@ -224,7 +224,7 @@ export const BasicProbability: React.FC = () => {
 
               {/* Reveal Phase Actions */}
               {gameStep === 'reveal' && (
-                <div className="text-center max-w-md mx-auto p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border-2 border-slate-900 dark:border-amber-700 shadow-[4px_4px_0px_#0f172a] space-y-3">
+                <div className="text-center max-w-md mx-auto p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-slate-200/80 dark:border-slate-800 dark:border-amber-700 shadow-sm space-y-3">
                   <p className="text-xs font-bold text-amber-950 dark:text-amber-200">
                     MC Monty Hall vừa hé lộ một con Dê ở Cửa {revealedDoor! + 1}! Bạn có muốn ĐỔI CỬA không?
                   </p>
@@ -338,7 +338,7 @@ export const BasicProbability: React.FC = () => {
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
               {/* 1. MÀN HÌNH ĐỒ THỊ TO Ở CHÍNH GIỮA (DESMOS 3D VIEWPORT) */}
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Phân tích Luồng Dân số 10,000 Người & Nghịch lý Dương tính Giả"
               formula="P(\text{Bệnh}|+) = \frac{P(+|\text{Bệnh})P(\text{Bệnh})}{P(+)}"
@@ -395,7 +395,7 @@ export const BasicProbability: React.FC = () => {
               </div>
 
               {/* Central Bayes Result Box */}
-              <div className="p-6 rounded-3xl bg-amber-50 dark:bg-slate-900/90 border-2 border-slate-900 dark:border-amber-700 shadow-[4px_4px_0px_#0f172a] text-center">
+              <div className="p-6 rounded-3xl bg-amber-50 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800 dark:border-amber-700 shadow-sm text-center">
                 <span className="text-xs font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider block mb-1">
                   Xác suất Thực sự Mắc Bệnh khi nhận kết quả Dương Tính (+) [PPV]:
                 </span>

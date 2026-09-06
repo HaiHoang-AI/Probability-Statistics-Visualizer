@@ -403,9 +403,9 @@ export const GaltonBoard: React.FC = () => {
             {/* Audio Toggle Button */}
             <button
               onClick={toggleSound}
-              className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                 soundOn
-                  ? 'bg-amber-400 text-slate-950 shadow-[1.5px_1.5px_0px_#0f172a]'
+                  ? 'bg-amber-400 text-slate-950 shadow-xs'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-500'
               }`}
             >
@@ -556,9 +556,9 @@ export const GaltonBoard: React.FC = () => {
 
       {/* RIGHT COLUMN: Interactive Galton Canvas Stage */}
       <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-        <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+        <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
           {/* Header of Stage */}
-          <div className="px-5 py-3.5 border-b-2 border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-900 flex flex-wrap items-center justify-between gap-3">
+          <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex flex-wrap items-center justify-between gap-3">
             <div>
               <span className="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wide">
                 Mô phỏng Cơ học Vật lý

@@ -19,7 +19,7 @@ export const DesmosStageHeader: React.FC<DesmosStageHeaderProps> = ({
   extraActions,
 }) => {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur border-b-2 border-slate-900 dark:border-slate-700 rounded-t-[1.4rem]">
+    <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-50/90 dark:bg-slate-900/90 backdrop-blur border-b border-slate-200 dark:border-slate-800 rounded-t-[1.4rem]">
       {/* Left: Title & Formula HUD */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
@@ -56,7 +56,7 @@ export const DesmosStageHeader: React.FC<DesmosStageHeaderProps> = ({
         {onReset && (
           <button
             onClick={onReset}
-            className="px-2.5 py-1 text-[11px] font-heading font-bold rounded-lg border border-slate-900 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition-all"
+            className="px-2.5 py-1 text-[11px] font-heading font-bold rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition-all"
             title="Đặt lại góc nhìn đồ thị"
           >
             Reset View

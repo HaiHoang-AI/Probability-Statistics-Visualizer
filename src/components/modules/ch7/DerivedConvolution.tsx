@@ -80,7 +80,7 @@ export const DerivedConvolution: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Chapter Subtitle & Context Banner */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 7.1 — Biến ngẫu nhiên dẫn xuất
@@ -94,9 +94,9 @@ export const DerivedConvolution: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('convolution')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'convolution'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -104,9 +104,9 @@ export const DerivedConvolution: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('correlation')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'correlation'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -114,9 +114,9 @@ export const DerivedConvolution: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('totalvar')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'totalvar'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -124,9 +124,9 @@ export const DerivedConvolution: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('transform')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'transform'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -134,9 +134,9 @@ export const DerivedConvolution: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('extremes')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'extremes'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -248,7 +248,7 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Mô phỏng Quét Tích chập & Diện tích Giao tích phân"
               formula="f_Z(z) = \int_{-\infty}^{\infty} f_X(x) f_Y(z-x) dx"
@@ -556,7 +556,7 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Đám Mây Điểm Bivariate & Hệ Số Pearson ρ"
               formula="\rho = \frac{\text{Cov}(X, Y)}{\sigma_X \sigma_Y} \in [-1, 1]"
@@ -582,9 +582,9 @@ export const DerivedConvolution: React.FC = () => {
               <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Góc nhìn:</span>
               <button
                 onClick={() => setCorrViewMode('scatter')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   corrViewMode === 'scatter'
-                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-sky-600 text-white shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
@@ -592,9 +592,9 @@ export const DerivedConvolution: React.FC = () => {
               </button>
               <button
                 onClick={() => setCorrViewMode('heatmap')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   corrViewMode === 'heatmap'
-                    ? 'bg-amber-400 text-slate-950 shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-amber-400 text-slate-950 shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
@@ -602,9 +602,9 @@ export const DerivedConvolution: React.FC = () => {
               </button>
               <button
                 onClick={() => setCorrViewMode('3d')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   corrViewMode === '3d'
-                    ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-purple-600 text-white shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
@@ -827,7 +827,7 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Trực quan Luật Phân rã Phương sai Toàn phần (Eve's Law)"
               formula="\text{Var}(X) = \text{Var}(\mathbb{E}[X|Y]) + \mathbb{E}[\text{Var}(X|Y)]"
@@ -952,24 +952,24 @@ export const DerivedConvolution: React.FC = () => {
               <div className="flex gap-2 mb-3">
                 <button
                   onClick={() => setTransformType('square')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    transformType === 'square' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                    transformType === 'square' ? 'bg-purple-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   $Y = X^2$
                 </button>
                 <button
                   onClick={() => setTransformType('linear')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    transformType === 'linear' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                    transformType === 'linear' ? 'bg-purple-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   $Y = 2X+1$
                 </button>
                 <button
                   onClick={() => setTransformType('exp')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    transformType === 'exp' ? 'bg-purple-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                    transformType === 'exp' ? 'bg-purple-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   $Y = e^X$
@@ -1041,7 +1041,7 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title={`Đổi biến Hàm Mật độ: Y = ${transformType === 'square' ? 'X²' : transformType === 'linear' ? '2X + 1' : 'e^X'}`}
               formula="f_Y(y) = \frac{f_X(x)}{|g'(x)|}"
@@ -1257,16 +1257,16 @@ export const DerivedConvolution: React.FC = () => {
               <div className="flex gap-2 mb-4">
                 <button
                   onClick={() => setExtremeType('max')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    extremeType === 'max' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                    extremeType === 'max' ? 'bg-sky-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   Hệ Song Song (Max)
                 </button>
                 <button
                   onClick={() => setExtremeType('min')}
-                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                    extremeType === 'min' ? 'bg-emerald-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`flex-1 py-1.5 rounded-xl text-xs font-bold border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                    extremeType === 'min' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   Hệ Nối Tiếp (Min)
@@ -1334,7 +1334,7 @@ export const DerivedConvolution: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title={`Mô phỏng Phân phối Cực trị: ${extremeType === 'max' ? 'Hệ Song Song W = max(X₁..Xₙ)' : 'Hệ Nối Tiếp V = min(X₁..Xₙ)'}`}
               formula={extremeType === 'max' ? `F_{\\max}(w) = [F(w)]^{${compN}}` : `F_{\\min}(v) = 1 - [1 - F(v)]^{${compN}}`}

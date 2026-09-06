@@ -4,92 +4,49 @@
 
 @layer base {
   :root {
-    --cartoon-border: #0F172A;
-    --cartoon-shadow: 4px 4px 0px #0F172A;
-    --cartoon-btn-shadow: 3px 3px 0px #0F172A;
+    --card-border: rgba(226, 232, 240, 0.8);
+    --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
 
   .dark {
-    --cartoon-border: #334155;
-    --cartoon-shadow: 4px 4px 0px #0284C7;
-    --cartoon-btn-shadow: 3px 3px 0px #0284C7;
+    --card-border: rgba(30, 41, 59, 0.8);
+    --card-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.25);
   }
 }
 
-/* 2D Cartoon & Neo-brutalist styles */
+/* Modern Clean Card Styles */
 .cartoon-card {
-  border: 2.5px solid var(--cartoon-border);
-  box-shadow: var(--cartoon-shadow);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
   border-radius: 1.5rem;
-  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .cartoon-card:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0px var(--cartoon-border);
-}
-
-.dark .cartoon-card:hover {
-  box-shadow: 2px 2px 0px #0284C7;
-}
-
-.cartoon-card:active {
-  transform: translate(4px, 4px);
-  box-shadow: 0px 0px 0px var(--cartoon-border) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 .cartoon-btn {
-  border: 2px solid var(--cartoon-border);
-  box-shadow: var(--cartoon-btn-shadow);
-  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.1s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 .cartoon-btn:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px var(--cartoon-border);
-}
-
-.dark .cartoon-btn:hover {
-  box-shadow: 1px 1px 0px #0284C7;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 0.1);
 }
 
 .cartoon-btn:active {
-  transform: translate(3px, 3px);
-  box-shadow: 0px 0px 0px var(--cartoon-border) !important;
-}
-
-/* Universal hover sink down for all buttons with bold borders */
-button[class*="border-2 border-slate-900"],
-button[class*="border-[2.5px] border-slate-900"],
-select[class*="border-2 border-slate-900"] {
-  transition: transform 0.1s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.1s cubic-bezier(0.16, 1, 0.3, 1) !important;
-}
-
-button[class*="border-2 border-slate-900"]:hover,
-button[class*="border-[2.5px] border-slate-900"]:hover,
-select[class*="border-2 border-slate-900"]:hover {
-  transform: translate(1.5px, 1.5px);
-  box-shadow: 1px 1px 0px var(--cartoon-border) !important;
-}
-
-.dark button[class*="border-2 border-slate-900"]:hover,
-.dark button[class*="border-[2.5px] border-slate-900"]:hover,
-.dark select[class*="border-2 border-slate-900"]:hover {
-  box-shadow: 1px 1px 0px #0284c7 !important;
-}
-
-button[class*="border-2 border-slate-900"]:active,
-button[class*="border-[2.5px] border-slate-900"]:active,
-select[class*="border-2 border-slate-900"]:active {
-  transform: translate(2.5px, 2.5px) !important;
-  box-shadow: 0px 0px 0px var(--cartoon-border) !important;
+  transform: scale(0.98);
 }
 
 /* Smooth Page Transitions */
 @keyframes pageFadeSlide {
   0% {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   100% {
     opacity: 1;
@@ -98,7 +55,7 @@ select[class*="border-2 border-slate-900"]:active {
 }
 
 .page-transition {
-  animation: pageFadeSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: pageFadeSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Custom smooth scrollbar */
@@ -112,12 +69,12 @@ select[class*="border-2 border-slate-900"]:active {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.4);
+  background: rgba(156, 163, 175, 0.3);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
+  background: rgba(156, 163, 175, 0.6);
 }
 
 /* KaTeX custom sizing fix */
@@ -127,23 +84,23 @@ select[class*="border-2 border-slate-900"]:active {
   overflow-y: hidden;
 }
 
-/* Desmos 3D & Bright Mathematical Graphing Stage */
+/* Desmos Stage Graphing Background */
 .desmos-viewport {
   background-color: #ffffff;
   background-image: 
     linear-gradient(to right, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(15, 23, 42, 0.04) 1px, transparent 1px),
-    linear-gradient(to right, rgba(15, 23, 42, 0.1) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(15, 23, 42, 0.1) 1px, transparent 1px);
+    linear-gradient(to right, rgba(15, 23, 42, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.08) 1px, transparent 1px);
   background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
 }
 
 .dark .desmos-viewport {
   background-color: #0b1120;
   background-image: 
-    linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-    linear-gradient(to right, rgba(56, 189, 248, 0.12) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+    linear-gradient(to right, rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+    linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
   background-size: 20px 20px, 20px 20px, 100px 100px, 100px 100px;
 }

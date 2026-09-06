@@ -41,7 +41,7 @@ export const Foundations: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Chapter Subtitle & Header */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 1 — Cơ sở Xác suất
@@ -54,9 +54,9 @@ export const Foundations: React.FC = () => {
         <div className="flex gap-2">
           <button
             onClick={() => setActiveSub('venn')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeSub === 'venn'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -64,9 +64,9 @@ export const Foundations: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveSub('dice')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeSub === 'dice'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -161,7 +161,7 @@ export const Foundations: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Sơ đồ Venn Biến cố & Không gian Mẫu Toàn phần"
               formula="P(A \cup B) = P(A) + P(B) - P(A \cap B)"
@@ -342,7 +342,7 @@ export const Foundations: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Không gian Mẫu Rời rạc: Tung 2 Con Xúc xắc (36 Biến cố Sơ cấp)"
               formula="P(E) = \frac{|E|}{|\Omega|} = \frac{|E|}{36}"
@@ -352,7 +352,7 @@ export const Foundations: React.FC = () => {
                 <div className="flex gap-1.5 flex-wrap">
                   <button
                     onClick={() => setDiceFilter('all')}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-200 dark:border-slate-700 transition-all cursor-pointer ${
                       diceFilter === 'all' ? 'bg-sky-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                     }`}
                   >
@@ -360,7 +360,7 @@ export const Foundations: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setDiceFilter('sum8')}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-200 dark:border-slate-700 transition-all cursor-pointer ${
                       diceFilter === 'sum8' ? 'bg-sky-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                     }`}
                   >
@@ -368,7 +368,7 @@ export const Foundations: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setDiceFilter('doubles')}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-200 dark:border-slate-700 transition-all cursor-pointer ${
                       diceFilter === 'doubles' ? 'bg-sky-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                     }`}
                   >
@@ -376,7 +376,7 @@ export const Foundations: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setDiceFilter('has6')}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-lg text-xs font-heading font-bold border border-slate-200 dark:border-slate-700 transition-all cursor-pointer ${
                       diceFilter === 'has6' ? 'bg-sky-600 text-white' : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300'
                     }`}
                   >
@@ -393,7 +393,7 @@ export const Foundations: React.FC = () => {
                     key={idx}
                     className={`p-3 rounded-2xl border-2 flex flex-col items-center justify-center font-mono transition-all duration-200 ${
                       cell.isMatch
-                        ? 'bg-sky-500 text-white border-slate-900 dark:border-white font-black scale-105 shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7]'
+                        ? 'bg-sky-500 text-white border-sky-500 dark:border-sky-400 font-black scale-105 shadow-sm'
                         : 'bg-white dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700 opacity-40 hover:opacity-75'
                     }`}
                   >

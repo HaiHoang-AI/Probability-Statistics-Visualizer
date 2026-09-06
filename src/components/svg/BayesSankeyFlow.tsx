@@ -92,7 +92,7 @@ export const BayesSankeyFlow: React.FC<BayesSankeyFlowProps> = ({
 
   return (
     <div className="space-y-4">
-      <div className="w-full overflow-x-auto bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-900 dark:border-slate-700 p-4 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+      <div className="w-full overflow-x-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 p-4 shadow-sm">
         <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full min-w-[700px] h-auto select-none font-sans">
           <defs>
             {/* Gradients */}

@@ -88,7 +88,7 @@ export const BayesianInference: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
             MAT1101 Bài 9 — Suy luận thống kê Bayes
@@ -102,9 +102,9 @@ export const BayesianInference: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('beta-binomial')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'beta-binomial'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -112,9 +112,9 @@ export const BayesianInference: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('sensor-fusion')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'sensor-fusion'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -122,9 +122,9 @@ export const BayesianInference: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('credible')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'credible'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -132,9 +132,9 @@ export const BayesianInference: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('baserate')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'baserate'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -248,7 +248,7 @@ export const BayesianInference: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="So Sánh Prior vs Likelihood vs Posterior Beta(α, β)"
               formula="\text{Posterior} \propto \theta^k (1-\theta)^{n-k} \times \theta^{\alpha-1} (1-\theta)^{\beta-1}"
@@ -479,7 +479,7 @@ export const BayesianInference: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Hợp Nhất Đa Cảm Biến Gauss (Gaussian Sensor Fusion)"
               formula="\frac{1}{\sigma_{\text{post}}^2} = \frac{1}{\sigma_0^2} + \frac{1}{\sigma_1^2} + \frac{1}{\sigma_2^2}"
@@ -679,7 +679,7 @@ export const BayesianInference: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Khoảng Tin Cậy Hậu Nghiệm Mật Độ Cao (HPD Credible Interval)"
               formula={`P(L \\le \\theta \\le U \\mid \\text{Data}) = ${fmt(credLevel * 100, 0)}\\%`}
@@ -857,7 +857,7 @@ export const BayesianInference: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Phân Tích 10,000 Người & Ảo Giác Tỷ Lệ Nền (Base Rate Fallacy)"
               formula="P(\text{Bệnh} \mid +) = \frac{\text{Dương tính thật}}{\text{Dương tính thật} + \text{Dương tính giả}}"
@@ -870,9 +870,9 @@ export const BayesianInference: React.FC = () => {
               <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Góc nhìn:</span>
               <button
                 onClick={() => setBaseRateViewMode('sankey')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   baseRateViewMode === 'sankey'
-                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-sky-600 text-white shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
@@ -880,9 +880,9 @@ export const BayesianInference: React.FC = () => {
               </button>
               <button
                 onClick={() => setBaseRateViewMode('mosaic')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   baseRateViewMode === 'mosaic'
-                    ? 'bg-amber-400 text-slate-950 shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-amber-400 text-slate-950 shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >

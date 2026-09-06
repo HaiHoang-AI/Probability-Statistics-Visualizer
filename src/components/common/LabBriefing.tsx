@@ -26,11 +26,11 @@ export const LabBriefing: React.FC<LabBriefingProps> = ({
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultExpanded);
 
   return (
-    <div className="bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 rounded-2xl shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7] overflow-hidden transition-all duration-200 mb-5">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden transition-all duration-200 mb-5">
       {/* Header Bar */}
       <div 
         onClick={() => setIsExpanded(!isExpanded)}
-        className="px-4 py-3 bg-sky-50 dark:bg-slate-800/80 border-b-2 border-slate-900/20 dark:border-slate-700/60 flex items-center justify-between cursor-pointer select-none hover:bg-sky-100/70 dark:hover:bg-slate-800 transition-colors"
+        className="px-4 py-3 bg-sky-50 dark:bg-slate-800/80 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between cursor-pointer select-none hover:bg-sky-100/70 dark:hover:bg-slate-800 transition-colors"
       >
         <div className="flex items-center gap-2.5">
           <span className="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center text-sm font-black shadow-xs">

@@ -153,7 +153,7 @@ export const LimitTheoremsCLT: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 8 — Các định lý giới hạn
@@ -167,9 +167,9 @@ export const LimitTheoremsCLT: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('clt')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'clt'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -177,9 +177,9 @@ export const LimitTheoremsCLT: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('lln')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'lln'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -187,9 +187,9 @@ export const LimitTheoremsCLT: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('bounds')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'bounds'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -197,9 +197,9 @@ export const LimitTheoremsCLT: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('cauchy')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'cauchy'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -207,9 +207,9 @@ export const LimitTheoremsCLT: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('galton')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'galton'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -234,32 +234,32 @@ export const LimitTheoremsCLT: React.FC = () => {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={() => setSourceDist('bimodal')}
-                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
-                    sourceDist === 'bimodal' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`py-2 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'bimodal' ? 'bg-sky-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   2 Đỉnh (Bimodal)
                 </button>
                 <button
                   onClick={() => setSourceDist('exponential')}
-                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
-                    sourceDist === 'exponential' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`py-2 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'exponential' ? 'bg-sky-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   Hàm mũ Exp(1)
                 </button>
                 <button
                   onClick={() => setSourceDist('uniform')}
-                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
-                    sourceDist === 'uniform' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`py-2 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'uniform' ? 'bg-sky-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   Phẳng Uniform[0,1]
                 </button>
                 <button
                   onClick={() => setSourceDist('dice')}
-                  className={`py-2 px-3 rounded-xl border-2 border-slate-900 dark:border-slate-700 text-xs font-heading font-bold cursor-pointer transition-all ${
-                    sourceDist === 'dice' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-white dark:bg-slate-800'
+                  className={`py-2 px-3 rounded-xl border border-slate-200/80 dark:border-slate-800 text-xs font-heading font-bold cursor-pointer transition-all ${
+                    sourceDist === 'dice' ? 'bg-sky-600 text-white shadow-xs' : 'bg-white dark:bg-slate-800'
                   }`}
                 >
                   Xúc xắc 6 mặt
@@ -319,7 +319,7 @@ export const LimitTheoremsCLT: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Phân Bố Mẫu vs Chuông Gauss Lý Thuyết"
               formula="Z_n = \frac{\bar{X}_n - \mu}{\sigma/\sqrt{n}} \xrightarrow{d} \mathcal{N}(0, 1)"
@@ -463,7 +463,7 @@ export const LimitTheoremsCLT: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="15 Quỹ Đạo Hội Tụ Của Trung Bình Mẫu (Tung Đồng Xu μ = 0.5)"
               formula="P(|\bar{X}_n - \mu| \ge \epsilon) \xrightarrow{n \to \infty} 0"
@@ -633,7 +633,7 @@ export const LimitTheoremsCLT: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="So Sánh Độ Thắt Chặt Của Cận Đuôi Xác Suất (N(0, 1))"
               formula="P(|X| \ge k) \le \text{Chernoff} \le \text{Chebyshev}"
@@ -818,7 +818,7 @@ export const LimitTheoremsCLT: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="So Sánh Hội Tụ Trung Bình Mẫu: Gaussian Chuẩn vs Cauchy Đuôi Dày"
               formula="\text{Gaussian: } \text{Var}(\bar{X}_n) = \frac{\sigma^2}{n} \to 0 \quad \text{vs} \quad \text{Cauchy: } \bar{X}_n \sim \text{Cauchy}"

@@ -330,7 +330,7 @@ export const DiscreteRV: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Chapter Subtitle & Header */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 3 & 4 — Biến ngẫu nhiên Rời rạc
@@ -354,9 +354,9 @@ export const DiscreteRV: React.FC = () => {
             <button
               key={t.id}
               onClick={() => setDist(t.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                 dist === t.id
-                  ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                  ? 'bg-sky-600 text-white shadow-xs'
                   : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
               }`}
             >
@@ -417,21 +417,21 @@ export const DiscreteRV: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => runBernoulliTrials(1)}
-                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border border-slate-200/80 dark:border-slate-800 bg-sky-600 text-white shadow-xs hover:bg-sky-500 active:scale-[0.98] transition-all cursor-pointer text-center"
                     >
                       Tung 1 lần
                     </button>
                     <button
                       type="button"
                       onClick={() => runBernoulliTrials(10)}
-                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border border-slate-200/80 dark:border-slate-800 bg-sky-600 text-white shadow-xs hover:bg-sky-500 active:scale-[0.98] transition-all cursor-pointer text-center"
                     >
                       Tung 10 lần
                     </button>
                     <button
                       type="button"
                       onClick={() => runBernoulliTrials(100)}
-                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border border-slate-200/80 dark:border-slate-800 bg-sky-600 text-white shadow-xs hover:bg-sky-500 active:scale-[0.98] transition-all cursor-pointer text-center"
                     >
                       Tung 100 lần
                     </button>
@@ -600,21 +600,21 @@ export const DiscreteRV: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => runUniformTrials(1)}
-                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border border-slate-200/80 dark:border-slate-800 bg-sky-600 text-white shadow-xs hover:bg-sky-500 active:scale-[0.98] transition-all cursor-pointer text-center"
                     >
                       Gieo 1 lần
                     </button>
                     <button
                       type="button"
                       onClick={() => runUniformTrials(20)}
-                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border border-slate-200/80 dark:border-slate-800 bg-sky-600 text-white shadow-xs hover:bg-sky-500 active:scale-[0.98] transition-all cursor-pointer text-center"
                     >
                       Gieo 20 lần
                     </button>
                     <button
                       type="button"
                       onClick={() => runUniformTrials(100)}
-                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all cursor-pointer text-center"
+                      className="py-2 px-2 text-xs font-heading font-bold rounded-xl border border-slate-200/80 dark:border-slate-800 bg-sky-600 text-white shadow-xs hover:bg-sky-500 active:scale-[0.98] transition-all cursor-pointer text-center"
                     >
                       Gieo 100 lần
                     </button>
@@ -749,7 +749,7 @@ export const DiscreteRV: React.FC = () => {
 
         {/* RIGHT COLUMN: GRAPH STAGE */}
         <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-          <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+          <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title={
                 dist === 'bernoulli'
@@ -788,9 +788,9 @@ export const DiscreteRV: React.FC = () => {
               <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Chế độ trực quan:</span>
               <button
                 onClick={() => setDisplayMode('chart')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   displayMode === 'chart'
-                    ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-sky-600 text-white shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >
@@ -798,9 +798,9 @@ export const DiscreteRV: React.FC = () => {
               </button>
               <button
                 onClick={() => setDisplayMode('particle')}
-                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
                   displayMode === 'particle'
-                    ? 'bg-amber-400 text-slate-950 shadow-[2px_2px_0px_#0f172a]'
+                    ? 'bg-amber-400 text-slate-950 shadow-xs'
                     : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'
                 }`}
               >

@@ -383,7 +383,7 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
   return (
     <div className="space-y-4">
       {/* Top Controls Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border-2 border-slate-900 dark:border-slate-700">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-slate-100 dark:bg-slate-800/80 rounded-2xl border border-slate-200/80 dark:border-slate-800">
         <div className="flex flex-wrap items-center gap-2">
           <ClayButton
             variant="primary"
@@ -433,9 +433,9 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
           {/* Sound Toggle */}
           <button
             onClick={toggleSound}
-            className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               soundOn
-                ? 'bg-amber-400 text-slate-950 shadow-[1.5px_1.5px_0px_#0f172a]'
+                ? 'bg-amber-400 text-slate-950 shadow-xs'
                 : 'bg-white dark:bg-slate-700 text-slate-500'
             }`}
           >
@@ -463,13 +463,13 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
       {/* Canvas Viewport */}
       <div
         ref={containerRef}
-        className="w-full bg-slate-50 dark:bg-slate-950 rounded-2xl border-2 border-slate-900 dark:border-slate-700 overflow-hidden relative"
+        className="w-full bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200/80 dark:border-slate-800 overflow-hidden relative"
       >
         <canvas ref={canvasRef} className="block w-full h-auto select-none touch-none" />
       </div>
 
       {/* Real-time convergence comparison card */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-900 dark:border-slate-700">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-3 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800">
         <div>
           <div className="text-[11px] text-slate-500 font-bold">Kỳ vọng Lý thuyết E[X]</div>
           <div className="font-mono font-black text-slate-900 dark:text-white text-sm">

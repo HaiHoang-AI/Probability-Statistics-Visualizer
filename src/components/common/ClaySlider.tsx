@@ -46,7 +46,7 @@ export const ClaySlider: React.FC<ClaySliderProps> = ({
   const displayVal = formatValue ? formatValue(value) : `${value}${unit ? ` ${unit}` : ''}`;
 
   return (
-    <div className="flex flex-col gap-1.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border-2 border-slate-900/30 dark:border-slate-700">
+    <div className="flex flex-col gap-1.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 shadow-xs">
       <div className="flex items-center justify-between">
         <div>
           <span className="font-heading font-bold text-slate-900 dark:text-slate-100 text-xs">
@@ -58,7 +58,7 @@ export const ClaySlider: React.FC<ClaySliderProps> = ({
             </span>
           )}
         </div>
-        <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-bold border border-slate-900/20 dark:border-slate-600 ${badgeColors[color]}`}>
+        <span className={`px-2 py-0.5 rounded-full text-xs font-mono font-bold shadow-xs ${badgeColors[color]}`}>
           {displayVal}
         </span>
       </div>

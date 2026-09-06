@@ -28,12 +28,11 @@ export const ThemeToggle: React.FC = () => {
         px-3 py-1.5 rounded-xl text-xs font-heading font-bold
         bg-white dark:bg-slate-800 
         text-slate-900 dark:text-slate-100
-        border-2 border-slate-900 dark:border-slate-700 
-        shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]
-        hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none
+        border border-slate-200 dark:border-slate-700 
+        shadow-xs hover:border-slate-300 dark:hover:border-slate-600
         hover:bg-slate-100 dark:hover:bg-slate-700
-        active:translate-x-[2px] active:translate-y-[2px] active:shadow-none
-        cursor-pointer transition-all duration-100
+        active:scale-[0.98]
+        cursor-pointer transition-all duration-150
       "
     >
       {isDark ? 'Chế độ: Tối' : 'Chế độ: Sáng'}

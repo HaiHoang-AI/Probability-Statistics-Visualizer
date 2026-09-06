@@ -228,7 +228,7 @@ export const DensityHeatmap: React.FC<DensityHeatmapProps> = ({
     <div className="space-y-3">
       <div
         ref={containerRef}
-        className="w-full h-[400px] relative rounded-2xl overflow-hidden border-2 border-slate-900 dark:border-slate-700 bg-slate-950"
+        className="w-full h-[400px] relative rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 bg-slate-950"
       >
         <canvas
           ref={canvasRef}

@@ -32,7 +32,7 @@ export const App: React.FC = () => {
           <div className="mb-4">
             <button
               onClick={() => setCurrentChapter('overview')}
-              className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] text-xs font-heading font-bold text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 hover:translate-x-[1.5px] hover:translate-y-[1.5px] hover:shadow-none active:translate-x-[2px] active:translate-y-[2px] active:shadow-none transition-all cursor-pointer"
+              className="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs text-xs font-heading font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800/80 hover:border-slate-300 dark:hover:border-slate-700 active:scale-[0.98] transition-all cursor-pointer"
             >
               Quay lại danh sách bài học
             </button>
@@ -57,7 +57,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t-2 border-slate-900/15 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-xs text-slate-600 dark:text-slate-400">
+      <footer className="w-full border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-xs text-slate-600 dark:text-slate-400">
         <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 xl:px-10 flex flex-col md:flex-row items-center justify-between gap-4">
           {/* Left: Project & Author info */}
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 text-center sm:text-left">
@@ -81,7 +81,7 @@ export const App: React.FC = () => {
               href="https://www.facebook.com/lehai.hoang.3705?locale=vi_VN"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] dark:hover:bg-[#1877F2] dark:hover:border-[#1877F2] active:translate-x-[1px] active:translate-y-[1px] transition-all font-heading font-bold text-xs group cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-xs hover:bg-[#1877F2] hover:text-white hover:border-[#1877F2] dark:hover:bg-[#1877F2] dark:hover:border-[#1877F2] active:scale-[0.98] transition-all font-heading font-bold text-xs group cursor-pointer"
               title="Facebook: Lê Hải Hoàng"
             >
               <svg className="w-4 h-4 fill-[#1877F2] group-hover:fill-white transition-colors shrink-0" viewBox="0 0 24 24">
@@ -95,7 +95,7 @@ export const App: React.FC = () => {
               href="https://github.com/HaiHoang-AI"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-slate-900 hover:text-white hover:border-slate-900 dark:hover:bg-sky-600 dark:hover:border-sky-500 active:translate-x-[1px] active:translate-y-[1px] transition-all font-heading font-bold text-xs group cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-xs hover:bg-slate-900 hover:text-white hover:border-slate-800 dark:hover:bg-sky-600 dark:hover:border-sky-500 active:scale-[0.98] transition-all font-heading font-bold text-xs group cursor-pointer"
               title="GitHub: HaiHoang-AI"
             >
               <svg className="w-4 h-4 fill-slate-900 dark:fill-white group-hover:fill-white transition-colors shrink-0" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ export const App: React.FC = () => {
               href="https://www.linkedin.com/in/hai-hoang-b96833300/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border-2 border-slate-900 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7] hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] dark:hover:bg-[#0A66C2] dark:hover:border-[#0A66C2] active:translate-x-[1px] active:translate-y-[1px] transition-all font-heading font-bold text-xs group cursor-pointer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-xs hover:bg-[#0A66C2] hover:text-white hover:border-[#0A66C2] dark:hover:bg-[#0A66C2] dark:hover:border-[#0A66C2] active:scale-[0.98] transition-all font-heading font-bold text-xs group cursor-pointer"
               title="LinkedIn: Hai Hoang"
             >
               <svg className="w-4 h-4 fill-[#0A66C2] group-hover:fill-white transition-colors shrink-0" viewBox="0 0 24 24">

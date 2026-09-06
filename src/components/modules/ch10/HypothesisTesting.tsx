@@ -67,7 +67,7 @@ export const HypothesisTesting: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Banner */}
-      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7] flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400">
             MAT1101 Bài 10.2 — Kiểm tra Giả thuyết Thống kê
@@ -80,9 +80,9 @@ export const HypothesisTesting: React.FC = () => {
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTab('tradeoff')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'tradeoff'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -90,9 +90,9 @@ export const HypothesisTesting: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('pvalue')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'pvalue'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -100,9 +100,9 @@ export const HypothesisTesting: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveTab('power')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border-2 border-slate-900 dark:border-slate-700 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-heading font-bold border border-slate-200/80 dark:border-slate-800 transition-all cursor-pointer ${
               activeTab === 'power'
-                ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a] dark:shadow-[2px_2px_0px_#0284c7]'
+                ? 'bg-sky-600 text-white shadow-xs'
                 : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
             }`}
           >
@@ -210,7 +210,7 @@ export const HypothesisTesting: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Phân Bố H₀ vs H₁ & Đánh Đổi Sai Lầm Loại I - II"
               formula="\text{Power} = 1 - \beta = P(\text{Bác bỏ } H_0 \mid H_1 \text{ đúng})"
@@ -387,24 +387,24 @@ export const HypothesisTesting: React.FC = () => {
                   <div className="grid grid-cols-3 gap-1.5">
                     <button
                       onClick={() => setTailType('right')}
-                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                        tailType === 'right' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                        tailType === 'right' ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       Phải (&gt;)
                     </button>
                     <button
                       onClick={() => setTailType('left')}
-                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                        tailType === 'left' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                        tailType === 'left' ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       Trái (&lt;)
                     </button>
                     <button
                       onClick={() => setTailType('two')}
-                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border-2 border-slate-900 dark:border-slate-700 cursor-pointer ${
-                        tailType === 'two' ? 'bg-sky-600 text-white shadow-[2px_2px_0px_#0f172a]' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
+                      className={`py-2 px-1 rounded-xl text-xs font-heading font-bold transition-all text-center border border-slate-200/80 dark:border-slate-800 cursor-pointer ${
+                        tailType === 'two' ? 'bg-sky-600 text-white shadow-xs' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                       }`}
                     >
                       2 Phía (≠)
@@ -451,7 +451,7 @@ export const HypothesisTesting: React.FC = () => {
                   <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
                     3. Kết Luận Thống Kê
                   </h3>
-                  <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
+                  <div className={`p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 ${
                     rejectH0 ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200'
                   }`}>
                     <div className="font-heading font-black text-sm">
@@ -469,7 +469,7 @@ export const HypothesisTesting: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title="Diện Tích Quét p-value Trên Phân Bố Chuẩn Tắc N(0, 1)"
               formula="\text{p-value} \le \alpha \implies \text{Bác bỏ } H_0"
@@ -726,7 +726,7 @@ export const HypothesisTesting: React.FC = () => {
                   <h3 className="font-heading font-black text-sm text-slate-900 dark:text-white">
                     3. Đánh Giá Lực Kiểm Định
                   </h3>
-                  <div className={`p-3.5 rounded-2xl border-2 border-slate-900 dark:border-slate-700 ${
+                  <div className={`p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-800 ${
                     curPower >= 0.80 ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200' : 'bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200'
                   }`}>
                     <div className="font-heading font-black text-sm">
@@ -744,7 +744,7 @@ export const HypothesisTesting: React.FC = () => {
 
             {/* RIGHT COLUMN: GRAPH STAGE */}
             <div className="w-full lg:flex-1 min-w-0 order-1 lg:order-2">
-              <ClayCard className="p-0 overflow-hidden border-2 border-slate-900 dark:border-slate-700 shadow-[4px_4px_0px_#0f172a] dark:shadow-[4px_4px_0px_#0284c7]">
+              <ClayCard className="p-0 overflow-hidden border border-slate-200/80 dark:border-slate-800 shadow-sm">
             <DesmosStageHeader
               title={`Đường Cong Lực Kiểm Định (Power Curve): Power = ${fmt(curPower * 100, 1)}% tại n = ${planN}`}
               formula="n \ge \left(\frac{Z_{\alpha/2} + Z_{\beta}}{d}\right)^2"

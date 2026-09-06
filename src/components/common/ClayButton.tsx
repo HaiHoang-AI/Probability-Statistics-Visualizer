@@ -19,23 +19,19 @@ export const ClayButton: React.FC<ClayButtonProps> = ({
   };
 
   const variantClasses = {
-    primary: 'bg-sky-600 text-white hover:bg-sky-500',
-    secondary: 'bg-slate-900 dark:bg-slate-800 text-white hover:bg-slate-800 dark:hover:bg-slate-700',
-    success: 'bg-emerald-600 text-white hover:bg-emerald-500',
-    purple: 'bg-indigo-600 text-white hover:bg-indigo-500',
-    danger: 'bg-rose-600 text-white hover:bg-rose-500',
-    outline: 'bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800',
+    primary: 'bg-sky-600 text-white hover:bg-sky-500 shadow-sm hover:shadow active:scale-[0.98]',
+    secondary: 'bg-slate-800 dark:bg-slate-700 text-white hover:bg-slate-700 dark:hover:bg-slate-600 shadow-sm hover:shadow active:scale-[0.98]',
+    success: 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-sm hover:shadow active:scale-[0.98]',
+    purple: 'bg-indigo-600 text-white hover:bg-indigo-500 shadow-sm hover:shadow active:scale-[0.98]',
+    danger: 'bg-rose-600 text-white hover:bg-rose-500 shadow-sm hover:shadow active:scale-[0.98]',
+    outline: 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-750 shadow-xs hover:shadow-sm active:scale-[0.98]',
   };
 
   return (
     <button
       className={`
         inline-flex items-center justify-center text-center font-heading select-none cursor-pointer
-        border-2 border-slate-900 dark:border-slate-700
-        shadow-[3px_3px_0px_#0f172a] dark:shadow-[3px_3px_0px_#0284c7]
-        hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_#0f172a] dark:hover:shadow-[1px_1px_0px_#0284c7]
-        active:translate-x-[3px] active:translate-y-[3px] active:shadow-none
-        transition-all duration-100
+        transition-all duration-150
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         ${className}

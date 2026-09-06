@@ -275,7 +275,7 @@ export const Surface3D: React.FC<Surface3DProps> = ({ rho }) => {
     <div className="space-y-3">
       <div
         ref={mountRef}
-        className="w-full h-[460px] rounded-2xl overflow-hidden border-2 border-slate-900 dark:border-slate-700 relative cursor-grab active:cursor-grabbing select-none"
+        className="w-full h-[460px] rounded-2xl overflow-hidden border border-slate-200/80 dark:border-slate-800 relative cursor-grab active:cursor-grabbing select-none"
       />
 
       <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
