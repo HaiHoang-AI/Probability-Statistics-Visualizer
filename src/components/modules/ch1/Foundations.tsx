@@ -13,12 +13,14 @@ export const Foundations: React.FC = () => {
   const [probB, setProbB] = useState<number>(0.5);
   const [probIntersect, setProbIntersect] = useState<number>(0.3);
 
-  // Union & partition values
-  const actualIntersect = Math.min(probIntersect, Math.min(probA, probB));
-  const probUnion = Math.min(1, probA + probB - actualIntersect);
-  const onlyA = Math.max(0, probA - actualIntersect);
-  const onlyB = Math.max(0, probB - actualIntersect);
-  const outside = Math.max(0, 1 - probUnion);
+  // Fréchet / Kolmogorov bounds on intersection
+  const minIntersect = Math.max(0, parseFloat((probA + probB - 1).toFixed(2)));
+  const maxIntersect = Math.min(probA, probB);
+  const actualIntersect = Math.min(maxIntersect, Math.max(minIntersect, probIntersect));
+  const probUnion = Math.min(1, parseFloat((probA + probB - actualIntersect).toFixed(2)));
+  const onlyA = Math.max(0, parseFloat((probA - actualIntersect).toFixed(2)));
+  const onlyB = Math.max(0, parseFloat((probB - actualIntersect).toFixed(2)));
+  const outside = Math.max(0, parseFloat((1 - probUnion).toFixed(2)));
 
   // Dice state: filter condition
   const [diceFilter, setDiceFilter] = useState<'all' | 'sum8' | 'doubles' | 'has6'>('all');
@@ -108,8 +110,8 @@ export const Foundations: React.FC = () => {
                 <ClaySlider
                   label="P(A giao B)"
                   value={actualIntersect}
-                  min={0}
-                  max={Math.min(probA, probB)}
+                  min={minIntersect}
+                  max={maxIntersect}
                   step={0.05}
                   color="emerald"
                   onChange={setProbIntersect}
@@ -194,67 +196,122 @@ export const Foundations: React.FC = () => {
                   (Không gian mẫu: P(Ω) = 1)
                 </text>
 
-                {/* Circle A */}
+                {/* Dynamic Venn Geometry */}
                 {(() => {
-                  const rA = 70 + probA * 85;
-                  const cxA = 320;
-                  const cyA = 180;
+                  const rA = 65 + probA * 70;
+                  const rB = 65 + probB * 70;
+                  const cy = 185;
+
+                  const overlapRatio = maxIntersect > minIntersect
+                    ? (actualIntersect - minIntersect) / (maxIntersect - minIntersect)
+                    : (actualIntersect > 0 ? 1 : 0);
+
+                  const dDisjoint = rA + rB + 35;
+                  const dMax = Math.max(30, Math.abs(rA - rB) + 20);
+                  const d = actualIntersect === 0
+                    ? dDisjoint
+                    : dDisjoint * (1 - overlapRatio) + dMax * overlapRatio;
+
+                  const cxA = 400 - d / 2;
+                  const cxB = 400 + d / 2;
+
+                  const midA = actualIntersect > 0 ? ((cxA - rA) + (cxB - rB)) / 2 : cxA;
+                  const midB = actualIntersect > 0 ? ((cxA + rA) + (cxB + rB)) / 2 : cxB;
+                  const midIntersect = (cxA + cxB) / 2;
+
                   return (
                     <g>
+                      {/* Circle A */}
                       <circle
                         cx={cxA}
-                        cy={cyA}
+                        cy={cy}
                         r={rA}
                         fill="rgba(245, 158, 11, 0.22)"
                         stroke="#F59E0B"
                         strokeWidth="3.5"
                       />
-                      <text x={cxA - rA * 0.45} y={cyA} fill="#B45309" className="dark:fill-amber-300" fontSize="20" fontWeight="black">
-                        A
+                      {/* Header label for Set A above the circle */}
+                      <text
+                        x={cxA}
+                        y={Math.max(55, cy - rA - 10)}
+                        fill="#B45309"
+                        className="dark:fill-amber-400"
+                        fontSize="13"
+                        fontWeight="black"
+                        textAnchor="middle"
+                      >
+                        Tập A: P(A) = {fmt(probA, 2)}
                       </text>
-                      <text x={cxA - rA * 0.45} y={cyA + 20} fill="#B45309" className="dark:fill-amber-400" fontSize="12" fontWeight="bold" fontFamily="monospace">
-                        P(A)={fmt(probA, 2)}
-                      </text>
-                    </g>
-                  );
-                })()}
 
-                {/* Circle B */}
-                {(() => {
-                  const rB = 70 + probB * 85;
-                  const cxB = 480;
-                  const cyB = 180;
-                  return (
-                    <g>
+                      {/* Circle B */}
                       <circle
                         cx={cxB}
-                        cy={cyB}
+                        cy={cy}
                         r={rB}
                         fill="rgba(2, 132, 199, 0.22)"
                         stroke="#0284C7"
                         strokeWidth="3.5"
                       />
-                      <text x={cxB + rB * 0.45} y={cyB} fill="#0369A1" className="dark:fill-sky-300" fontSize="20" fontWeight="black" textAnchor="middle">
-                        B
+                      {/* Header label for Set B above the circle */}
+                      <text
+                        x={cxB}
+                        y={Math.max(55, cy - rB - 10)}
+                        fill="#0369A1"
+                        className="dark:fill-sky-400"
+                        fontSize="13"
+                        fontWeight="black"
+                        textAnchor="middle"
+                      >
+                        Tập B: P(B) = {fmt(probB, 2)}
                       </text>
-                      <text x={cxB + rB * 0.45} y={cyB + 20} fill="#0369A1" className="dark:fill-sky-400" fontSize="12" fontWeight="bold" fontFamily="monospace" textAnchor="middle">
-                        P(B)={fmt(probB, 2)}
-                      </text>
+
+                      {/* Region 1: Only A (Chỉ riêng A) */}
+                      {onlyA > 0 && (
+                        <g>
+                          <text x={midA} y={cy - 6} fill="#B45309" className="dark:fill-amber-300" fontSize="13" fontWeight="bold" textAnchor="middle">
+                            Chỉ riêng A
+                          </text>
+                          <text x={midA} y={cy + 15} fill="#B45309" className="dark:fill-amber-400" fontSize="14" fontWeight="black" textAnchor="middle" fontFamily="monospace">
+                            {fmt(onlyA, 2)}
+                          </text>
+                        </g>
+                      )}
+
+                      {/* Region 2: Intersection A ∩ B */}
+                      {actualIntersect > 0 ? (
+                        <g>
+                          <text x={midIntersect} y={cy - 6} fill="#047857" className="dark:fill-emerald-300" fontSize="13" fontWeight="bold" textAnchor="middle">
+                            A ∩ B
+                          </text>
+                          <text x={midIntersect} y={cy + 15} fill="#047857" className="dark:fill-emerald-400" fontSize="14" fontWeight="black" textAnchor="middle" fontFamily="monospace">
+                            {fmt(actualIntersect, 2)}
+                          </text>
+                        </g>
+                      ) : (
+                        <g>
+                          <text x="400" y={cy - 6} fill="#64748B" className="dark:fill-slate-400" fontSize="12" fontWeight="bold" textAnchor="middle">
+                            A ∩ B = ∅
+                          </text>
+                          <text x="400" y={cy + 12} fill="#64748B" className="dark:fill-slate-400" fontSize="11" fontWeight="semibold" textAnchor="middle">
+                            (Xung khắc rời nhau)
+                          </text>
+                        </g>
+                      )}
+
+                      {/* Region 3: Only B (Chỉ riêng B) */}
+                      {onlyB > 0 && (
+                        <g>
+                          <text x={midB} y={cy - 6} fill="#0369A1" className="dark:fill-sky-300" fontSize="13" fontWeight="bold" textAnchor="middle">
+                            Chỉ riêng B
+                          </text>
+                          <text x={midB} y={cy + 15} fill="#0369A1" className="dark:fill-sky-400" fontSize="14" fontWeight="black" textAnchor="middle" fontFamily="monospace">
+                            {fmt(onlyB, 2)}
+                          </text>
+                        </g>
+                      )}
                     </g>
                   );
                 })()}
-
-                {/* Intersection Center Label */}
-                {actualIntersect > 0 && (
-                  <g>
-                    <text x="400" y="175" fill="#047857" className="dark:fill-emerald-300" fontSize="14" fontWeight="bold" textAnchor="middle">
-                      A ∩ B
-                    </text>
-                    <text x="400" y="195" fill="#047857" className="dark:fill-emerald-400" fontSize="13" fontWeight="black" textAnchor="middle" fontFamily="monospace">
-                      {fmt(actualIntersect, 2)}
-                    </text>
-                  </g>
-                )}
 
                 {/* Outside Ω complement label */}
                 <text x="730" y="310" fill="#64748B" fontSize="12" fontWeight="bold" textAnchor="end" fontFamily="monospace">

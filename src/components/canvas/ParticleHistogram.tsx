@@ -96,7 +96,9 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
 
   // Sample a value k according to theoretical PMF
   const sampleK = useCallback((): number => {
-    const r = Math.random();
+    const totalP = bars.reduce((s, b) => s + b.p, 0);
+    if (totalP <= 0) return bars[0]?.k ?? 0;
+    const r = Math.random() * totalP;
     let cumulative = 0;
     for (const item of bars) {
       cumulative += item.p;
@@ -129,19 +131,25 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
 
   // Spawn multiple
   const spawnMultiple = useCallback((count: number) => {
-    if (count > 200) {
+    if (count > 100) {
       // Instant bulk batch calculation for massive counts
+      const visualCount = 20;
+      const instantCount = count - visualCount;
+
       const newCounts = { ...countsRef.current };
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < instantCount; i++) {
         const k = sampleK();
         newCounts[k] = (newCounts[k] || 0) + 1;
       }
       countsRef.current = newCounts;
-      setCountsMap(newCounts);
-      setTotalDropped((prev) => prev + count);
-      // Spawn a small visual burst
-      for (let i = 0; i < 30; i++) {
-        setTimeout(() => spawnParticle(), i * 20);
+      let tot = 0;
+      for (const k in newCounts) tot += newCounts[k];
+      setCountsMap({ ...newCounts });
+      setTotalDropped(tot);
+
+      // Spawn visual burst for remaining particles
+      for (let i = 0; i < visualCount; i++) {
+        setTimeout(() => spawnParticle(), i * 25);
       }
     } else {
       for (let i = 0; i < count; i++) {
@@ -290,7 +298,10 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
 
       // 3. Draw Stacked Empirical Particles (The histogram built from real drops)
       const currentCounts = countsRef.current;
-      const total = totalDropped;
+      let total = 0;
+      for (const k in currentCounts) {
+        total += currentCounts[k];
+      }
 
       bars.forEach((item) => {
         const count = currentCounts[item.k] || 0;
@@ -317,7 +328,7 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
 
       // 4. Update and Draw In-Flight Particles
       const activeParticles: Particle[] = [];
-      let updatedCounts = false;
+      let settledThisFrame = 0;
 
       const pList = particlesRef.current;
       for (let i = 0; i < pList.length; i++) {
@@ -329,12 +340,18 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
         p.y += p.vy;
 
         // Steer horizontally towards target column
-        p.x += (p.targetX - p.x) * 0.12;
+        p.x += (p.targetX - p.x) * 0.15;
 
-        if (p.y >= p.targetY) {
+        // Dynamic landing: landing at top of current column or baseline
+        const countAtK = currentCounts[p.k] || 0;
+        const empFreq = total > 0 ? countAtK / total : 0;
+        const currentTopY = mapPtoY(empFreq);
+        const landingY = Math.max(70, currentTopY - 3);
+
+        if (p.y >= landingY) {
           p.settled = true;
           countsRef.current[p.k] = (countsRef.current[p.k] || 0) + 1;
-          updatedCounts = true;
+          settledThisFrame++;
           // Play subtle tone
           playParticleChime(p.k, oxTicks[0], oxTicks[oxTicks.length - 1]);
         } else {
@@ -346,16 +363,19 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
         ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
-        ctx.strokeStyle = '#0F172A';
+        ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.4)' : 'rgba(0, 0, 0, 0.15)';
         ctx.lineWidth = 1;
         ctx.stroke();
       }
 
       particlesRef.current = activeParticles;
 
-      if (updatedCounts) {
-        setCountsMap({ ...countsRef.current });
-        setTotalDropped((prev) => prev + 1);
+      if (settledThisFrame > 0) {
+        const updated = { ...countsRef.current };
+        let tot = 0;
+        for (const k in updated) tot += updated[k];
+        setCountsMap(updated);
+        setTotalDropped(tot);
       }
 
       ctx.restore();
@@ -377,7 +397,6 @@ export const ParticleHistogram: React.FC<ParticleHistogramProps> = ({
     barWidth,
     particleSpeed,
     spawnParticle,
-    totalDropped,
   ]);
 
   return (

@@ -165,7 +165,7 @@ export const DiscreteRV: React.FC<DiscreteRVProps> = ({ initialMode = 'chart' })
     variance = (1 - geomP) / (geomP * geomP);
     pmfFormula = `P(X=k) = (1 - ${fmt(geomP, 2)})^{k-1} (${fmt(geomP, 2)})`;
     interpretation = `Phân bố Hình học đếm số phép thử cần thực hiện cho đến khi xuất hiện lần thành công đầu tiên (với xác suất p = ${fmt(geomP, 2)}).`;
-    for (let k = 1; k <= 12; k++) {
+    for (let k = 1; k <= 14; k++) {
       const prob = Math.pow(1 - geomP, k - 1) * geomP;
       bars.push({ k, p: prob });
     }
@@ -213,12 +213,12 @@ export const DiscreteRV: React.FC<DiscreteRVProps> = ({ initialMode = 'chart' })
     barWidth = 18;
     mapKtoX = (k: number) => leftX + k * stepX;
   } else {
-    // Geometric: k in [1, 12]. All ticks 1..12 are permanently displayed on Ox!
-    oxTicks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-    const leftX = 135;
-    const rightX = 715;
-    const stepX = (rightX - leftX) / 11; // ~52.73px
-    barWidth = 32;
+    // Geometric: k in [1, 14]. All ticks 1..14 are permanently displayed on Ox!
+    oxTicks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    const leftX = 125;
+    const rightX = 725;
+    const stepX = (rightX - leftX) / 13; // ~46.15px
+    barWidth = 26;
     mapKtoX = (k: number) => leftX + (k - 1) * stepX;
   }
 
@@ -684,7 +684,7 @@ export const DiscreteRV: React.FC<DiscreteRVProps> = ({ initialMode = 'chart' })
               <ClaySlider
                 label="Xác suất thành công p"
                 value={geomP}
-                min={0.1}
+                min={0.15}
                 max={0.9}
                 step={0.05}
                 color="emerald"
